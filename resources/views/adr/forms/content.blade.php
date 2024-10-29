@@ -344,7 +344,33 @@
             </div>
             <div class="card card-custom gutter-b flex-grow-1 d-flex flex-column" style="box-shadow: 0px 2px 6px 2px #dcdcdc !important; border-radius: 0px !important;">
                 <div class="card-body flex-grow-1" style="padding: 0.75rem !important;">
-                    
+                    <table class="table table-bordered">
+                        <thead style="background-color: black;">
+                            <tr>
+                                <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;" rowspan="2">{{__('Product / Generic Name')}}</th>
+                                <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;" rowspan="2">{{__('Dose & Frequency Given')}}</th>
+                                <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;" rowspan="2">{{__('MAL and Batch No.')}}</th>
+                                <th style="min-width: 200px; text-align: center; vertical-align: middle; color: white !important;" colspan="2">{{__('Therapy Dates')}}</th>
+                                <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;" rowspan="2">{{__('Indication')}}</th>
+                            </tr>
+                            <tr>
+                                <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;">{{__('Start')}}</th>
+                                <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;">{{__('Stop')}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ( $medhistory as $history)
+                                <tr>
+                                    <td>{{$history['Itemdesc']}}</td>
+                                    <td>{{$history['dosageqty']}} ({{$history['freqcode']}})</td>
+                                    <td>{{$history['prescNum']}}</td>
+                                    <td>{{$history['startdate']}}</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <br/>
@@ -355,13 +381,33 @@
             </div>
             <div class="card card-custom gutter-b flex-grow-1 d-flex flex-column" style="box-shadow: 0px 2px 6px 2px #dcdcdc !important; border-radius: 0px !important;">
                 <div class="card-body flex-grow-1" style="padding: 0.75rem !important;">
-                    <div class="row mb-5">
-                        <div class="row mb-2">
-                            <div class="d-flex justify-content-center">
-                                <h5 class="text-center" style="padding: 0.5rem !important; margin: 0 !important; color: #797979;"><u>Blood Component</u></h5>
-                            </div>
-                        </div>
-                    </div>
+                    <table class="table table-bordered">
+                        <thead style="background-color: black;">
+                            <tr>
+                                <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;" rowspan="2">{{__('Product / Generic Name')}}</th>
+                                <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;" rowspan="2">{{__('Dose & Frequency Given')}}</th>
+                                <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;" rowspan="2">{{__('MAL and Batch No.')}}</th>
+                                <th style="min-width: 200px; text-align: center; vertical-align: middle; color: white !important;" colspan="2">{{__('Therapy Dates')}}</th>
+                                <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;" rowspan="2">{{__('Indication')}}</th>
+                            </tr>
+                            <tr>
+                                <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;">{{__('Start')}}</th>
+                                <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;">{{__('Stop')}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ( $medhistory as $history)
+                                <tr>
+                                    <td>{{$history['Itemdesc']}}</td>
+                                    <td>{{$history['dosageqty']}} ({{$history['freqcode']}})</td>
+                                    <td>{{$history['prescNum']}}</td>
+                                    <td>{{$history['startdate']}}</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
