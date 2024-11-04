@@ -34,6 +34,14 @@
                                             </div>
                                             <div class="row m-1 mb-3">
                                                 <div class="col-md-4 pt-4">
+                                                    <b>Suspend Date</b>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input class="form-control form-control-solid" type="datetime-local" name="actualsuspenddate" id="actualsuspenddate" value="{{ \Carbon\Carbon::now()->format('Y-m-d\TH:i') }}">
+                                                </div>
+                                            </div>
+                                            <div class="row m-1 mb-3">
+                                                <div class="col-md-4 pt-4">
                                                     <b>Reaction</b>
                                                 </div>
                                                 <div class="col-md-8">

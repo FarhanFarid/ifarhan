@@ -28,15 +28,25 @@
                                 <form id="#">
                                     @csrf
                                     <div class="row m-5">
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
+                                            <div class="row p-1">
+                                                <b>Receive Date</b>
+                                            </div>
+                                            <div class="row p-1">
+                                                <input class="form-control form-control-solid" type="datetime-local" name="actualreceivedate" id="actualreceivedate" value="{{ \Carbon\Carbon::now()->format('Y-m-d\TH:i') }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
                                             <div class="row p-1">
                                                 <b>Receiving Location</b>
                                             </div>
-                                            <select class="form-select form-select-solid" name="location" id="location" data-control="select2" data-placeholder="Select Location">
-                                                <option></option>
-                                                <option value="1">Option 1</option>
-                                                <option value="2">Option 2</option>
-                                            </select>
+                                            <div class="row p-1">
+                                                <select class="form-select form-select-solid" name="location" id="location" data-control="select2" data-placeholder="Select Location">
+                                                    <option></option>
+                                                    <option value="1">Option 1</option>
+                                                    <option value="2">Option 2</option>
+                                                </select>
+                                            </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="row p-1">
@@ -62,7 +72,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="row p-1">
                                                 <b>Lab No.</b>
                                             </div>
@@ -100,6 +110,7 @@
                                                     <th style="color: #000000; min-width: 25px;">{{__('BAG NO.')}}</th>
                                                     <th style="color: #000000; min-width: 25px;">{{__('LAB NO.')}}</th>
                                                     <th style="color: #000000; min-width: 100px;">{{__('LOCATION')}}</th>
+                                                    <th style="color: #000000; min-width: 100px;">{{__('RECEIVED DATE')}}</th>
                                                     <th style="color: #000000; min-width: 100px;">{{__('ACTION')}}</th>
                                                 </tr>
                                             </thead>

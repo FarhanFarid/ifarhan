@@ -169,9 +169,17 @@ $(document).ready(function () {
         var labno = $('#lbNumber').val();
         var username = $('#username').val();
         var password = $('#password').val();
+        var transfusedate = $('#actualtransfusedate').val();
+
+        const formattedDate = moment(transfusedate).format("YYYY-MM-DD H:mm");
 
         var url = config.routes.blood.transfusion.submit;
         var url2 = config.routes.blood.inventory.index;
+
+        if (transfusedate == '') {
+            toastr.error('Transfuse date cannot be empty.', {timeOut: 5000});
+            return;
+        }
 
         if (username == '' || password == '') {
             toastr.error('Please fill all the fields', {timeOut: 5000});
@@ -197,6 +205,7 @@ $(document).ready(function () {
                 labno: labno,
                 username: username,
                 password: password,
+                transfusedate: formattedDate,
 
             },
             dataType: 'json',

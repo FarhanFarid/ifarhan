@@ -30,6 +30,14 @@
                                                     <input class="form-control" type="hidden" name="bNumber" id="bNumber" readonly>
                                                 </div>
                                             </div>
+                                            <div class="row m-1 mb-3">
+                                                <div class="col-md-4 pt-4">
+                                                    <b>Transfer Date</b>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input class="form-control form-control-solid" type="datetime-local" name="actualtransferdate" id="actualtransferdate" value="{{ \Carbon\Carbon::now()->format('Y-m-d\TH:i') }}">
+                                                </div>
+                                            </div>
                                             <div class="row m-1 mb-3" id="reasonreturn" style="display: none;">
                                                 <div class="col-md-4 pt-4">
                                                     <b>Return reason</b>

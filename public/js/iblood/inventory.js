@@ -182,7 +182,11 @@ $(document).ready(function () {
                         html += row.locations.map(loc => {
                             var badgeClass;
                             if (loc.location === "Laboratory and Blood Services"){
-                                badgeClass = 'badge-light';
+                                if(loc.status_id == 3){
+                                    badgeClass = 'badge-danger';
+                                }else{
+                                    badgeClass = 'badge-light';
+                                }
                             }else if (loc.status_id === 3) {
                                 badgeClass = 'badge-danger';
                             } else if (loc.status_id === 2) {
@@ -389,6 +393,9 @@ $(document).ready(function () {
         var location = $('#location').val();
         var labno = $('#labnumber').val();
         var product = $('#product').val();
+        var receivedate = $('#actualreceivedate').val();
+
+        const formattedDate = moment(receivedate).format("YYYY-MM-DD H:mm");
     
         var url = config.routes.blood.inventory.transferTo;
 
@@ -404,6 +411,10 @@ $(document).ready(function () {
 
         if (!product) {
             toastr.error('Please select product to be received', {timeOut: 5000});
+            return;
+        }
+        if (!receivedate) {
+            toastr.error('Received date cannot be empty.', {timeOut: 5000});
             return;
         }
     
@@ -440,6 +451,14 @@ $(document).ready(function () {
             success: function(data) {
                 if (data.status === 'success') {
 
+                    // console.log(data);
+                    // console.log(data.data.transfuse_status_id);
+                    // console.log(data.data.transfuse_completion_id );
+
+                    // if(data.data.transfuse_status_id == 7 && data.data.transfuse_completion_id == null){
+                    //     console.log("hello");
+                    // }
+
                     if(product === "PLATELET CONC."){
                         bagNumbers.forEach(function(bag) {
                             var trimmedBag = bag.trim(); 
@@ -452,11 +471,12 @@ $(document).ready(function () {
                                         '<td>' + trimmedBag + '</td>' + 
                                         '<td>' + labno + '</td>' +
                                         '<td>' + location + '</td>' +
+                                        '<td>' + formattedDate + '</td>' +
                                         '<td style="text-align: center;"><button class="btn btn-danger btn-sm remove-row"><i class="fa fa-trash"></i></button></td>' +
                                     '</tr>'
                                 );
                             } else {
-                                if (data.data.transfer_to == location) {
+                                if(data.data.transfuse_status_id == 7 && data.data.transfuse_completion_id == null){
                                     $('#gen-batch').show();
                                     $('#blood-batch').append(
                                         '<tr>' +
@@ -464,13 +484,28 @@ $(document).ready(function () {
                                             '<td>' + trimmedBag + '</td>' + 
                                             '<td>' + labno + '</td>' +
                                             '<td>' + location + '</td>' +
+                                            '<td>' + formattedDate + '</td>' +
                                             '<td style="text-align: center;"><button class="btn btn-danger btn-sm remove-row"><i class="fa fa-trash"></i></button></td>' +
                                         '</tr>'
                                     );
-                                } else {
-                                    toastr.error('This bag should not be received by this location!', {timeOut: 5000});
-                                    return;
-                                }
+                                }else{
+                                    if (data.data.transfer_to == location) {
+                                        $('#gen-batch').show();
+                                        $('#blood-batch').append(
+                                            '<tr>' +
+                                                '<td>' + product + '</td>' +
+                                                '<td>' + trimmedBag + '</td>' + 
+                                                '<td>' + labno + '</td>' +
+                                                '<td>' + location + '</td>' +
+                                                '<td>' + formattedDate + '</td>' +
+                                                '<td style="text-align: center;"><button class="btn btn-danger btn-sm remove-row"><i class="fa fa-trash"></i></button></td>' +
+                                            '</tr>'
+                                        );
+                                    } else {
+                                        toastr.error('This bag should not be received by this location!', {timeOut: 5000});
+                                        return;
+                                    }
+                                }   
                             }
                         });
                     }else{
@@ -482,11 +517,12 @@ $(document).ready(function () {
                                     '<td>' + bagno + '</td>' +
                                     '<td>' + labno + '</td>' +
                                     '<td>' + location + '</td>' +
+                                    '<td>' + formattedDate + '</td>' +
                                     '<td style="text-align: center;"><button class="btn btn-danger btn-sm remove-row"><i class="fa fa-trash"></i></button></td>' +
                                 '</tr>'
                             );
                         }else {
-                            if (data.data.transfer_to == location) {
+                            if(data.data.transfuse_status_id == 7 && data.data.transfuse_completion_id == null){
                                 $('#gen-batch').show();
                                 $('#blood-batch').append(
                                     '<tr>' +
@@ -494,12 +530,27 @@ $(document).ready(function () {
                                         '<td>' + bagno + '</td>' +
                                         '<td>' + labno + '</td>' +
                                         '<td>' + location + '</td>' +
+                                        '<td>' + formattedDate + '</td>' +
                                         '<td style="text-align: center;"><button class="btn btn-danger btn-sm remove-row"><i class="fa fa-trash"></i></button></td>' +
                                     '</tr>'
                                 );
-                            } else {
-                                toastr.error('This bag should not be received by this location!', {timeOut: 5000});
-                                return;
+                            }else{
+                                if (data.data.transfer_to == location) {
+                                    $('#gen-batch').show();
+                                    $('#blood-batch').append(
+                                        '<tr>' +
+                                            '<td>' + product + '</td>' +
+                                            '<td>' + bagno + '</td>' +
+                                            '<td>' + labno + '</td>' +
+                                            '<td>' + location + '</td>' +
+                                            '<td>' + formattedDate + '</td>' +
+                                            '<td style="text-align: center;"><button class="btn btn-danger btn-sm remove-row"><i class="fa fa-trash"></i></button></td>' +
+                                        '</tr>'
+                                    );
+                                } else {
+                                    toastr.error('This bag should not be received by this location!', {timeOut: 5000});
+                                    return;
+                                }
                             }
                         }
                     } 
@@ -664,16 +715,18 @@ $(document).ready(function () {
         var url = config.routes.blood.inventory.store;
 
         $('#blood-batch tr').each(function() {
-            var product = $(this).find('td:eq(0)').text();
-            var bagno    = $(this).find('td:eq(1)').text();
-            var labno    = $(this).find('td:eq(2)').text();
-            var location = $(this).find('td:eq(3)').text();
+            var product     = $(this).find('td:eq(0)').text();
+            var bagno       = $(this).find('td:eq(1)').text();
+            var labno       = $(this).find('td:eq(2)').text();
+            var location    = $(this).find('td:eq(3)').text();
+            var receivedate = $(this).find('td:eq(4)').text();
 
             details.push({
                 bagno: bagno,
                 labno: labno,
                 location: location,
                 product: product,
+                receivedate: receivedate,
             });
         });
 
@@ -793,6 +846,9 @@ $(document).ready(function () {
         var location = $('#transferLocation').val();
         var reason = $('#reason').val();
         var others = $('#otherslocation').val();
+        var transferdate = $('#actualtransferdate').val();
+
+        const formattedDate = moment(transferdate).format("YYYY-MM-DD H:mm");
 
         
         var url = config.routes.blood.inventory.updateLocation;
@@ -800,6 +856,11 @@ $(document).ready(function () {
 
         if (location == '') {
             toastr.error('Please select the location', {timeOut: 5000});
+            return;
+        }
+
+        if (transferdate == '') {
+            toastr.error('Transfer date cannot be empty.', {timeOut: 5000});
             return;
         }
 
@@ -827,7 +888,7 @@ $(document).ready(function () {
                 $.ajax({
                     url: url,
                     method: 'POST',
-                    data: { bagno: bagno, episodeno: episodeno, location: location, reason: reason, others: others },
+                    data: { bagno: bagno, episodeno: episodeno, location: location, reason: reason, others: others, transferdate: formattedDate },
                     dataType: 'json',
                     beforeSend: function(){
                         $("#loading-overlay").show();
@@ -1064,14 +1125,16 @@ $(document).ready(function () {
         var reaction = $('#reaction').val();
         var details = $('#details').val();
         var volume = $('#volume').val();
+        var suspenddate = $('#actualsuspenddate').val();
+
+        const formattedDate = moment(suspenddate).format("YYYY-MM-DD H:mm");
+        
         var url = config.routes.blood.inventory.suspend;
 
-        // if(reaction === 'Yes'){
-        //     if (details == '') {
-        //         toastr.error('Reaction details cannot be empty.', {timeOut: 5000});
-        //         return;
-        //     }
-        // }
+        if (suspenddate == '') {
+            toastr.error('Suspend date cannot be empty.', {timeOut: 5000});
+            return;
+        }
 
         if (reaction == '' || volume == '') {
             toastr.error('Reaction or volume cannot be empty.', {timeOut: 5000});
@@ -1091,7 +1154,7 @@ $(document).ready(function () {
                 $.ajax({
                     url: url,
                     method: 'POST',
-                    data: { episodeNo: episodeNo, bagno: bagno, reaction: reaction, volume: volume, details: details  },
+                    data: { episodeNo: episodeNo, bagno: bagno, reaction: reaction, volume: volume, details: details, suspenddate: formattedDate },
                     dataType: 'json',
                     beforeSend: function(){
                         $("#loading-overlay").show();
