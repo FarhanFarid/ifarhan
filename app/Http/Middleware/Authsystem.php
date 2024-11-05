@@ -723,6 +723,8 @@ class Authsystem
                 'blood/reaction/report/generate',
                 'ireporting/ida/preadmission',
                 'ireporting/ida/preadmission/getpreadmissioninventory',
+                'ireporting/discharge-summary',
+                'ireporting/discharge-summary/list',
             ];
             if(in_array($request->path(), $ipharmacyArr)){
                 try
