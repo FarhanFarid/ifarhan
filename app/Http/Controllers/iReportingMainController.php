@@ -161,7 +161,7 @@ class iReportingMainController extends Controller
 
         $url = $explode[1];
 
-        return view('ireporting.ida.preadmission', compact('url'));
+        return view('ireporting.noaccess', compact('url'));
 
     }
 
