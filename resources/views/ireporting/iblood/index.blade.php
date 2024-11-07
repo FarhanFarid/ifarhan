@@ -26,7 +26,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">{{$totalissued}}</span>        
+                                                    <span class="fs-1 fw-bold text-white me-2 lh-1 ls-n2">{{$totalissued}}</span>        
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="row">
@@ -63,7 +63,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">{{$totaltransfuse}}</span>        
+                                                    <span class="fs-1 fw-bold text-white me-2 lh-1 ls-n2">{{$totaltransfuse}}</span>        
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="row">
@@ -98,7 +98,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">{{$totalatr}}</span>        
+                                                    <span class="fs-1 fw-bold text-white me-2 lh-1 ls-n2">{{$totalatr}}</span>        
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="row">
@@ -132,7 +132,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">{{$totalstored}}</span>        
+                                                    <span class="fs-1 fw-bold text-white me-2 lh-1 ls-n2">{{$totalstored}}</span>        
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="row">
