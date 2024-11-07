@@ -10,48 +10,6 @@ var table = $('#reportiblood-table').DataTable({
             className: 'btn-dark',
         },
     ],
-    columnDefs: [
-        {
-            "targets": 0,
-            "width": "10%"
-        },
-        {
-            "targets": 1,
-            "width": "10%"
-        },
-        {
-            "targets": 2,
-            "width": "20%"
-        },
-        {
-            "targets": 3,
-            "width": "10%"
-        },
-        {
-            "targets": 4,
-            "width": "10%"
-        },
-        {
-            "targets": 5,
-            "width": "10%"
-        },
-        {
-            "targets": 6,
-            "width": "20%"
-        },
-        {
-            "targets": 7,
-            "width": "10%"
-        },
-        {
-            "targets": 8,
-            "width": "10%"
-        },
-        {
-            "targets": 9,
-            "width": "10%"
-        },
-    ],
     columns: [
         {
             "data": null,
@@ -99,7 +57,7 @@ var table = $('#reportiblood-table').DataTable({
             "data": 'location',
             "render": function (data, type, row)  {
                 if(row.reaction == null){
-                    return '<span></span>';
+                    return '<span>-</span>';
 
                 }else{
                     return '<span>'+row.reaction+'</span>';
@@ -107,13 +65,41 @@ var table = $('#reportiblood-table').DataTable({
             }
         },
         {
-            "data": 'expirydate',
+            "data": 'receivedate',
             "render": function (data, type, row)  {
-                if(row.expiry_date == null){
-                    return '<span></span>';
+                if(row.received_at == null){
+                    return '<span>-</span>';
 
                 }else{
-                    return '<span>'+moment(row.expiry_date).format('DD/MM/YYYY HH:mm')+'</span>';
+                    return '<span>'+moment(row.received_at).format('DD/MM/YYYY HH:mm')+'</span>';
+                }
+            }
+        },
+        {
+            "data": 'createddate',
+            "render": function (data, type, row)  {
+                if(row.created_at == null){
+                    return '<span>-</span>';
+
+                }else{
+                    return '<span>'+moment(row.created_at).format('DD/MM/YYYY HH:mm')+'</span>';
+                }
+            }
+        },
+        {
+            "data": 'expirydate',
+            "render": function (data, type, row) {
+                if (row.expiry_date == null) {
+                    return '<span>-</span>';
+                } else {
+                    const expiryDate = moment(row.expiry_date);
+                    const currentDate = moment();
+        
+                    if (expiryDate.isBefore(currentDate)) {
+                        return '<span class="text-danger">' + expiryDate.format('DD/MM/YYYY HH:mm') + '</span>';
+                    } else {
+                        return '<span>' + expiryDate.format('DD/MM/YYYY HH:mm') + '</span>';
+                    }
                 }
             }
         },

@@ -43,12 +43,14 @@
                             <th colspan="9" style="color: #14787c; min-width: 25px; text-align: center; vertical-align: middle;">{{__('TRANSFUSION RECORD')}}</th>
                         </tr>
                         <tr>
+                            <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Reaction')}}</th>
                             <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Product')}}</th>
                             <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Bag No.')}}</th>
                             <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Status')}}</th>
                             <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Blood Movement')}}</th>
                             <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Volume Transfused')}}</th>
-                            <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Action')}}</th>
+                            {{-- <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Created At')}}</th> --}}
+                            <th style="color: #14787c; min-width: 200px; text-align: center;  vertical-align: middle;">{{__('Action')}}</th>
                         </tr>
                     </thead>
                     <tbody>

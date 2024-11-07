@@ -52,6 +52,21 @@ $(document).ready(function () {
         $('#bagsno').focus();
     }
 
+    function getFormattedLocalDateTime(date) {
+        const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+        return offsetDate.toISOString().slice(0, 16);
+    }
+
+    function updateTransfuseDate() {
+        const dateTimeInput = document.getElementById('actualtransfusedate');
+        const formattedDateTime = getFormattedLocalDateTime(new Date());
+
+        dateTimeInput.value = formattedDateTime;
+    }
+
+    setInterval(updateTransfuseDate, 60000);
+
+
     // Event listener for input field value change
     $('#labno').on('change', function() {
         let scannedData = $(this).val();

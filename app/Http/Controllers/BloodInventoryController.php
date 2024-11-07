@@ -341,6 +341,7 @@ class BloodInventoryController extends Controller
                 $query->where('episodeno', $episodeno)
                       ->with('user');
             }])
+            ->orderBy('id', 'desc') // Order by latest record
             ->get();
             
             $response = response()->json(

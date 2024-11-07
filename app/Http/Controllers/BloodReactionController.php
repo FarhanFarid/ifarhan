@@ -957,6 +957,7 @@ class BloodReactionController extends Controller
         $url = $explode[1];
 
         $bagno = $request->bagno;
+        $episode = $request->epsdno;
 
         //DETAIL PROCEDURE
         $procedure = BloodDetailProcedure::where('inventory_bagno', $bagno)->where('status_id', '1')->first();
@@ -1063,6 +1064,7 @@ class BloodReactionController extends Controller
             'relevanthistory',
             'procedure',
             'component',
+            'episode',
         ));
     }
 
