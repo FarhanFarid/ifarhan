@@ -13,6 +13,7 @@ use App\Models\PatientSurgical;
 use App\Models\PatientAllergy;
 use App\Models\Patient;
 use App\Models\User;
+use App\Models\UserAccessiccarole;
 
 use DB;
 use Auth;
