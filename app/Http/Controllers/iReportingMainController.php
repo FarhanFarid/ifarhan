@@ -8,6 +8,7 @@ use Carbon\Carbon;
 
 use App\Models\Inventory;
 use App\Models\BloodInventory;
+use App\Models\BloodLocation;
 use App\Models\BloodDetailProcedure;
 use App\Models\Patient;
 use App\Models\PatientInformation;
@@ -151,7 +152,6 @@ class iReportingMainController extends Controller
         $notexpired    = BloodInventory::where('expiry_date', '!=', null)->where('expiry_date', '>=', Carbon::now())->where('transfuse_status_id', 2)->count();      
         $totalstored   = $expired + $notexpired;
 
-
         return view('ireporting.iblood.index', compact(
             'url', 
             'totalissuedactive', 
@@ -175,29 +175,48 @@ class iReportingMainController extends Controller
 
     public function getIbloodInventory(Request $request)
     {
-        $data = DB::table('iblood_inventories as inv')
-            ->leftJoin('patient_information as patinfo', 'inv.episodeno', '=', 'patinfo.episodenumber')
-            ->leftJoin('patients as pats', 'patinfo.patient_id', '=', 'pats.id')
-            ->leftJoin('iblood_locations as loc', function($join) {
-                $join->on('inv.bagno', '=', 'loc.inventory_bagno')
-                     ->on('loc.created_at', '=', DB::raw('(SELECT MAX(created_at) FROM iblood_locations WHERE inventory_bagno = loc.inventory_bagno)'));
-            })
-            ->selectRaw('pats.mrn, pats.name, inv.episodeno, inv.labno, inv.bagno, inv.reaction, inv.created_at, loc.received_at, inv.expiry_date, inv.transfuse_status_id, loc.location');
+        $inventory = BloodInventory::with([
+            'locations.transfer_by:id,name',
+            'locations.user:id,name', // Include transfer_by relation within locations
+            'user:id,name',
+            'transfuse_start_by:id,name',
+            'transfuse_verify_by:id,name',
+            'patinfo.patient' // Include patient relation within patinfo
+        ])->orderBy('id', 'desc');
 
-            // Filter by Date Range
-            if ($request->has('dateRange')) {
-                $dateRange = explode(' - ', $request->dateRange);
-                $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
-                $endDate = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
-                $data->whereBetween('inv.created_at', [$startDate, $endDate]);
-            }
+            // // Filter by Date Range
+            // if ($request->has('dateRange')) {
+            //     $dateRange = explode(' - ', $request->dateRange);
+            //     $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+            //     $endDate = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+            //     $data->whereBetween('inv.created_at', [$startDate, $endDate]);
+            // }
 
-            // Filter by Status
-            if ($request->has('status') && $request->status != 'all') {
-                $data->where('inv.transfuse_status_id', $request->status);
-            }
+            // // Filter by Status
+            // if ($request->has('status') && $request->status != 'all') {
+            //     $data->where('inv.transfuse_status_id', $request->status);
+            // }
     
-        return response()->json(['data' => $data->get()]);
+        return response()->json(['data' => $inventory->get()]);
+    }
+
+    public function getIbloodLocationDetails(Request $request)
+    {
+
+        $inventory = BloodInventory::where('bagno', $request->bagNo)->where('episodeno', $request->episodeNo)->where('labno', $request->labNo)->with([
+            'locations.transfer_by:id,name',
+            'locations.user:id,name', // Include transfer_by relation within locations
+            'user:id,name',
+            'transfuse_start_by:id,name',
+            'transfuse_verify_by:id,name',
+        ]);
+
+        // $location = BloodLocation::where('inventory_bagno', $request->bagNo)->where('episodeno', $request->episodeNo)->with([
+        //     'transfer_by:id,name',
+        //     'user:id,name', 
+        // ]);
+
+        return response()->json(['data' => $inventory->first()]);
     }
 
     public function indexIbloodAtr(Request $request)

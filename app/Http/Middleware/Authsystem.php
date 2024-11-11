@@ -718,6 +718,7 @@ class Authsystem
                 'ireporting/imilk/getimilkinventory',
                 'ireporting/iblood', 
                 'ireporting/iblood/getibloodinventory',
+                'ireporting/iblood/getlocationdetails',
                 'ireporting/iblood/atr', 
                 'ireporting/iblood/atr/getworklist',
                 'blood/reaction/report/generate',

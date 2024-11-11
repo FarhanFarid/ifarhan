@@ -668,6 +668,7 @@ class BloodInventoryController extends Controller
                 $inventory->save();
     
                 $location->status_id                    = 3;
+                $location->stop_transfusion             = "Yes";
                 $location->transfer_by                  = Auth::user()->id;
                 $location->transfer_at                  = $request->input('suspenddate');
                 $location->save();

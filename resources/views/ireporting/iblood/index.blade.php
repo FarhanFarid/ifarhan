@@ -193,24 +193,23 @@
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-bordered table-row-bordered" id="reportiblood-table">
+                        <table class="table table-bordered table-row-bordered" style="width:auto" id="reportiblood-table">
                             <thead class="thead-light">
                                 <tr class="fw-semibold fs-6">
-                                    <th style="max-width: 50px; color: #14787c; background-color:#ecfefe">No.</th>
+                                    <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">No.</th>
                                     <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">MRN</th>
                                     <th style="min-width: 200px; color: #14787c; background-color:#ecfefe">Name</th>
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Episode No.</th>
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">LB No.</th>
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Bag No.</th>
-                                    <th style="min-width: 150px; color: #14787c; background-color:#ecfefe">Bag Location</th>
-                                    <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Incident / Reaction</th>
-                                    <th style="min-width: 150px; color: #14787c; background-color:#ecfefe">Receive Date</th>
-                                    <th style="min-width: 150px; color: #14787c; background-color:#ecfefe">Created Date</th>
+                                    {{-- <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">Status</th> --}}
                                     <th style="min-width: 150px; color: #14787c; background-color:#ecfefe">Expiry Date</th>
-                                    <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">Status</th>
+                                    <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Reaction</th>
+                                    <th style="min-width: 150px; color: #14787c; background-color:#ecfefe">Bag Location</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                
                             </tbody>
                         </table>
                     </div>
@@ -229,6 +228,7 @@
             ireporting : {
                 iblood : {
                     getdata : "{{ route('report.iblood.getinventory') }}?{!! $url !!}",
+                    locationdetails : "{{ route('report.iblood.getlocationdetails') }}?{!! $url !!}",
                 },
             },
         },

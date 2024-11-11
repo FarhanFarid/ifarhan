@@ -247,6 +247,7 @@ class BloodTransfusionController extends Controller
             }else{
                 
                 $inventory = BloodInventory::where('bagno', $request->input('bagno'))->where('labno', $request->labno)->where('episodeno', $request->epsdno)->first();
+                $location = BloodLocation::where('inventory_bagno', $request->input('bagno'))->where('episodeno', $request->epsdno)->where('status_id', 1)->first();
                 $user = User::where('username', $request->input('username'))->first();
             
                 if($inventory != null)
@@ -257,6 +258,9 @@ class BloodTransfusionController extends Controller
                     $inventory->transfuse_start_by          = Auth::user()->id;
                     $inventory->transfuse_start_at          = $request->input('transfusedate');
                     $inventory->save();
+
+                    $location->start_transfusion             = "Yes";
+                    $location->save();
                 
                     return $response = response()->json(
                         [

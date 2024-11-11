@@ -158,7 +158,9 @@ Route::group(['middleware' => ['authsystem']], function() {
         });
         Route::group(['prefix' => 'iblood'], function () {
             Route::get('/', [iReportingMainController::class, 'indexIblood'])->name('report.iblood.index');
-            Route::get('/getibloodinventory', [iReportingMainController::class, 'getIBloodInventory'])->name('report.iblood.getinventory');
+            Route::get('/getibloodinventory', [iReportingMainController::class, 'getIbloodInventory'])->name('report.iblood.getinventory');
+            Route::post('/getlocationdetails', [iReportingMainController::class, 'getIbloodLocationDetails'])->name('report.iblood.getlocationdetails');
+
 
             Route::group(['prefix' => 'atr'], function () {
                 Route::get('/', [iReportingMainController::class, 'indexIbloodAtr'])->name('report.iblood.atr.index');
