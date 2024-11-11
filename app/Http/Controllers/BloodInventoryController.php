@@ -151,6 +151,7 @@ class BloodInventoryController extends Controller
         try
         {  
 
+            // dd($request->all());
             foreach ($request->input('details') as $data) {
 
                 $inventory = BloodInventory::where('episodeno', $request->input('epsdno'))->where('labno', $data['labno'])->where('bagno', $data['bagno'])->where('transfuse_status_id', '!=' , 6)->first();
@@ -169,7 +170,13 @@ class BloodInventoryController extends Controller
                         $storelocation->inventory_bagno         = $data['bagno'];
                         $storelocation->location                = $data['location'];
                         $storelocation->received_by             = Auth::user()->id;
-                        $storelocation->received_at             = $data['receivedate'];
+
+                        if($data['receivedate'] != null){
+                            $storelocation->received_at         = $data['receivedate'];
+                        }else{
+                            $storelocation->received_at         = Carbon::now();
+                        }
+
                         $storelocation->status_id               = '1';
                         $storelocation->created_at              = Carbon::now();
                         $storelocation->save(); 
@@ -206,7 +213,13 @@ class BloodInventoryController extends Controller
                         $storelocation->inventory_bagno         = $data['bagno'];
                         $storelocation->location                = $data['location'];
                         $storelocation->received_by             = Auth::user()->id;
-                        $storelocation->received_at             = $data['receivedate'];
+
+                        if($data['receivedate']){
+                            $storelocation->received_at         = $data['receivedate'];
+                        }else{
+                            $storelocation->received_at         = Carbon::now();
+                        }
+
                         $storelocation->status_id               = '1';
                         $storelocation->created_at              = Carbon::now();
                         $storelocation->save();
@@ -248,7 +261,11 @@ class BloodInventoryController extends Controller
                     $storelocation->inventory_bagno         = $data['bagno'];
                     $storelocation->location                = $data['location'];
                     $storelocation->received_by             = Auth::user()->id;
-                    $storelocation->received_at             = $data['receivedate'];
+                    if($data['receivedate']){
+                        $storelocation->received_at             = $data['receivedate'];
+                    }else{
+                        $storelocation->received_at         = Carbon::now();
+                    }
                     $storelocation->status_id               = '1';
                     $storelocation->created_at              = Carbon::now();
                     $storelocation->save();
