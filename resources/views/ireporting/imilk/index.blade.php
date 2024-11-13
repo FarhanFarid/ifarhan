@@ -25,7 +25,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <span class="fs-1 fw-bold text-white me-2 lh-1 ls-n2">{{$totalebm}}</span>        
+                                                    <span class="fw-bold text-white me-2 lh-1 ls-n2" style=" font-size: 16px !important;">{{$totalebm}}</span>        
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="row">
@@ -56,7 +56,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <span class="fs-1 fw-bold text-white me-2 lh-1 ls-n2">{{$expiredebm}}</span>        
+                                                    <span class="fw-bold text-white me-2 lh-1 ls-n2" style=" font-size: 16px !important;">{{$expiredebm}}</span>        
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="row">
@@ -87,7 +87,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <span class="fs-1 fw-bold text-white me-2 lh-1 ls-n2">{{$pending}}</span>        
+                                                    <span class="fw-bold text-white me-2 lh-1 ls-n2" style=" font-size: 16px !important;">{{$pending}}</span>        
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="row">
@@ -118,7 +118,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <span class="fs-1 fw-bold text-white me-2 lh-1 ls-n2">{{$administered}}</span>        
+                                                    <span class="fw-bold text-white me-2 lh-1 ls-n2" style=" font-size: 16px !important;">{{$administered}}</span>        
                                                 </div>
                                             </div>
                                         </div>
