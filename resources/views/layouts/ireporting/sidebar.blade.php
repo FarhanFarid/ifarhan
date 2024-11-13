@@ -90,3 +90,18 @@
 	   @endif --}}
    </div>
 </div>
+@if(in_array($usrGrp, ["Administrator" , "MROffice"]))
+	<div class="row {{ request()->routeIs('report.dischargesummary') ? 'bg-teal text-white' : '' }}" 
+		style="padding: 0.5rem; margin: auto; border-bottom: solid 1px #cccccc;">
+		<div class="col-2 mt-2">
+			<a class="text-hover-success {{ request()->routeIs('report.dischargesummary') ? 'display-none' : 'display-block' }}" href="#" id="expandhr" style="margin-bottom: 10px; display: block;">
+				<i class="fas fa-angle-right fs-3 {{ request()->routeIs('report.dischargesummary') ? 'color-white' : 'color-teal' }}" 
+					style="float: right; margin-bottom: 10px;"></i>
+			</a>
+		</div>
+		<div class="col-10 mt-2" style="padding-left: 0px;">
+			<a class="text-hover-success {{ request()->routeIs('report.dischargesummary') ? 'text-white' : 'text-dark' }}" 
+				href="{{ route('report.dischargesummary') }}?{{$url}}" style="margin-bottom: 10px;">Discharge Summary</a>
+		</div>
+	</div>
+@endif
