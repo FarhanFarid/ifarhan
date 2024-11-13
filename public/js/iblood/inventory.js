@@ -30,17 +30,14 @@ $(document).ready(function () {
         columns: [
             {
                 "data": 'reaction',
-                
                 "render": function (data, type, row) {
-            
                     var html = '';
-
                     if (row.reaction === "Yes") {
-                        html += ' <i class="fas fa-exclamation-circle text-danger" aria-hidden="true" style="font-size: 20px;"></i>';
-                    }else{
+                        html += '<span aria-hidden="true" style="font-size: 20px; color: red; animation: blink 1s infinite;">🚨</span>';
+                        html += '<style>@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }</style>';
+                    } else {
                         html += '-';
                     }
-            
                     return html;
                 }
             },

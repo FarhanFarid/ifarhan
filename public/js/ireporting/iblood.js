@@ -142,89 +142,80 @@ $('#reportiblood-table tbody').on('click', 'button.toggle', function () {
             data: { episodeNo: episodeNo, bagNo: bagNo, labNo: labNo},
             dataType: 'json',
             success: function (data) {
-
                 var responseData = data.data.locations;
-
-                console.log(responseData);
-
+            
                 var subtableContent = '<table class="table subtable table-bordered table-row-bordered">';
-                subtableContent += '<thead">';
+                subtableContent += '<thead>';
                 subtableContent += '<tr><th style="background-color: #e9f2ff; color: #1d69e3;">Location</th><th style="background-color: #e9f2ff; color: #1d69e3;">Status</th><th style="background-color: #e9f2ff; color: #1d69e3;">Transfusion Start</th><th style="background-color: #e9f2ff; color: #1d69e3;">Transfusion Stop</th><th style="background-color: #e9f2ff; color: #1d69e3;">Received By</th><th style="background-color: #e9f2ff; color: #1d69e3;">Received At</th><th style="background-color: #e9f2ff; color: #1d69e3;">Created At</th></tr>';
                 subtableContent += '</thead>';
                 subtableContent += '<tbody>';
-                
+            
                 responseData.forEach(function(response) {
-                    subtableContent += '<tr>';
+                    // Check if both conditions are met to apply the red background
+                    var rowStyle = '';
+                    if (response.stop_transfusion === "Yes" && data.data.reaction === "Yes") {
+                        rowStyle = ' style="background-color: #ffcccc;"';  // Red background for the row
+                    }
+            
+                    subtableContent += '<tr' + rowStyle + '>';
                     subtableContent += '<td>' + response.location + '</td>';
-
-                    //Status 
-                    subtableContent += '<td>' 
-                                        if(response.location != "Laboratory and Blood Services" && response.status_id == 1){
-                                            if(data.data.transfuse_status_id == 1){
-                    subtableContent +=          '<span class="badge badge-primary">Received</span>'             
-                                            }else if(data.data.transfuse_status_id == 2){
-                    subtableContent +=          '<span class="badge badge-primary">Stored</span>' 
-                                            }else if(data.data.transfuse_status_id == 3){
-                    subtableContent +=          '<span class="badge badge-warning">Transfusion in progress</span>' 
-                                            }else if(data.data.transfuse_status_id == 5){
-                    subtableContent +=          '<span class="badge badge-light">Transfered</span>' 
-                                            }   
-                                        }else if(response.location == "Laboratory and Blood Services"){
-                    subtableContent +=      '<span class="badge badge-light">Returned</span>' 
-                                        }else if(response.status_id == 3){
-                    subtableContent +=      '<span class="badge badge-primary">Received</span>' 
-                                        }else if(response.location != "Laboratory and Blood Services" && response.status_id == 2){
-                    subtableContent +=      '<span class="badge badge-warning">'
-                    subtableContent +=      'Transfer in progress to: <br/>' + data.data.transfer_to + '</span>'   
-                                        }                               
+            
+                    // Status
+                    subtableContent += '<td>';
+                    if (response.location !== "Laboratory and Blood Services" && response.status_id === 1) {
+                        if (data.data.transfuse_status_id === 1) {
+                            subtableContent += '<span class="badge badge-primary">Received</span>';
+                        } else if (data.data.transfuse_status_id === 2) {
+                            subtableContent += '<span class="badge badge-primary">Stored</span>';
+                        } else if (data.data.transfuse_status_id === 3) {
+                            subtableContent += '<span class="badge badge-warning">Transfusion in progress</span>';
+                        } else if (data.data.transfuse_status_id === 5) {
+                            subtableContent += '<span class="badge badge-light">Transferred</span>';
+                        }
+                    } else if (response.location === "Laboratory and Blood Services") {
+                        subtableContent += '<span class="badge badge-light">Returned</span>';
+                    } else if (response.status_id === 3) {
+                        subtableContent += '<span class="badge badge-primary">Received</span>';
+                    } else if (response.location !== "Laboratory and Blood Services" && response.status_id === 2) {
+                        subtableContent += '<span class="badge badge-warning">Transfer in progress to: <br/>' + data.data.transfer_to + '</span>';
+                    }
                     subtableContent += '</td>';
-
-                    //Transfusion Start
-                    
-                    subtableContent += '<td>' 
-                                        if(response.start_transfusion == "Yes"){
-                    subtableContent +=      '<div>'
-                    subtableContent +=          '<strong>Start Time:</strong> ' + moment(data.data.transfuse_start_at).format('DD/MM/YYYY HH:mm')
-                    subtableContent +=      '</div>'
-                    subtableContent +=      '<div>'
-                    subtableContent +=          '<strong>Start By:</strong> ' + data.data.transfuse_start_by.name
-                    subtableContent +=      '</div>'
-                    subtableContent +=      '<div>'
-                    subtableContent +=          '<strong>Verify By:</strong> ' + data.data.transfuse_verify_by.name
-                    subtableContent +=      '</div>'
-                                        }else{
-                    subtableContent +=      '<span>-</span>'                        
-                                        }                               
+            
+                    // Transfusion Start
+                    subtableContent += '<td>';
+                    if (response.start_transfusion === "Yes") {
+                        subtableContent += '<div><strong>Start Time:</strong> ' + moment(data.data.transfuse_start_at).format('DD/MM/YYYY HH:mm') + '</div>';
+                        subtableContent += '<div><strong>Start By:</strong> ' + data.data.transfuse_start_by.name + '</div>';
+                        subtableContent += '<div><strong>Verify By:</strong> ' + data.data.transfuse_verify_by.name + '</div>';
+                    } else {
+                        subtableContent += '<span>-</span>';
+                    }
                     subtableContent += '</td>';
-
-                    //Transfusion Stop
-                    subtableContent += '<td>' 
-                    if(response.stop_transfusion == "Yes"){
-                        subtableContent +=      '<div>'
-                        subtableContent +=          '<strong>Stop Time:</strong> ' + moment(data.data.transfuse_stop_at).format('DD/MM/YYYY HH:mm')
-                        subtableContent +=      '</div>'
-                        subtableContent +=      '<div>'
-                        subtableContent +=          '<strong>Stop By:</strong> ' + data.data.user.name
-                        subtableContent +=      '</div>'
-                                            }else{
-                        subtableContent +=      '<span>-</span>'                        
-                    }                               
+            
+                    // Transfusion Stop
+                    subtableContent += '<td>';
+                    if (response.stop_transfusion === "Yes") {
+                        subtableContent += '<div><strong>Stop Time:</strong> ' + moment(data.data.transfuse_stop_at).format('DD/MM/YYYY HH:mm') + '</div>';
+                        subtableContent += '<div><strong>Stop By:</strong> ' + data.data.user.name + '</div>';
+                    } else {
+                        subtableContent += '<span>-</span>';
+                    }
                     subtableContent += '</td>';
-                    
+            
+                    // Additional columns
                     subtableContent += '<td>' + response.user.name + '</td>';
-                    subtableContent += '<td>' + moment(response.received_at).format('DD/MM/YYYY HH:mm') + '</td>'; 
-                    subtableContent += '<td>' + moment(response.created_at).format('DD/MM/YYYY HH:mm') + '</td>';       
+                    subtableContent += '<td>' + moment(response.received_at).format('DD/MM/YYYY HH:mm') + '</td>';
+                    subtableContent += '<td>' + moment(response.created_at).format('DD/MM/YYYY HH:mm') + '</td>';
                     subtableContent += '</tr>';
                 });
-                
+            
                 subtableContent += '</tbody>';
                 subtableContent += '</table>';
-                
+            
                 row.child(subtableContent).show();
                 tr.addClass('shown');
                 $(this).html('<span class="svg-icon fs-3 m-0 toggle-on">-</span>');
-        
-            },
+            },            
             error: function (xhr, status, error) {
                 toastr.error('Error: ' + error, { timeOut: 5000 });
             }

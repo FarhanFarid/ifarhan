@@ -75,7 +75,7 @@ $(document).ready(function () {
             }
         });
 
-        var url = config.routes.blood.reaction.finalize;
+        var url = config.routes.blood.reaction.falsereport;
 
         $('#adverse-event-report').modal('hide');
 

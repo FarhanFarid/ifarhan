@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="row">
+<div class="row mb-5">
     <div class="col-md-12 mb-2">
         <div class="card card-custom gutter-b" style="border-radius: 0px !important; background-color: #e9f2ff;">
             <h4 style="padding: 0.5rem !important; margin-bottom: 0px !important; color: #1d69e3;">IBLOOD (ATR WORKLIST - SUSPECTED)</h4>
@@ -58,7 +58,7 @@
     </div>
 </div>
 
-<div class="row">
+{{-- <div class="row mb-5">
     <div class="col-md-12 mb-2">
         <div class="card card-custom gutter-b" style="border-radius: 0px !important; background-color: #e9f2ff;">
             <h4 style="padding: 0.5rem !important; margin-bottom: 0px !important; color: #37e31d;">IBLOOD (ATR WORKLIST - CONFIRM)</h4>
@@ -168,7 +168,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 
 @include('iblood.reaction.report.modal')
 

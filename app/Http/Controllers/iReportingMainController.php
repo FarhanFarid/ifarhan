@@ -14,6 +14,7 @@ use App\Models\Patient;
 use App\Models\PatientInformation;
 use App\Models\Dischargesummary;
 
+
 use DB;
 use Auth;
 
@@ -88,6 +89,10 @@ class iReportingMainController extends Controller
             $administered = Inventory::where('status', 3)->count();
 
             return view('ireporting.imilk.index', compact('url', 'totalebm', 'totalebmChiller','totalebmFreezer', 'expiredebm', 'expiredebmChiller','expiredebmFreezer', 'pending', 'handover','prepare', 'administered'));
+
+        }elseif($request->usrGrp == "MROffice"){
+
+            return view('ireporting.dischargesummary.index', compact('url'));
 
         }else{
 
@@ -276,7 +281,7 @@ class iReportingMainController extends Controller
 
         $url = $explode[1];
 
-        return view('ireporting.noaccess', compact('url'));
+        return view('ireporting.ida.preadmission', compact('url'));
 
     }
 

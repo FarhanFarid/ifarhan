@@ -16,7 +16,7 @@
                 <button type="button" data-bs-dismiss="modal" class="btn btn-dark font-weight-bold btn-print btn-sm" target="_blank"><i class='la la-print'></i>&nbsp;{{ __('PRINT') }}</button>
                 {{-- @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "LABManager" || Auth::user()->usergrp == "LABMLT" || Auth::user()->usergrp == "LABTemp" || Auth::user()->usergrp == "LABClerk") --}}
                     <button type="button" class="btn btn-success btn-sm font-weight-bold save-finalization">{{__('FINALIZE REPORT')}}</button>
-                    <button type="button" class="btn btn-danger btn-sm font-weight-bold save-false">{{__('FALSE REPORT')}}</button>
+                    {{-- <button type="button" class="btn btn-danger btn-sm font-weight-bold save-false">{{__('FALSE REPORT')}}</button> --}}
                 {{-- @endif --}}
             </div>
         </div>
