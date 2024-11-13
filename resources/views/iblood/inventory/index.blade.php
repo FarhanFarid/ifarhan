@@ -37,7 +37,7 @@
             </div>
             <br/>
             <div class="card-body">
-                <table class="table table-bordered" id="bloodinventory-table">
+                <table class="table table-bordered" id="bloodinventory-table" style="width: 100% !important;">
                     <thead class="thead-light">
                         <tr>
                             <th colspan="9" style="color: #14787c; min-width: 25px; text-align: center; vertical-align: middle;">{{__('TRANSFUSION RECORD')}}</th>
