@@ -129,7 +129,8 @@ Route::group(['middleware' => ['authsystem']], function() {
 
             Route::group(['prefix' => 'report'], function () {
                 Route::get('/generate', [BloodReactionController::class, 'genReport'])->name('blood.reaction.report.generate');   
-                Route::post('/finalize', [BloodReactionController::class, 'finalize'])->name('blood.reaction.report.finalize');                             
+                Route::post('/finalize', [BloodReactionController::class, 'finalize'])->name('blood.reaction.report.finalize');
+                Route::post('/false', [BloodReactionController::class, 'falsReport'])->name('blood.reaction.report.false');                                                          
             });
         });
     });

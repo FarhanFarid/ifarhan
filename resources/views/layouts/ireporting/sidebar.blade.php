@@ -91,7 +91,7 @@
 	</div>
  </div>
 <!-- IDA Dropdown -->
-@if(in_array($usrGrp, ["Administrator"]))
+@if(in_array($usrGrp, ["Administrator" , "MROffice"]))
 	<div class="row {{ request()->routeIs('report.dischargesummary') ? 'bg-teal text-white' : '' }}" 
 		style="padding: 0.5rem; margin: auto; border-bottom: solid 1px #cccccc;">
 		<div class="col-2 mt-2">

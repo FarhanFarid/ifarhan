@@ -1174,5 +1174,112 @@ class BloodReactionController extends Controller
             return $response;
         }
     }
+
+    public function falseReport(Request $request)
+    {
+
+        try{
+
+            $procedure = BloodDetailProcedure::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
+
+            if ($procedure != null) {
+                
+                $procedure->status_id       = 3;
+                $procedure->finalize_by     = Auth::user()->id;
+                $procedure->finalize_at     = Carbon::now();
+                $procedure->save();
+
+            }
+
+            $relevanthistory = BloodRelevantHistory::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
+
+            if ($relevanthistory != null) {
+                
+                $relevanthistory->status_id       = 3;
+                $relevanthistory->finalize_by     = Auth::user()->id;
+                $relevanthistory->finalize_at     = Carbon::now();
+                $relevanthistory->save();
+                
+            }
+
+            $signsymptom = BloodSignSymptom::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
+
+            if ($signsymptom != null) {
+                
+                $signsymptom->status_id       = 3;
+                $signsymptom->finalize_by     = Auth::user()->id;
+                $signsymptom->finalize_at     = Carbon::now();
+                $signsymptom->save();
+                
+            }
+
+            $typeadverseevent = BloodTypeAdverseEvent::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
+
+            if ($typeadverseevent != null) {
+                
+                $typeadverseevent->status_id       = 3;
+                $typeadverseevent->finalize_by     = Auth::user()->id;
+                $typeadverseevent->finalize_at     = Carbon::now();
+                $typeadverseevent->save();
+                
+            }
+
+            $outcomeadverseevent = BloodOutcomeAdverseEvent::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
+
+            if ($outcomeadverseevent != null) {
+                
+                $outcomeadverseevent->status_id       = 3;
+                $outcomeadverseevent->finalize_by     = Auth::user()->id;
+                $outcomeadverseevent->finalize_at     = Carbon::now();
+                $outcomeadverseevent->save();
+                
+            }
+
+            $relevantinvestigation = BloodRelevantInvestigation::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
+
+            if ($relevantinvestigation != null) {
+                
+                $relevantinvestigation->status_id       = 3;
+                $relevantinvestigation->finalize_by     = Auth::user()->id;
+                $relevantinvestigation->finalize_at     = Carbon::now();
+                $relevantinvestigation->save();
+                
+            }
+
+            $bloodcomponent = BloodBloodComponent::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
+
+            if ($bloodcomponent != null) {
+                
+                $bloodcomponent->status_id       = 3;
+                $bloodcomponent->finalize_by     = Auth::user()->id;
+                $bloodcomponent->finalize_at     = Carbon::now();
+                $bloodcomponent->save();
+                
+            }
+
+            return response()->json(
+                [
+                    'status'  => 'success',
+                    'message' => 'Successfully finalize report.'
+                ], 200
+            );
+            
+        }catch (\Exception $e){
+            Log::error($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
+
+            $response = response()->json(
+                [
+                    'status'  => 'failed',
+                    'message' => 'Internal error happened. Try again'
+                ], 200
+            );
+
+            return $response;
+        }
+    }
     
 }
