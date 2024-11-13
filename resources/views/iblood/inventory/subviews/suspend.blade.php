@@ -46,9 +46,8 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <select class="form-select form-select-solid" aria-label="Select example" name="reaction" id="reaction">
-                                                        <option value=""></option>
-                                                        <option value="Yes">Yes</option>
                                                         <option value="No">No</option>
+                                                        <option value="Yes">Yes</option>
                                                     </select>
                                                 </div>
                                             </div>

@@ -51,7 +51,7 @@
 		@if(in_array($usrGrp, ["Administrator", "LABManager", "LABMLT", "LABTemp", "LABClerk", "QualityManagement"]))
 			<div class="col-12">
 				<a class="text-hover-success {{ request()->routeIs('report.iblood.atr.index') ? 'text-teal' : 'text-dark' }}" 
-				href="{{ route('report.iblood.atr.index') }}?{{$url}}" style="margin-bottom: 10px;">Worklist</a>
+				href="{{ route('report.iblood.atr.index') }}?{{$url}}" style="margin-bottom: 10px;">ATR Worklist</a>
 			</div>
 		@endif
 	</div>

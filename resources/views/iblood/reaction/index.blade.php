@@ -181,6 +181,7 @@
                         reaction : {
                             report: "{{ route('blood.reaction.report.generate') }}?{!! $url !!}",
                             finalize: "{{ route('blood.reaction.report.finalize') }}?{!! $url !!}",
+                            falsereport: "{{ route('blood.reaction.report.false') }}?{!! $url !!}",
 
                             signsymptoms : {
                                 store : "{{ route('blood.reaction.signandsymptoms.store') }}?{!! $url !!}",

@@ -26,39 +26,25 @@ $(document).ready(function () {
         lengthMenu: [10, 20, 50, 100],
         dom       : 'frtipl',
         scrollX   : "300px",
-        columnDefs: [
-            {
-                "targets": 0,
-                "width": "10%"
-            },
-            {
-                "targets": 1,
-                "width": "10%"
-            },
-            {
-                "targets": 2,
-                "width": "20%"
-            },
-            {
-                "targets": 3,
-                "width": "25%",
-            },
-            {
-                "targets": 4,
-                "width": "10%"
-            },
-            {
-                "targets": 5,
-                "width": "25%",
-            },
-        ],
+        ordering  : false,
         columns: [
             {
-                "data": 'product',
-                "render": function (data, type, row)  {
+                "data": 'reaction',
+                "render": function (data, type, row) {
                     var html = '';
-                    
-                    html += row.product;
+                    if (row.reaction === "Yes") {
+                        html += '<span aria-hidden="true" style="font-size: 20px; color: red; animation: blink 1s infinite;">🚨</span>';
+                        html += '<style>@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }</style>';
+                    } else {
+                        html += '-';
+                    }
+                    return html;
+                }
+            },
+            {
+                "data": 'product',
+                "render": function (data, type, row) {
+                    var html = row.product;
 
                     return html;
                 }
@@ -74,7 +60,7 @@ $(document).ready(function () {
                 }
             },
             {
-                "data": 'bagno',
+                "data": 'status',
                 "render": function (data, type, row)  {
                     var html = '';
 
@@ -282,6 +268,43 @@ $(document).ready(function () {
             dataType : "json",
         }
     });
+
+    function getFormattedLocalDateTime(date) {
+        const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+        return offsetDate.toISOString().slice(0, 16);
+    }
+
+    function updateTransferDate() {
+        const dateTimeInput = document.getElementById('actualtransferdate');
+        const formattedDateTime = getFormattedLocalDateTime(new Date());
+
+        dateTimeInput.value = formattedDateTime;
+    }
+
+    function updateReceiveDate() {
+        const dateTimeInput = document.getElementById('actualreceivedate');
+        const formattedDateTime = getFormattedLocalDateTime(new Date());
+
+        dateTimeInput.value = formattedDateTime;
+    }
+
+    function updateSuspendDate() {
+        const dateTimeInput = document.getElementById('actualsuspenddate');
+        const formattedDateTime = getFormattedLocalDateTime(new Date());
+
+        dateTimeInput.value = formattedDateTime;
+    }
+
+    function updateAllDates() {
+        updateTransferDate();
+        updateReceiveDate();
+        updateSuspendDate();
+    }
+
+    updateAllDates();
+    
+    setInterval(updateAllDates, 60000);
+
 
     $('#bloodinventory-table tbody').on('click', '.reaction-list', function(e) {
         e.preventDefault();

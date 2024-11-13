@@ -29,4 +29,21 @@ class BloodInventory extends Model
         return $this->belongsTo(User::class, 'transfuse_stop_by', 'id');
     }
 
+    public function transfuse_start_by(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'transfuse_start_by', 'id');
+    }
+
+    public function transfuse_verify_by(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'transfuse_verify_by', 'id');
+    }
+
+    public function patinfo(): BelongsTo
+    {
+        return $this->belongsTo(PatientInformation::class, 'episodeno', 'episodenumber');
+    }
+
+    
+
 }

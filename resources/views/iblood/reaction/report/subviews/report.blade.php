@@ -93,12 +93,38 @@
                             </div>
                         </div>
                         <div class="col-6">
-                            <div style="border: 2px solid black; padding: 25px; border-radius: 15px;">
-                                <div class="row"  style="display:block; text-align: center;">
-                                    Patient identification sticker
+                            <div style="border: 2px solid black; padding: 25px; border-radius: 15px; font-size: 15px;">
+                                <div class="row" >
+                                    <div class="col-md-8">
+                                        {{ $patdemo['pName']  ?? '' }}
+                                    </div>
+                                    <div class="col-md-4">
+                                       <b>MRN : {{ $patdemo['prn']  ?? '' }}</b> 
+                                    </div>
                                 </div>
-                                <div class="row" style="display:block; text-align: center; margin-top:0;">
-                                    (Please Stick Label)
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        Reg : {{ $patdemo['epiDate']  ?? '' }} {{ $patdemo['epiTime']  ?? '' }}
+                                    </div>
+                                    <div class="col-md-5">
+                                        I/C : {{ $patdemo['pnric']  ?? '' }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        Age : {{ $patdemo['ageY']  ?? '' }} years, {{ $patdemo['ageM']  ?? '' }} months, {{ $patdemo['ageD']  ?? '' }} days
+                                    </div> 
+                                    <div class="col-md-5">
+                                        Episode : {{ $episode  ?? '' }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        Sex : {{ $patdemo['pgender']  ?? '' }}
+                                    </div> 
+                                    <div class="col-md-5">
+                                        Res : {{ $patdemo['pcountry']  ?? '' }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -287,7 +313,7 @@
                 <div class="signature">
                     <div class="row">
                         <div class="col-6">
-                            Doctor's Signature & Name: <u>{{ $patdemo['epiDoc']  ?? '' }}</u>
+                            Doctor's Signature & Name: <u>{{ $relevantinvestigation->user->name  ?? ''}}</u>
                         </div>
                         <div class="col-6">
                             Date & Time: <u>{{ isset($record->created_at) ? \Carbon\Carbon::parse($record->created_at)->format('d/m/Y H:i') : '' }}</u>

@@ -11,11 +11,12 @@
                 <iframe id="report-iframe" src="" style="width: 100%; height: 600px; border: none;"></iframe>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">{{ __('CLOSE') }}</button>
+                <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">{{ __('CLOSE') }}</button>
                 <a type="button" class="btn btn-info btn-sm font-weight-bold btn-maximize" href="{{ route('blood.reaction.report.generate') }}?{!! $url !!}" target="_blank"><i class='la la-expand-arrows-alt'></i>&nbsp;{{ __('MAXIMIZE') }}</a>
                 <button type="button" data-bs-dismiss="modal" class="btn btn-dark font-weight-bold btn-print btn-sm" target="_blank"><i class='la la-print'></i>&nbsp;{{ __('PRINT') }}</button>
                 {{-- @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "LABManager" || Auth::user()->usergrp == "LABMLT" || Auth::user()->usergrp == "LABTemp" || Auth::user()->usergrp == "LABClerk") --}}
                     <button type="button" class="btn btn-success btn-sm font-weight-bold save-finalization">{{__('FINALIZE REPORT')}}</button>
+                    {{-- <button type="button" class="btn btn-danger btn-sm font-weight-bold save-false">{{__('FALSE REPORT')}}</button> --}}
                 {{-- @endif --}}
             </div>
         </div>

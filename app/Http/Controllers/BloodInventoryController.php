@@ -214,7 +214,7 @@ class BloodInventoryController extends Controller
                         $storelocation->location                = $data['location'];
                         $storelocation->received_by             = Auth::user()->id;
 
-                        if($data['receivedate']){
+                        if($data['receivedate'] != null){
                             $storelocation->received_at         = $data['receivedate'];
                         }else{
                             $storelocation->received_at         = Carbon::now();
@@ -261,7 +261,7 @@ class BloodInventoryController extends Controller
                     $storelocation->inventory_bagno         = $data['bagno'];
                     $storelocation->location                = $data['location'];
                     $storelocation->received_by             = Auth::user()->id;
-                    if($data['receivedate']){
+                    if($data['receivedate'] != null){
                         $storelocation->received_at             = $data['receivedate'];
                     }else{
                         $storelocation->received_at         = Carbon::now();
@@ -358,6 +358,7 @@ class BloodInventoryController extends Controller
                 $query->where('episodeno', $episodeno)
                       ->with('user');
             }])
+            ->orderBy('id', 'desc') // Order by latest record
             ->get();
             
             $response = response()->json(
@@ -622,6 +623,7 @@ class BloodInventoryController extends Controller
         try
         { 
             $inventory = BloodInventory::where('bagno', $request->input('bagno'))->where('episodeno', $request->epsdno)->where('transfuse_status_id', 5)->first();
+            $location = BloodLocation::where('inventory_bagno', $request->input('bagno'))->where('episodeno', $request->input('epsdno'))->where('status_id', 1)->first();
 
             if($inventory != null)
             {
@@ -632,6 +634,9 @@ class BloodInventoryController extends Controller
                 $inventory->transfuse_stop_by          = Auth::user()->id;
                 $inventory->transfuse_stop_at          = Carbon::now();
                 $inventory->save();
+
+                $location->stop_transfusion             = "Yes";
+                $location->save();
   
                 return $response = response()->json(
                     [
@@ -684,6 +689,7 @@ class BloodInventoryController extends Controller
                 $inventory->save();
     
                 $location->status_id                    = 3;
+                $location->stop_transfusion             = "Yes";
                 $location->transfer_by                  = Auth::user()->id;
                 $location->transfer_at                  = $request->input('suspenddate');
                 $location->save();

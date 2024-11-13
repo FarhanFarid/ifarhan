@@ -17,5 +17,10 @@ class BloodLocation extends Model
         return $this->belongsTo(User::class, 'received_by', 'id');
     }
 
+    public function transfer_by(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'transfer_by', 'id');
+    }
+
 
 }
