@@ -35,6 +35,10 @@ class iReportingMainController extends Controller
             
             return view('ireporting.imilk.index', compact('url'));
 
+        }elseif($request->usrGrp == "MROffice"){
+
+            return view('ireporting.dischargesummary.index', compact('url'));
+
         }else{
 
             return view('ireporting.noaccess', compact('url'));
