@@ -106,6 +106,9 @@ var table = $('#reportiblood-table').DataTable({
         method: 'get',
         url: config.routes.ireporting.iblood.getdata,
         dataSrc: "data",
+        data: function (d) {
+            d.dateRange = $('#filterdate').val();
+        },
         dataType: "json",
     },
 });
@@ -162,14 +165,17 @@ $('#reportiblood-table tbody').on('click', 'button.toggle', function () {
                                             }else if(data.data.transfuse_status_id == 2){
                     subtableContent +=          '<span class="badge badge-primary">Stored</span>' 
                                             }else if(data.data.transfuse_status_id == 3){
-                    subtableContent +=          '<span class="badge badge-primary">Received</span>' 
-                                            }  
+                    subtableContent +=          '<span class="badge badge-warning">Transfusion in progress</span>' 
+                                            }else if(data.data.transfuse_status_id == 5){
+                    subtableContent +=          '<span class="badge badge-light">Transfered</span>' 
+                                            }   
                                         }else if(response.location == "Laboratory and Blood Services"){
                     subtableContent +=      '<span class="badge badge-light">Returned</span>' 
                                         }else if(response.status_id == 3){
                     subtableContent +=      '<span class="badge badge-primary">Received</span>' 
                                         }else if(response.location != "Laboratory and Blood Services" && response.status_id == 2){
-                    subtableContent +=      '<span class="badge badge-warning">Transfer in progress</span>' 
+                    subtableContent +=      '<span class="badge badge-warning">'
+                    subtableContent +=      'Transfer in progress to: <br/>' + data.data.transfer_to + '</span>'   
                                         }                               
                     subtableContent += '</td>';
 
@@ -193,19 +199,16 @@ $('#reportiblood-table tbody').on('click', 'button.toggle', function () {
 
                     //Transfusion Stop
                     subtableContent += '<td>' 
-                                        if(response.stop_transfusion == "Yes"){
-                                            subtableContent +=      '<div>'
-                                            subtableContent +=          '<strong>Start Time:</strong> ' + moment(data.data.transfuse_start_at).format('DD/MM/YYYY HH:mm')
-                                            subtableContent +=      '</div>'
-                                            subtableContent +=      '<div>'
-                                            subtableContent +=          '<strong>Start By:</strong> ' + data.data.transfuse_start_by.name
-                                            subtableContent +=      '</div>'
-                                            subtableContent +=      '<div>'
-                                            subtableContent +=          '<strong>Verify By:</strong> ' + data.data.transfuse_verify_by.name
-                                            subtableContent +=      '</div>'
-                                                                }else{
-                                            subtableContent +=      '<span>-</span>'                        
-                                        }                               
+                    if(response.stop_transfusion == "Yes"){
+                        subtableContent +=      '<div>'
+                        subtableContent +=          '<strong>Stop Time:</strong> ' + moment(data.data.transfuse_stop_at).format('DD/MM/YYYY HH:mm')
+                        subtableContent +=      '</div>'
+                        subtableContent +=      '<div>'
+                        subtableContent +=          '<strong>Stop By:</strong> ' + data.data.user.name
+                        subtableContent +=      '</div>'
+                                            }else{
+                        subtableContent +=      '<span>-</span>'                        
+                    }                               
                     subtableContent += '</td>';
                     
                     subtableContent += '<td>' + response.user.name + '</td>';
@@ -227,6 +230,14 @@ $('#reportiblood-table tbody').on('click', 'button.toggle', function () {
             }
         });
     }
+});
+
+$('#filterdate').daterangepicker({
+    locale: {
+        format: 'DD/MM/YYYY'
+    },
+}).on('apply.daterangepicker', function(ev, picker) {
+    table.ajax.reload(); 
 });
 
 });

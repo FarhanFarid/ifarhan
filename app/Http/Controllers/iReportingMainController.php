@@ -184,13 +184,13 @@ class iReportingMainController extends Controller
             'patinfo.patient' // Include patient relation within patinfo
         ])->orderBy('id', 'desc');
 
-            // // Filter by Date Range
-            // if ($request->has('dateRange')) {
-            //     $dateRange = explode(' - ', $request->dateRange);
-            //     $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
-            //     $endDate = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
-            //     $data->whereBetween('inv.created_at', [$startDate, $endDate]);
-            // }
+            // Filter by Date Range
+            if ($request->has('dateRange')) {
+                $dateRange = explode(' - ', $request->dateRange);
+                $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+                $endDate = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+                $inventory->whereBetween('created_at', [$startDate, $endDate]);
+            }
 
             // // Filter by Status
             // if ($request->has('status') && $request->status != 'all') {
