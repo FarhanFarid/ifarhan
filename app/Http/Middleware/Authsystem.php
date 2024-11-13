@@ -13,6 +13,7 @@ use App\Models\PatientSurgical;
 use App\Models\PatientAllergy;
 use App\Models\Patient;
 use App\Models\User;
+use App\Models\UserAccessiccarole;
 
 use DB;
 use Auth;
@@ -40,6 +41,18 @@ class Authsystem
         $getUsrGrp          = $request->usrGrp;
         $getUsrLocId        = $request->usrLocID;
         $getUsrLocDesc      = $request->usrLocDesc;
+
+        if(isset($request->external) && $request->external == 'ICCA'){
+            $staff = UserAccessiccarole::where('username', $request->username)
+                        ->first();
+                        
+            $patient = Patient::where('mrn', $request->mrn)
+            ->first();
+            $getStaffId = $staff->tcuserid;
+            $getUsrGrp = $staff->tcusergroup;
+            $getUsrGrpId = $staff->tcusergroup_id;
+            $getPatid = $patient->patid;
+        }
         
         if($getEpsdNo != null)
         {
