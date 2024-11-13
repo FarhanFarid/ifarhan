@@ -9,6 +9,8 @@ use Carbon\Carbon;
 use App\Models\Inventory;
 use App\Models\Patient;
 use App\Models\PatientInformation;
+use App\Models\Dischargesummary;
+
 
 use DB;
 use Auth;
@@ -163,4 +165,109 @@ class iReportingMainController extends Controller
         return view('ireporting.ida.preadmission', compact('url'));
 
     }
+
+    //begin discharge summary
+    public function indexDischargeSummary(Request $request)
+    {
+        $explode = explode('?', $request->getRequestUri());
+
+        $url = $explode[1];
+
+        return view('ireporting.dischargesummary.index', compact('url'));
+    }
+
+    public function apiGetDataDischargeSummary(Request $request)
+    {
+        try
+        {
+            $getEpisodeAll = PatientInformation::where('status_id', 2)
+                                ->with('patient', function($q){
+                                    $q->select('id', 'mrn', 'name');
+                                })
+                                ->orderBy('id', 'desc')
+                                ->get();
+
+            $dateRange  = explode(' - ', $request->dateRange);
+            $startDate  = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+            $endDate    = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+
+            $data = [];
+
+            foreach($getEpisodeAll as $epsd)
+            {
+                $temp = [];
+
+                $checkIfHasDs = Dischargesummary::where('patientinformation_id', $epsd['id'])
+                                ->where('episodeno', $epsd['episodenumber'])
+                                ->with('createdby', function($q){
+                                    $q->select('id', 'name');
+                                })
+                                ->with('updatedby', function($q){
+                                    $q->select('id', 'name');
+                                })
+                                ->whereBetween('created_at', [$startDate, $endDate])
+                                ->where('status_id', 2)
+                                ->first();
+
+                if($checkIfHasDs != null)
+                {
+                    $holddataencounter = Carbon::parse($checkIfHasDs['created_at'])->format('d/m/Y');
+
+                    $temp['name']                       = $epsd['patient']['name'];
+                    $temp['mrn']                        = $epsd['patient']['mrn'];
+                    $temp['episode']                    = $epsd['episodenumber'];
+                    $temp['episodedate']                = Carbon::parse($epsd['epsiodedate'])->format('Y-m-d');
+                    $temp['dischargedate']              = Carbon::parse($checkIfHasDs['dischargedate'])->format('Y-m-d');
+                    $temp['reasonforadmission']         = $checkIfHasDs['reasonforadmission'];
+                    $temp['primarydiagnosis']           = $checkIfHasDs['primarydiagnosis'];
+                    $temp['secondarydiagnosis']         = $checkIfHasDs['secondarydiagnosis'];
+                    $temp['previoussurgery']            = $checkIfHasDs['previoussurgery'];
+                    $temp['relevantphysicalfinding']    = $checkIfHasDs['relevantphysicalfinding'];
+                    $temp['principalprocedurefinding']  = $checkIfHasDs['principalprocedurefinding'];
+                    $temp['briefhospitalcourse']        = $checkIfHasDs['briefhospitalcourse'];
+                    $temp['briefhospitalcoursedesc']    = $checkIfHasDs['briefhospitalcoursedesc'];
+                    $temp['significantinpatientmed']    = $checkIfHasDs['significantinpatientmed'];
+                    $temp['conditionpatientdis']        = $checkIfHasDs['conditionpatientdis'];
+                    $temp['dischargemedication']        = $checkIfHasDs['dischargemedication'];
+                    $temp['followupcareclinicvisit']    = $checkIfHasDs['followupcareclinicvisit'];
+                    $temp['planmanagement']             = $checkIfHasDs['planmanagement'];
+                    $temp['referringdoctoraddress']     = $checkIfHasDs['referringdoctoraddress'];
+                    $temp['finalby']                    = $checkIfHasDs['finalby'];
+                    $temp['createdby']                  = $checkIfHasDs['createdby']['name'];
+                    $temp['createdat']                  = $checkIfHasDs['created_at'];
+                    $temp['updatedby']                  = $checkIfHasDs['updatedby'] != null ? $checkIfHasDs['updatedby']['name'] : null;
+                    $temp['updatedat']                  = $checkIfHasDs['updated_at'] != null ? $checkIfHasDs['updated_at'] : null;
+
+                    array_push($data, $temp);
+                }
+            }
+
+            $response = response()->json(
+                [
+                  'status'  => 'success',
+                  'data'    => $data
+                ], 200
+            );
+
+            return $response;
+        }
+        catch(\Exception $e)
+        {
+            Log::error($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
+
+            $response = response()->json(
+                [
+                    'status'  => 'failed',
+                    'message' => 'Internal error happened. Try again'
+                ], 200
+            );
+
+            return $response;
+        }
+    }
+    //end discharge esummary
 }

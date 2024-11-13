@@ -171,6 +171,10 @@ Route::group(['middleware' => ['authsystem']], function() {
                 Route::get('/getpreadmissioninventory', [iReportingMainController::class, 'getPreAdmissionInventory'])->name('report.ida.preadmission.getinventory');
             });
         });
+        Route::group(['prefix' => 'discharge-summary'], function () {
+            Route::get('/', [iReportingMainController::class, 'indexDischargeSummary'])->name('report.dischargesummary');
+            Route::get('/list', [iReportingMainController::class, 'apiGetDataDischargeSummary'])->name('report.dischargesummary.list');
+        });
     });
 
     //ADR
