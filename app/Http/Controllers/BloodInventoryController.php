@@ -680,6 +680,11 @@ class BloodInventoryController extends Controller
             {
 
                 $inventory->reaction                   = $request->input('reaction');
+                if($inventory->reaction == "Yes" ){
+
+                    $inventory->atr_status_id          = 1;
+                     
+                }
                 $inventory->reaction_detail            = $request->input('details');
                 $inventory->volume                     = $request->input('volume');
                 $inventory->transfuse_completion_id    = 2;

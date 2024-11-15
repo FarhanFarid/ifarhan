@@ -32,7 +32,7 @@ $(document).ready(function () {
                 "data": 'reaction',
                 "render": function (data, type, row) {
                     var html = '';
-                    if (row.reaction === "Yes") {
+                    if (row.atr_status_id == 1 || row.atr_status_id == 2) {
                         html += '<span aria-hidden="true" style="font-size: 20px; color: red; animation: blink 1s infinite;">🚨</span>';
                         html += '<style>@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }</style>';
                     } else {

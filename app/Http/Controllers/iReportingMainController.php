@@ -10,9 +10,16 @@ use App\Models\Inventory;
 use App\Models\BloodInventory;
 use App\Models\BloodLocation;
 use App\Models\BloodDetailProcedure;
+use App\Models\BloodSignSymptom;
+use App\Models\BloodTypeAdverseEvent;
+use App\Models\BloodOutcomeAdverseEvent;
+use App\Models\BloodRelevantInvestigation;
+use App\Models\BloodRelevantHistory;
+use App\Models\BloodBloodComponent;
 use App\Models\Patient;
 use App\Models\PatientInformation;
 use App\Models\Dischargesummary;
+
 
 
 use DB;
@@ -241,6 +248,7 @@ class iReportingMainController extends Controller
         ->leftJoin('patients as pats', 'patinfo.patient_id', '=', 'pats.id')
         ->leftJoin('iblood_relevantinvestigation as ri', 'inv.bagno', '=', 'ri.inventory_bagno')
         ->leftJoin('users as u', 'ri.created_by', '=', 'u.id')
+        ->leftJoin('iblood_locations as l', 'inv.bagno', '=', 'l.inventory_bagno')
         ->selectRaw('
             pats.mrn, 
             inv.episodeno, 
@@ -251,11 +259,53 @@ class iReportingMainController extends Controller
             ri.created_at, 
             u.name, 
             inv.transfuse_stop_at, 
-            ri.status_id
+            ri.status_id,
+            l.location,
+            l.stop_transfusion
         ')
         ->where(function ($query) {
-            $query->where('inv.reaction', 'Yes')
-                  ->orWhereNotNull('ri.created_at');
+            $query->where('inv.atr_status_id', 1)
+                  ->where('l.stop_transfusion','!=', null);
+
+        });
+
+        // Filter by Date Range
+        if ($request->has('dateRange')) {
+            $dateRange = explode(' - ', $request->dateRange);
+            $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+            $endDate = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+            $data->whereBetween('inv.created_at', [$startDate, $endDate]);
+        }   
+
+        return response()->json(['data' => $data->get()]);
+
+    }
+
+    public function getIBloodAtrWorklistConfirm(Request $request)
+    {
+        $data = DB::table('iblood_inventories as inv')
+        ->leftJoin('patient_information as patinfo', 'inv.episodeno', '=', 'patinfo.episodenumber')
+        ->leftJoin('patients as pats', 'patinfo.patient_id', '=', 'pats.id')
+        ->leftJoin('iblood_relevantinvestigation as ri', 'inv.bagno', '=', 'ri.inventory_bagno')
+        ->leftJoin('users as u', 'ri.created_by', '=', 'u.id')
+        ->leftJoin('iblood_locations as l', 'inv.bagno', '=', 'l.inventory_bagno')
+        ->selectRaw('
+            pats.mrn, 
+            inv.episodeno, 
+            inv.bagno, 
+            inv.transfuse_start_at, 
+            inv.expiry_date, 
+            inv.transfuse_status_id, 
+            ri.created_at, 
+            u.name, 
+            inv.transfuse_stop_at, 
+            ri.status_id,
+            l.location,
+            l.stop_transfusion
+        ')
+        ->where(function ($query) {
+            $query->where('inv.atr_status_id', 2)
+                  ->where('l.stop_transfusion','!=', null);
         });
 
         // Filter by Date Range
@@ -266,9 +316,43 @@ class iReportingMainController extends Controller
             $data->whereBetween('inv.created_at', [$startDate, $endDate]);
         }
     
-        // Filter by Status
-        if ($request->has('status') && $request->status != 'all') {
-            $data->where('ri.status_id', $request->status);
+        return response()->json(['data' => $data->get()]);
+
+    }
+
+    public function getIBloodAtrWorklistFalse(Request $request)
+    {
+        $data = DB::table('iblood_inventories as inv')
+        ->leftJoin('patient_information as patinfo', 'inv.episodeno', '=', 'patinfo.episodenumber')
+        ->leftJoin('patients as pats', 'patinfo.patient_id', '=', 'pats.id')
+        ->leftJoin('iblood_relevantinvestigation as ri', 'inv.bagno', '=', 'ri.inventory_bagno')
+        ->leftJoin('users as u', 'ri.created_by', '=', 'u.id')
+        ->leftJoin('iblood_locations as l', 'inv.bagno', '=', 'l.inventory_bagno')
+        ->selectRaw('
+            pats.mrn, 
+            inv.episodeno, 
+            inv.bagno, 
+            inv.transfuse_start_at, 
+            inv.expiry_date, 
+            inv.transfuse_status_id, 
+            ri.created_at, 
+            u.name, 
+            inv.transfuse_stop_at, 
+            ri.status_id,
+            l.location,
+            l.stop_transfusion
+        ')
+        ->where(function ($query) {
+            $query->where('inv.atr_status_id', 3)
+                  ->where('l.stop_transfusion','!=', null);
+        });
+
+        // Filter by Date Range
+        if ($request->has('dateRange')) {
+            $dateRange = explode(' - ', $request->dateRange);
+            $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+            $endDate = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+            $data->whereBetween('inv.created_at', [$startDate, $endDate]);
         }
 
         return response()->json(['data' => $data->get()]);
@@ -389,4 +473,122 @@ class iReportingMainController extends Controller
         }
     }
     //end discharge esummary
+
+    public function genReportConfirm(Request $request)
+    {
+        $explode = explode('?', $request->getRequestUri());
+
+        $url = $explode[1];
+
+        $bagno = $request->bagno;
+        $episode = $request->epsdno;
+
+        //DETAIL PROCEDURE
+        $procedure = BloodDetailProcedure::where('inventory_bagno', $bagno)->where('status_id', '2')->first();
+
+        //SECTION D
+        $component = BloodBloodComponent::where('inventory_bagno', $bagno)->where('status_id', '2')->first();
+        if ($component) {
+            $component->product = explode(', ', $component->product);
+        }
+        
+        //Section F
+        $relevanthistory = BloodRelevantHistory::where('inventory_bagno', $bagno)->where('status_id', '2')->first();
+
+        //Section G
+        $record = BloodSignSymptom::where('inventory_bagno', $bagno)->where('status_id', '2')->first();
+
+        if ($record) {
+            $record->general = explode(', ', $record->general);
+            $record->pain = explode(', ', $record->pain);
+            $record->renal = explode(', ', $record->renal);
+            $record->respiratory = explode(', ', $record->respiratory);
+            $record->skin = explode(', ', $record->skin);
+            $record->cardio = explode(', ', $record->cardio);
+        }
+
+        //Section J
+        $typeadverseevent = BloodTypeAdverseEvent::where('inventory_bagno', $bagno)->where('status_id', '2')->first();
+
+        if ($typeadverseevent) {
+            $typeadverseevent->section1 = explode(', ', $typeadverseevent->section1);
+            $typeadverseevent->section5 = explode(', ', $typeadverseevent->section5);
+        }
+
+        //Section I
+        $outcomeadverseevent = BloodOutcomeAdverseEvent::where('inventory_bagno', $bagno)->where('status_id', '2')->first();
+
+        if ($outcomeadverseevent) {
+            $outcomeadverseevent->recovered = explode(', ', $outcomeadverseevent->recovered);
+            $outcomeadverseevent->death     = explode(', ', $outcomeadverseevent->death);
+        }
+
+        //Section H
+        $relevantinvestigation = BloodRelevantInvestigation::with('user')->where('inventory_bagno', $bagno)->where('status_id', '2')->first();
+
+        //PatDemo
+        $uri = env('PAT_DEMO'). $request->epsdno;
+        $client = new \GuzzleHttp\Client(['defaults' => ['verify' => false]]);
+
+        $response = $client->request('GET', $uri);
+
+        $statusCode = $response->getStatusCode();
+        $content = json_decode($response->getBody(), true);
+
+        $patdemo = $content['data'];
+
+        $vitaltemp  = !empty($record->temperature) ? $record->temperature : ($patdemo['temp'] ?? '__');
+        $vitalsysto = !empty($record->systo) ? $record->systo : ($patdemo['sysBP'] ?? '__');
+        $vitaldysto = !empty($record->diasto) ? $record->diasto : ($patdemo['diasBP'] ?? '');
+        $vitalpulse = !empty($record->pulserate) ? $record->pulserate : ($patdemo['pulRate'] ?? '__');
+        $vitalspo   = !empty($record->spo) ? $record->spo : ($patdemo['spO'] ?? '__');
+
+        //Inventory
+        $inventory = BloodInventory::where('bagno', $request->input('bagno'))->where('episodeno', $request->epsdno)->first();
+
+
+        if($record){
+            if($inventory->transfuse_stop_at != null && $record->created_at != null){
+
+                $transfuseStopAt = Carbon::parse($inventory->transfuse_stop_at);
+                $createdAt = Carbon::parse($record->created_at);
+                
+                if ($createdAt->diffInHours($transfuseStopAt) <= 24) {
+                    $onset = 'immediate';
+                } else {
+                    $onset = 'delayed';
+                }
+    
+            }else{
+                $onset = "immediate";
+            }
+        }else{
+            $onset = "immediate";
+        }
+        
+
+        
+
+
+        return view('iblood.reaction.report.subviews.report', compact(
+            'url', 
+            'bagno', 
+            'record', 
+            'patdemo',  
+            'typeadverseevent', 
+            'outcomeadverseevent', 
+            'relevantinvestigation', 
+            'vitaltemp', 
+            'vitalsysto', 
+            'vitaldysto', 
+            'vitalpulse', 
+            'vitalspo',
+            'onset',
+            'inventory',
+            'relevanthistory',
+            'procedure',
+            'component',
+            'episode',
+        ));
+    }
 }

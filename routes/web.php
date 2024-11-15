@@ -130,7 +130,7 @@ Route::group(['middleware' => ['authsystem']], function() {
             Route::group(['prefix' => 'report'], function () {
                 Route::get('/generate', [BloodReactionController::class, 'genReport'])->name('blood.reaction.report.generate');   
                 Route::post('/finalize', [BloodReactionController::class, 'finalize'])->name('blood.reaction.report.finalize');
-                Route::post('/false', [BloodReactionController::class, 'falsReport'])->name('blood.reaction.report.false');                                                          
+                Route::post('/false', [BloodReactionController::class, 'falseReport'])->name('blood.reaction.report.false');                                                          
             });
         });
     });
@@ -166,6 +166,9 @@ Route::group(['middleware' => ['authsystem']], function() {
             Route::group(['prefix' => 'atr'], function () {
                 Route::get('/', [iReportingMainController::class, 'indexIbloodAtr'])->name('report.iblood.atr.index');
                 Route::get('/getworklist', [iReportingMainController::class, 'getIBloodAtrWorklist'])->name('report.iblood.atr.getworklist');
+                Route::get('/getworklistconfirm', [iReportingMainController::class, 'getIBloodAtrWorklistConfirm'])->name('report.iblood.atr.getworklistconfirm');
+                Route::get('/getworklistfalse', [iReportingMainController::class, 'getIBloodAtrWorklistFalse'])->name('report.iblood.atr.getworklistfalse');
+                Route::get('/generateconfirm', [iReportingMainController::class, 'genReportConfirm'])->name('report.iblood.atr.generateconfirm');   
             });
         });
         Route::group(['prefix' => 'ida'], function () {

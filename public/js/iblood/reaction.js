@@ -54,6 +54,18 @@ $(document).ready(function () {
                             setTimeout(function() {
                                 location.reload();
                             }, 3000);
+                        }else{
+                            $('#adverse-event-report').modal('hide');
+                            Swal.fire({
+                                title: "Failed!",
+                                text: data.message,
+                                icon: "error",
+                                buttonsStyling: false,
+                                confirmButtonText: "Ok, got it!",
+                                customClass: {
+                                    confirmButton: "btn btn-light"
+                                }
+                            });
                         }
                     },
                     error: function(xhr, status, error) {

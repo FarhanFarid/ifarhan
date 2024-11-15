@@ -1,3 +1,20 @@
+<div class="card card-custom gutter-b" style="border-radius: 0px !important; background-color: #eaeaea; margin: 0 !important; padding: 0 !important; position: relative;">
+    <div class="d-flex justify-content-center">
+        <h4 class="text-center" style="padding: 0.5rem !important; margin: 0 !important; color: #1d69e3;">Procedure</h4>
+    </div>
+    <div style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #333; padding-top:2px;">
+        <small>
+            <b>Last Updated By:</b> 
+            {{ $typeadverseevent && $typeadverseevent->updatedby ? $typeadverseevent->updatedby->name : ($typeadverseevent && $typeadverseevent->createdby ? $typeadverseevent->createdby->name : '-') }}
+        </small><br>
+    
+        <small>
+            <b>Updated At:</b> 
+            {{ $typeadverseevent && $typeadverseevent->updated_at ? \Carbon\Carbon::parse($typeadverseevent->updated_at)->format('d/m/Y H:i') : ($typeadverseevent && $typeadverseevent->created_at ? \Carbon\Carbon::parse($typeadverseevent->created_at)->format('d-m-Y H:i') : '-') }}
+        </small>
+    </div>
+</div>
+
 <table class="table table-bordered" id="adverse-event-table">
     <thead class="thead-light">
         <tr>

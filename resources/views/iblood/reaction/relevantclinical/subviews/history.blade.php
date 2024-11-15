@@ -1,6 +1,17 @@
-<div class="card card-custom gutter-b" style="border-radius: 0px !important; background-color: #eaeaea; margin: 0 !important; padding: 0 !important;">
+<div class="card card-custom gutter-b" style="border-radius: 0px !important; background-color: #eaeaea; margin: 0 !important; padding: 0 !important; position: relative;">
     <div class="d-flex justify-content-center">
-        <h4 class="text-center" style="padding: 0.5rem !important; margin: 0 !important; color: #1d69e3;">History</h4>
+        <h4 class="text-center" style="padding: 0.5rem !important; margin: 0 !important; color: #1d69e3;">Procedure</h4>
+    </div>
+    <div style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #333; padding-top:2px;">
+        <small>
+            <b>Last Updated By:</b> 
+            {{ $relevanthistory && $relevanthistory->updatedby ? $relevanthistory->updatedby->name : ($relevanthistory && $relevanthistory->createdby ? $relevanthistory->createdby->name : '-') }}
+        </small><br>
+    
+        <small>
+            <b>Updated At:</b> 
+            {{ $relevanthistory && $relevanthistory->updated_at ? \Carbon\Carbon::parse($relevanthistory->updated_at)->format('d/m/Y H:i') : ($relevanthistory && $relevanthistory->created_at ? \Carbon\Carbon::parse($relevanthistory->created_at)->format('d-m-Y H:i') : '-') }}
+        </small>
     </div>
 </div>
 <div class="card card-custom gutter-b flex-grow-1 d-flex flex-column" style="box-shadow: 0px 2px 6px 2px #dcdcdc !important; border-radius: 0px !important;">
