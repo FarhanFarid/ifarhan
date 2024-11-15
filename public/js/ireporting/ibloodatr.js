@@ -350,7 +350,8 @@ $(document).ready(function() {
     
         // Load the report in the iframe
         $('#report-iframe').attr('src', reportUrl);
-        $('.btn-maximize, .save-finalization').hide(); 
+        $('.btn-maximize, .save-finalization').hide();
+        $('.btn-maximize, .save-false').hide();  
         $('#adverse-event-report').modal('show');
     });
 
@@ -389,7 +390,8 @@ $(document).ready(function() {
     
         // Load the report in the iframe
         $('#report-iframe').attr('src', reportUrl);
-        $('.btn-maximize, .save-finalization').hide(); 
+        $('.btn-maximize, .save-finalization').hide();
+        $('.btn-maximize, .save-false').hide();   
         $('#adverse-event-report').modal('show');
     });
 
