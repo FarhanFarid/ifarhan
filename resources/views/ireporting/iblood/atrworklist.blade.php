@@ -60,7 +60,7 @@
 <div class="row mb-5">
     <div class="col-md-12 mb-2">
         <div class="card card-custom gutter-b" style="border-radius: 0px !important; background-color: #e9f2ff;">
-            <h4 style="padding: 0.5rem !important; margin-bottom: 0px !important; color: #37e31d;">IBLOOD (ATR WORKLIST - CONFIRM)</h4>
+            <h4 style="padding: 0.5rem !important; margin-bottom: 0px !important; color: #37e31d;">IBLOOD (ATR WORKLIST - CONFIRMED)</h4>
         </div>
         <div class="card-body">
             <div class="card card-custom gutter-b" style="box-shadow: 0px 2px 6px 2px #dcdcdc !important; border-radius: 0px !important; border-top: solid 5px #1d69e3 !important;">

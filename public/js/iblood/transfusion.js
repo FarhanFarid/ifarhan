@@ -150,6 +150,22 @@ $(document).ready(function () {
 
                         $('#verify-transfusion').modal('show');
 
+                        $('#actualtransfusedate').on('change', function() {
+                            const selectedDate = new Date($(this).val());
+                            const currentDate = new Date();
+                            
+                            // Normalize dates for comparison (ignore seconds and milliseconds)
+                            currentDate.setSeconds(0, 0);
+                            selectedDate.setSeconds(0, 0);
+                    
+                            // Show or hide the reason div
+                            if (selectedDate.getTime() !== currentDate.getTime()) {
+                                $('#transfusereason').show();
+                            } else {
+                                $('#transfusereason').hide();
+                            }
+                        });
+
                     });
 
                 } else {
@@ -185,6 +201,7 @@ $(document).ready(function () {
         var username = $('#username').val();
         var password = $('#password').val();
         var transfusedate = $('#actualtransfusedate').val();
+        var transfusecdreason = $('#transfusecdreason').val();
 
         const formattedDate = moment(transfusedate).format("YYYY-MM-DD H:mm");
 
@@ -198,6 +215,11 @@ $(document).ready(function () {
 
         if (username == '' || password == '') {
             toastr.error('Please fill all the fields', {timeOut: 5000});
+            return;
+        }
+
+        if ($('#transfusereason').is(':visible') && transfusecdreason == '') {
+            toastr.error('Please select reason to change date', { timeOut: 5000 });
             return;
         }
 
@@ -221,6 +243,7 @@ $(document).ready(function () {
                 username: username,
                 password: password,
                 transfusedate: formattedDate,
+                transfusecdreason: transfusecdreason,
 
             },
             dataType: 'json',

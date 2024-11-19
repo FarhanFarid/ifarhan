@@ -305,7 +305,6 @@ $(document).ready(function () {
     
     setInterval(updateAllDates, 60000);
 
-
     $('#bloodinventory-table tbody').on('click', '.reaction-list', function(e) {
         e.preventDefault();
     
@@ -417,6 +416,7 @@ $(document).ready(function () {
         var labno = $('#labnumber').val();
         var product = $('#product').val();
         var receivedate = $('#actualreceivedate').val();
+        var receivecdreason = $('#receivecdreason').val();
 
         const formattedDate = moment(receivedate).format("YYYY-MM-DD H:mm");
     
@@ -438,6 +438,11 @@ $(document).ready(function () {
         }
         if (!receivedate) {
             toastr.error('Received date cannot be empty.', {timeOut: 5000});
+            return;
+        }
+
+        if ($('#receivereason').is(':visible') && receivecdreason == '') {
+            toastr.error('Please select reason to change date', { timeOut: 5000 });
             return;
         }
     
@@ -638,8 +643,6 @@ $(document).ready(function () {
                 // $("#loading-overlay").hide();
                 if (data.status === 'success') {
 
-                    console.log(data);
-
                     $.ajax({
                         url: url2,
                         method: 'GET',
@@ -684,6 +687,23 @@ $(document).ready(function () {
                                     $('#location').val('').trigger('change');
                                 }
                             }
+
+                            $('#actualreceivedate').on('change', function() {
+                                const selectedDate = new Date($(this).val());
+                                const currentDate = new Date();
+                                
+                                
+                                // Normalize dates for comparison (ignore seconds and milliseconds)
+                                currentDate.setSeconds(0, 0);
+                                selectedDate.setSeconds(0, 0);
+                        
+                                // Show or hide the reason div
+                                if (selectedDate.getTime() !== currentDate.getTime()) {
+                                    $('#receivereason').show();
+                                } else {
+                                    $('#receivereason').hide();
+                                }
+                            });
                         },
                         error: function(xhr, status, error) {
                             Swal.fire(
@@ -735,7 +755,9 @@ $(document).ready(function () {
     $('#save-blood').on('click', function() {
 
         var details = [];
+        var receivecdreason = $('#receivecdreason').val();
         var url = config.routes.blood.inventory.store;
+        
 
         $('#blood-batch tr').each(function() {
             var product     = $(this).find('td:eq(0)').text();
@@ -750,6 +772,7 @@ $(document).ready(function () {
                 location: location,
                 product: product,
                 receivedate: receivedate,
+                receivecdreason: receivecdreason,
             });
         });
 
@@ -845,6 +868,22 @@ $(document).ready(function () {
                         $('#otherlocationdiv').hide();
                     }
                 });
+
+                $('#actualtransferdate').on('change', function() {
+                    const selectedDate = new Date($(this).val());
+                    const currentDate = new Date();
+                    
+                    // Normalize dates for comparison (ignore seconds and milliseconds)
+                    currentDate.setSeconds(0, 0);
+                    selectedDate.setSeconds(0, 0);
+            
+                    // Show or hide the reason div
+                    if (selectedDate.getTime() !== currentDate.getTime()) {
+                        $('#transferreason').show();
+                    } else {
+                        $('#transferreason').hide();
+                    }
+                });
             },
             error: function(xhr, status, error) {
                 Swal.fire(
@@ -870,6 +909,7 @@ $(document).ready(function () {
         var reason = $('#reason').val();
         var others = $('#otherslocation').val();
         var transferdate = $('#actualtransferdate').val();
+        var transfercdreason = $('#transfercdreason').val();
 
         const formattedDate = moment(transferdate).format("YYYY-MM-DD H:mm");
 
@@ -897,6 +937,11 @@ $(document).ready(function () {
             return;
         }
 
+        if ($('#transferreason').is(':visible') && transfercdreason == '') {
+            toastr.error('Please select reason to change date', { timeOut: 5000 });
+            return;
+        }
+
 
         Swal.fire({
             title: 'Transfer Location',
@@ -911,7 +956,7 @@ $(document).ready(function () {
                 $.ajax({
                     url: url,
                     method: 'POST',
-                    data: { bagno: bagno, episodeno: episodeno, location: location, reason: reason, others: others, transferdate: formattedDate },
+                    data: { bagno: bagno, episodeno: episodeno, location: location, reason: reason, others: others, transferdate: formattedDate, transfercdreason: transfercdreason },
                     dataType: 'json',
                     beforeSend: function(){
                         $("#loading-overlay").show();
@@ -1132,6 +1177,22 @@ $(document).ready(function () {
         
         $('#suspend-transfuse').modal('show');
 
+        $('#actualsuspenddate').on('change', function() {
+            const selectedDate = new Date($(this).val());
+            const currentDate = new Date();
+            
+            // Normalize dates for comparison (ignore seconds and milliseconds)
+            currentDate.setSeconds(0, 0);
+            selectedDate.setSeconds(0, 0);
+    
+            // Show or hide the reason div
+            if (selectedDate.getTime() !== currentDate.getTime()) {
+                $('#suspendreason').show();
+            } else {
+                $('#suspendreason').hide();
+            }
+        });
+
     });
 
     $('#reaction').change(function () {
@@ -1149,6 +1210,8 @@ $(document).ready(function () {
         var details = $('#details').val();
         var volume = $('#volume').val();
         var suspenddate = $('#actualsuspenddate').val();
+        var suspendcdreason = $('#suspendcdreason').val();
+
 
         const formattedDate = moment(suspenddate).format("YYYY-MM-DD H:mm");
         
@@ -1161,6 +1224,11 @@ $(document).ready(function () {
 
         if (reaction == '' || volume == '') {
             toastr.error('Reaction or volume cannot be empty.', {timeOut: 5000});
+            return;
+        }
+
+        if ($('#suspendreason').is(':visible') && suspendcdreason == '') {
+            toastr.error('Please select reason to change date', { timeOut: 5000 });
             return;
         }
     
@@ -1177,7 +1245,7 @@ $(document).ready(function () {
                 $.ajax({
                     url: url,
                     method: 'POST',
-                    data: { episodeNo: episodeNo, bagno: bagno, reaction: reaction, volume: volume, details: details, suspenddate: formattedDate },
+                    data: { episodeNo: episodeNo, bagno: bagno, reaction: reaction, volume: volume, details: details, suspenddate: formattedDate, suspendcdreason:suspendcdreason },
                     dataType: 'json',
                     beforeSend: function(){
                         $("#loading-overlay").show();
