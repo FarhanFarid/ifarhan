@@ -257,9 +257,10 @@ class BloodTransfusionController extends Controller
                     $inventory->transfuse_completion_id     = 1;
                     $inventory->transfuse_start_by          = Auth::user()->id;
                     $inventory->transfuse_start_at          = $request->input('transfusedate');
+                    $inventory->transfusecd_reason          = $request->input('transfusecdreason');
                     $inventory->save();
 
-                    $location->start_transfusion             = "Yes";
+                    $location->start_transfusion            = "Yes";
                     $location->save();
                 
                     return $response = response()->json(
