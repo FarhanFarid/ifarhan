@@ -185,9 +185,8 @@
                                             <option value="1">Received</option>
                                             <option value="2">Stored</option>
                                             <option value="3">Transfusion in progress</option>
-                                            <option value="4">Transfusion with reaction</option>
                                             <option value="5">Transfered</option>
-                                            <option value="7">Return to Lab</option>
+                                            <option value="7">Returned</option>
                                         </select>
                                     </div>
                                 </div>

@@ -133,6 +133,7 @@ var table = $('#reportiblood-table').DataTable({
         dataSrc: "data",
         data: function (d) {
             d.dateRange = $('#filterdate').val();
+            d.status = $('#filterstatus').val();
         },
         dataType: "json",
     },
@@ -280,17 +281,15 @@ $('#filterdate').daterangepicker({
                 return true;
             }
 
-            if (status === '1' && data[9] === 'Received') {
+            if (status === '1' && data[7] === 'Received') {
                 return true;  // Stored
-            } else if (status === '2' && data[9] === 'Stored') {
+            } else if (status === '2' && data[7] === 'Stored') {
                 return true;  // Prepared
-            } else if (status === '3' && data[9] === 'Transfusion in progress') {
+            } else if (status === '3' && data[7] === 'Transfusion in progress') {
                 return true;  // Administered
-            } else if (status === '4' && data[9] === 'Transfusion with reaction') {
+            } else if (status === '5' && data[7] === 'Transfered') {
                 return true;  // Handover
-            } else if (status === '4' && data[9] === 'Transfused') {
-                return true;  // Expired
-            } else if (status === '7' && data[9] === 'Return to Lab') {
+            } else if (status === '7' && data[7] === 'Returned') {
                 return true;  // Administered - Partial
             }
 

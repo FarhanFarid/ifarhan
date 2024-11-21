@@ -204,10 +204,10 @@ class iReportingMainController extends Controller
                 $inventory->whereBetween('created_at', [$startDate, $endDate]);
             }
 
-            // // Filter by Status
-            // if ($request->has('status') && $request->status != 'all') {
-            //     $data->where('inv.transfuse_status_id', $request->status);
-            // }
+            // Filter by Status
+            if ($request->has('status') && $request->status != 'all') {
+                $inventory->where('transfuse_status_id', $request->status);
+            }
     
         return response()->json(['data' => $inventory->get()]);
     }
