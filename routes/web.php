@@ -156,6 +156,7 @@ Route::group(['middleware' => ['authsystem']], function() {
         Route::group(['prefix' => 'imilk'], function () {
             Route::get('/', [iReportingMainController::class, 'indexImilk'])->name('report.imilk.index');
             Route::get('/getimilkinventory', [iReportingMainController::class, 'getImilkInventory'])->name('report.imilk.getinventory');
+            Route::get('/getimilkcompliance', [iReportingMainController::class, 'getImilkCompliance'])->name('report.imilk.getcompliance');
         });
         Route::group(['prefix' => 'iblood'], function () {
             Route::get('/', [iReportingMainController::class, 'indexIblood'])->name('report.iblood.index');
