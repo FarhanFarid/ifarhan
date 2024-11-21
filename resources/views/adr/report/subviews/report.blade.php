@@ -534,7 +534,7 @@
                                 </div>
                                 <div class="reactiontime" style="border: 1px solid black; padding: 0;">
                                     <div style="background-color: black; padding: 5px; border-bottom: 1px solid black; color: white;">
-                                        <b>PATIENT INFORMATION</b>
+                                        <b>REPORTER DETAILS</b>
                                     </div>
                                     <div class="row" style="padding: 5px">
                                         <div class="row">

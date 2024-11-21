@@ -204,10 +204,10 @@ class iReportingMainController extends Controller
                 $inventory->whereBetween('created_at', [$startDate, $endDate]);
             }
 
-            // // Filter by Status
-            // if ($request->has('status') && $request->status != 'all') {
-            //     $data->where('inv.transfuse_status_id', $request->status);
-            // }
+            // Filter by Status
+            if ($request->has('status') && $request->status != 'all') {
+                $inventory->where('transfuse_status_id', $request->status);
+            }
     
         return response()->json(['data' => $inventory->get()]);
     }
@@ -216,18 +216,16 @@ class iReportingMainController extends Controller
     {
 
         $inventory = BloodInventory::where('bagno', $request->bagNo)->where('episodeno', $request->episodeNo)->where('labno', $request->labNo)->with([
+            'locations' => function ($query) use ($request) {
+                $query->where('episodeno', $request->episodeNo); // Ensure locations are tied to the specific inventory
+            },
             'locations.transfer_by:id,name',
             'locations.user:id,name', // Include transfer_by relation within locations
             'user:id,name',
             'transfuse_start_by:id,name',
             'transfuse_verify_by:id,name',
         ]);
-
-        // $location = BloodLocation::where('inventory_bagno', $request->bagNo)->where('episodeno', $request->episodeNo)->with([
-        //     'transfer_by:id,name',
-        //     'user:id,name', 
-        // ]);
-
+      
         return response()->json(['data' => $inventory->first()]);
     }
 

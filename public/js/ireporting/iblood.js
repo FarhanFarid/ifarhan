@@ -82,6 +82,31 @@ var table = $('#reportiblood-table').DataTable({
                 }
             }
         },
+        //Transfuse Status
+        //1 - received
+        //2 - stored
+        //3 - inprogress
+        //4 - tranfused
+        //5 - Transfer to Other Location
+        //7 - return to lab
+        {
+            "data": 'status',
+            "render": function (data, type, row) {
+                if(row.transfuse_status_id == 1){
+                    return '<span class="badge badge-primary">Received</span>';
+                }else if (row.transfuse_status_id == 2){
+                    return '<span class="badge badge-info">Stored</span>';
+                }else if (row.transfuse_status_id == 3){
+                    return '<span class="badge badge-warning">Transfusion in progress</span>';
+                }else if (row.transfuse_status_id == 4){
+                    return '<span class="badge badge-success">Transfused</span>';
+                }else if (row.transfuse_status_id == 5){
+                    return '<span class="badge badge-light">Transfered</span>';
+                }else if (row.transfuse_status_id == 7){
+                    return '<span class="badge badge-light">Returned</span>';
+                }
+            }
+        },
         {
             "data": 'reaction',
             "render": function (data, type, row) {
@@ -108,6 +133,7 @@ var table = $('#reportiblood-table').DataTable({
         dataSrc: "data",
         data: function (d) {
             d.dateRange = $('#filterdate').val();
+            d.status = $('#filterstatus').val();
         },
         dataType: "json",
     },
@@ -146,7 +172,7 @@ $('#reportiblood-table tbody').on('click', 'button.toggle', function () {
             
                 var subtableContent = '<table class="table subtable table-bordered table-row-bordered">';
                 subtableContent += '<thead>';
-                subtableContent += '<tr><th style="background-color: #e9f2ff; color: #1d69e3;">Location</th><th style="background-color: #e9f2ff; color: #1d69e3;">Status</th><th style="background-color: #e9f2ff; color: #1d69e3;">Transfusion Start</th><th style="background-color: #e9f2ff; color: #1d69e3;">Transfusion Stop</th><th style="background-color: #e9f2ff; color: #1d69e3;">Received By</th><th style="background-color: #e9f2ff; color: #1d69e3;">Received At</th><th style="background-color: #e9f2ff; color: #1d69e3;">Created At</th></tr>';
+                subtableContent += '<tr><th style="background-color: #e9f2ff; color: #1d69e3;">Location</th><th style="background-color: #e9f2ff; color: #1d69e3;">Status</th><th style="background-color: #e9f2ff; color: #1d69e3;">Received By</th><th style="background-color: #e9f2ff; color: #1d69e3;">Received Date</th><th style="background-color: #e9f2ff; color: #1d69e3;">Created Date</th><th style="background-color: #e9f2ff; color: #1d69e3;">Transfusion Start</th><th style="background-color: #e9f2ff; color: #1d69e3;">Transfusion Stop</th></tr>';
                 subtableContent += '</thead>';
                 subtableContent += '<tbody>';
             
@@ -181,6 +207,11 @@ $('#reportiblood-table tbody').on('click', 'button.toggle', function () {
                     }
                     subtableContent += '</td>';
             
+                    // Additional columns
+                    subtableContent += '<td>' + response.user.name + '</td>';
+                    subtableContent += '<td>' + moment(response.received_at).format('DD/MM/YYYY HH:mm') + '</td>';
+                    subtableContent += '<td>' + moment(response.created_at).format('DD/MM/YYYY HH:mm') + '</td>';
+
                     // Transfusion Start
                     subtableContent += '<td>';
                     if (response.start_transfusion === "Yes") {
@@ -201,11 +232,7 @@ $('#reportiblood-table tbody').on('click', 'button.toggle', function () {
                         subtableContent += '<span>-</span>';
                     }
                     subtableContent += '</td>';
-            
-                    // Additional columns
-                    subtableContent += '<td>' + response.user.name + '</td>';
-                    subtableContent += '<td>' + moment(response.received_at).format('DD/MM/YYYY HH:mm') + '</td>';
-                    subtableContent += '<td>' + moment(response.created_at).format('DD/MM/YYYY HH:mm') + '</td>';
+                    
                     subtableContent += '</tr>';
                 });
             
@@ -231,48 +258,43 @@ $('#filterdate').daterangepicker({
     table.ajax.reload(); 
 });
 
-});
 
-
-// $(document).ready(function() {
-
-//     $('#filterdate').daterangepicker({
-//         locale: {
-//             format: 'DD/MM/YYYY'
-//         },
-//     }).on('apply.daterangepicker', function(ev, picker) {
-//         table.ajax.reload(); 
-//     });
+    $('#filterdate').daterangepicker({
+        locale: {
+            format: 'DD/MM/YYYY'
+        },
+    }).on('apply.daterangepicker', function(ev, picker) {
+        table.ajax.reload(); 
+    });
 
   
-//     $('#filterstatus').on('change', function() {
-//         table.draw();  
-//     });
+    $('#filterstatus').on('change', function() {
+        table.draw();  
+    });
 
-//     $.fn.dataTable.ext.search.push(
-//         function(settings, data, dataIndex) {
-//             var status = $('#filterstatus').val();
-//             var expiryDate = moment(data[7], 'DD/MM/YYYY HH:mm'); 
+    $.fn.dataTable.ext.search.push(
+        function(settings, data, dataIndex) {
+            var status = $('#filterstatus').val();
+            var expiryDate = moment(data[7], 'DD/MM/YYYY HH:mm'); 
 
-//             if (status === 'all') {
-//                 return true;
-//             }
+            if (status === 'all') {
+                return true;
+            }
 
-//             if (status === '1' && data[9] === 'Received') {
-//                 return true;  // Stored
-//             } else if (status === '2' && data[9] === 'Stored') {
-//                 return true;  // Prepared
-//             } else if (status === '3' && data[9] === 'Transfusion in progress') {
-//                 return true;  // Administered
-//             } else if (status === '4' && data[9] === 'Transfusion with reaction') {
-//                 return true;  // Handover
-//             } else if (status === '4' && data[9] === 'Transfused') {
-//                 return true;  // Expired
-//             } else if (status === '7' && data[9] === 'Return to Lab') {
-//                 return true;  // Administered - Partial
-//             }
+            if (status === '1' && data[7] === 'Received') {
+                return true;  // Stored
+            } else if (status === '2' && data[7] === 'Stored') {
+                return true;  // Prepared
+            } else if (status === '3' && data[7] === 'Transfusion in progress') {
+                return true;  // Administered
+            } else if (status === '5' && data[7] === 'Transfered') {
+                return true;  // Handover
+            } else if (status === '7' && data[7] === 'Returned') {
+                return true;  // Administered - Partial
+            }
 
-//             return false;
-//         }
-//     );
-// });
+            return false;
+        }
+    );
+
+});

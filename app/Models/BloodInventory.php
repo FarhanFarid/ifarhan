@@ -17,6 +17,7 @@ class BloodInventory extends Model
     public function locations(): HasMany
     {
         return $this->hasMany(BloodLocation::class, 'inventory_bagno', 'bagno');
+        // return $this->hasMany(BloodLocation::class, ['inventory_bagno', 'episodeno'], ['bagno', 'episodeno']);
     }
 
     public function reactions(): HasMany
