@@ -209,6 +209,9 @@ class iReportingMainController extends Controller
     {
 
         $inventory = BloodInventory::where('bagno', $request->bagNo)->where('episodeno', $request->episodeNo)->where('labno', $request->labNo)->with([
+            'locations' => function ($query) use ($request) {
+                $query->where('episodeno', $request->episodeNo); // Ensure locations are tied to the specific inventory
+            },
             'locations.transfer_by:id,name',
             'locations.user:id,name', // Include transfer_by relation within locations
             'user:id,name',
