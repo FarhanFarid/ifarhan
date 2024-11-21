@@ -9,7 +9,7 @@
 <!-- iMilk -->
 @if(in_array($usrGrp, ["Administrator", "Doctors", "WardNurse", "WardNursePrivate", "WardClerk", "WardManagerOrMentor", "OPDNurse"]))
 	<div class="row {{ request()->routeIs('report.imilk.index') ? 'bg-teal text-white' : '' }}" 
-		style="padding: 0.5rem; margin: auto; border-bottom: solid 1px #cccccc;">
+		style="padding: 0.5rem; margin: auto; border-bottom: solid 1px #918f8f;">
 		<div class="col-2 mt-2">
 			<a class="text-hover-success {{ request()->routeIs('report.imilk.index') ? 'display-none' : 'display-block' }}" href="#" id="expandhr" style="margin-bottom: 10px; display: block;">
 				<i class="fas fa-angle-right fs-3 {{ request()->routeIs('report.imilk.index') ? 'color-white' : 'color-teal' }}" 
@@ -26,7 +26,7 @@
 <!-- iBlood Dropdown -->
 @if(in_array($usrGrp, ["Administrator", "Doctors", "WardNurse", "WardNursePrivate", "WardClerk", "WardManagerOrMentor", "OPDNurse", "LABManager", "LABMLT", "LABTemp", "LABClerk","EMY","EMYDoctors","ICLNurse","OTNurse", "QualityManagement"]))
 	<div class="row {{ request()->routeIs('report.iblood.index') || request()->routeIs('report.iblood.atr.index') ? 'bg-teal text-white' : '' }}" 
-		style="padding: 0.5rem; margin: auto; border-bottom: solid 1px #cccccc;">
+		style="padding: 0.5rem; margin: auto; border-bottom: solid 1px #918f8f;">
 		<div class="col-2 mt-2">
 			<a class="text-hover-success" href="#" data-bs-toggle="collapse" data-bs-target="#ibloodSubmenu" aria-expanded="{{ request()->routeIs('report.iblood.index') || request()->routeIs('report.iblood.atr.index') ? 'true' : 'false' }}" aria-controls="ibloodSubmenu">
 				<i id="ibloodArrow" class="fas fa-angle-right fs-3 dropdown-toggle-icon {{ request()->routeIs('report.iblood.index') || request()->routeIs('report.iblood.atr.index') ? 'rotate-90' : '' }}" 
@@ -60,7 +60,7 @@
 <!-- IDA Dropdown -->
 @if(in_array($usrGrp, ["Administrator"]))
 	<div class="row {{ request()->routeIs('report.ida.preadmission.index') ? 'bg-teal text-white' : '' }}" 
-		style="padding: 0.5rem; margin: auto; border-bottom: solid 1px #cccccc;">
+		style="padding: 0.5rem; margin: auto; border-bottom: solid 1px #918f8f;">
 		<div class="col-2 mt-2">
 			<a class="text-hover-success" href="#" data-bs-toggle="collapse" data-bs-target="#idaSubmenu" aria-expanded="{{ request()->routeIs('report.ida.preadmission.index') ? 'true' : 'false' }}" aria-controls="idaSubmenu">
 				<i id="idaArrow" class="fas fa-angle-right fs-3 dropdown-toggle-icon {{ request()->routeIs('report.ida.preadmission.index') ? 'rotate-90' : '' }}" 
@@ -92,7 +92,7 @@
 </div>
 @if(in_array($usrGrp, ["Administrator" , "MROffice"]))
 	<div class="row {{ request()->routeIs('report.dischargesummary') ? 'bg-teal text-white' : '' }}" 
-		style="padding: 0.5rem; margin: auto; border-bottom: solid 1px #cccccc;">
+		style="padding: 0.5rem; margin: auto; border-bottom: solid 1px #918f8f;">
 		<div class="col-2 mt-2">
 			<a class="text-hover-success {{ request()->routeIs('report.dischargesummary') ? 'display-none' : 'display-block' }}" href="#" id="expandhr" style="margin-bottom: 10px; display: block;">
 				<i class="fas fa-angle-right fs-3 {{ request()->routeIs('report.dischargesummary') ? 'color-white' : 'color-teal' }}" 

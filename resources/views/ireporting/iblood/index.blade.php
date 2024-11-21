@@ -186,7 +186,7 @@
                                             <option value="2">Stored</option>
                                             <option value="3">Transfusion in progress</option>
                                             <option value="4">Transfusion with reaction</option>
-                                            <option value="4">Transfused</option>
+                                            <option value="5">Transfered</option>
                                             <option value="7">Return to Lab</option>
                                         </select>
                                     </div>
@@ -202,8 +202,8 @@
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Episode No.</th>
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">LB No.</th>
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Bag No.</th>
-                                    {{-- <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">Status</th> --}}
                                     <th style="min-width: 150px; color: #14787c; background-color:#ecfefe">Expiry Date</th>
+                                    <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Current Status</th>
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Reaction</th>
                                     <th style="min-width: 150px; color: #14787c; background-color:#ecfefe">Bag Location</th>
                                 </tr>
