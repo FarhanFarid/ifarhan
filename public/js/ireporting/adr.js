@@ -1,11 +1,11 @@
-var tablesuspect = $('#reportibloodatr-table').DataTable({
+var tablesuspect = $('#reportadr-table').DataTable({
     lengthMenu: [5, 10, 20, 50],
     dom       : 'rtipl',
     scrollX   : "300px",
     buttons: [
         {
             extend: 'excel',
-            title: 'Report - IBLOOD-ATR (Suspected)',
+            title: 'Report - ADR (Suspected)',
             className: 'btn-dark',
         },
     ],
@@ -19,7 +19,7 @@ var tablesuspect = $('#reportibloodatr-table').DataTable({
         {
             "data": 'mrn',
             "render": function (data, type, row)  {
-                return '<span>'+row.mrn+'</span>';
+                return '<span>'+row.patientinfo.patient.mrn+'</span>';
             }
         },
         {
@@ -28,175 +28,57 @@ var tablesuspect = $('#reportibloodatr-table').DataTable({
                 return '<span>'+row.episodeno+'</span>';
             }
         },
-        {
-            "data": 'bagno',
-            "render": function (data, type, row)  {
-                return '<span>'+row.bagno+'</span>';
-            }
-        },
-        {
-            "data": 'onset',
-            "render": function (data, type, row)  {
-                if(row.transfuse_start_at == null){
-                    return '<span></span>';
-
-                }else{
-                    return '<span>'+moment(row.transfuse_start_at).format('DD/MM/YYYY HH:mm')+'</span>';
-                }
-            }
-        },
-        {
-            "data": 'location',
-            "render": function (data, type, row)  {
-                if(row.location == null ){
-                    return '<span></span>';
-
-                }else{
-                    return '<span>'+row.location+'</span>';
-                }
-            }
-        },
-        {
-            "data": 'reportedby',
-            "render": function (data, type, row)  {
-                if(row.name == null){
-                    return '<span></span>';
-
-                }else{
-                    return '<span>'+row.name+'</span>';
-                }
-            }
-        },
-        {
-            "data": 'reporteddate',
-            "render": function (data, type, row)  {
-                if(row.created_at == null){
-                    return '<span></span>';
-
-                }else{
-                    return '<span>'+moment(row.created_at).format('DD/MM/YYYY HH:mm')+'</span>';
-                }
-            }
-        },
-        {
-            "data": 'age',
-            "render": function (data, type, row) {
-                if (row.transfuse_stop_at == null) {
-                    return '<span></span>';
-                } else {
-                    var stopDate = moment(row.transfuse_stop_at); // Parse the transfuse_stop_at date
-                    var today = moment(); // Get today's date
-                    var daysDifference = today.diff(stopDate, 'days'); // Calculate the difference in days
-                    
-                    return '<span>' + daysDifference + ' day(s)</span>';
-                }
-            }
-        },
-        {
-            "data": 'report',
-            "render": function (data, type, row)  {
-                return '<div class="col-md-3"><button class="badge btn-sm badge-light-primary gen-report" data-bs-toggle="tooltip" data-bs-placement="top" title="View Report" data-bagno="' + row.bagno + '" data-episodeno="' + row.episodeno + '"><i class="fa-regular fa-file-lines"></i></button></div>';
-            }
-        },
-    ],
-    ajax: {
-        method: 'get',
-        url: config.routes.ireporting.iblood.atr.worklist,
-        dataSrc: "data",
-        data: function (d) {
-            d.dateRange = $('#filterdate').val();
-        },
-        dataType: "json",
-    },
-});
-
-var tableconfirm = $('#reportibloodatrconfirm-table').DataTable({
-    lengthMenu: [5, 10, 20, 50],
-    dom       : 'rtipl',
-    scrollX   : "300px",
-    buttons: [
-        {
-            extend: 'excel',
-            title: 'Report - IBLOOD-ATR (Confirm)',
-            className: 'btn-dark',
-        },
-    ],
-    columns: [
-        { 
-            "data": null,
-            "render": function (data, type, row, meta) {
-                return meta.row + 1; 
-            }
-        },
-        { 
-            "data": 'mrn',
-            "render": function (data, type, row)  { 
-                return '<span>'+row.mrn+'</span>'; 
-            }
-        },
-        { 
-            "data": 'episodeno', 
-            "render": function (data, type, row)  { 
-                return '<span>'+row.episodeno+'</span>'; 
-            }
-        },
-        { 
-            "data": 'bagno', 
-            "render": function (data, type, row)  {
-                return '<span>'+row.bagno+'</span>'; 
-            }
-        },
         { 
             "data": 'onset', 
             "render": function (data, type, row)  {
-                if(row.transfuse_start_at == null){
-                    return '<span></span>'; 
-                }else { 
-                    return '<span>'+moment(row.transfuse_start_at).format('DD/MM/YYYY HH:mm')+'</span>'; 
-                }
-            }
-        },
-        { 
-            "data": 'location', 
-            "render": function (data, type, row)  {
-                if(row.location == null ){
-                    return '<span></span>'; 
-                }else { 
-                    return '<span>'+row.location+'</span>'; 
-                }
-            }
-        },
-        {   
-            "data": 'reportedby',
-            "render": function (data, type, row)  {
-                if(row.name == null){ 
-                    return '<span></span>'; 
-                }
-                else { 
-                    return '<span>'+row.name+'</span>'; 
-                }
-            }
-        },
-        { 
-            "data": 'reporteddate',
-            "render": function (data, type, row)  {
-                if(row.created_at == null){ 
+                if(row.descriptions.onsettime == null){
                     return '<span></span>'; 
                 }else { 
                     return '<span>'+moment(row.created_at).format('DD/MM/YYYY HH:mm')+'</span>'; 
                 }
             }
         },
-        { 
-            "data": 'age', 
-            "render": function (data, type, row) {
-                if (row.transfuse_stop_at == null) { 
+        {
+            "data": 'reportedby',
+            "render": function (data, type, row)  {
+                return '<span>'+row.createdby.name+'</span>';
+            }
+        },
+        {
+            "data": 'reporteddate',
+            "render": function (data, type, row)  {
+                if(row.created_at == null){
                     return '<span></span>'; 
                 }else { 
-                    var stopDate = moment(row.transfuse_stop_at); 
-                    var today = moment(); 
-                    var daysDifference = today.diff(stopDate, 'days');
-                    return '<span>' + daysDifference + ' day(s)</span>'; 
+                    return '<span>'+moment(row.created_at).format('DD/MM/YYYY HH:mm')+'</span>'; 
+                }
+            }
+        },
+        {
+            "data": 'suspecteddrug',
+            "render": function (data, type, row) {
+                var susdrugs = row.susdrugs;
+                var html = '<ul>';
+        
+                susdrugs.forEach(function(response) {
+                    html += '<li>' + response.product + '</li>'; 
+                });
+        
+                html += '</ul>'; 
+                return html; 
+            }
+        },
+        {
+            "data": 'age',
+            "render": function (data, type, row) {
+                if (row.created_at == null) {
+                    return '<span></span>';
+                } else {
+                    var stopDate = moment(row.created_at); // Parse the transfuse_stop_at date
+                    var today = moment(); // Get today's date
+                    var daysDifference = today.diff(stopDate, 'days'); // Calculate the difference in days
+                    
+                    return '<span>' + daysDifference + ' day(s)</span>';
                 }
             }
         },
@@ -209,26 +91,23 @@ var tableconfirm = $('#reportibloodatrconfirm-table').DataTable({
     ],
     ajax: {
         method: 'get',
-        url: config.routes.ireporting.iblood.atr.worklistconfirm,
+        url: config.routes.ireporting.adr.worklistsuspect,
         dataSrc: "data",
         data: function (d) {
-            d.dateRange = $('#filterdateconfirm').val();
+            d.dateRange = $('#filterdate').val();
         },
         dataType: "json",
     },
 });
 
-
-
-
-var tablefalse = $('#reportibloodatrfalse-table').DataTable({
+var tableconfirm = $('#reportadrconfirm-table').DataTable({
     lengthMenu: [5, 10, 20, 50],
     dom       : 'rtipl',
     scrollX   : "300px",
     buttons: [
         {
             extend: 'excel',
-            title: 'Report - IBLOOD-ATR (False Report)',
+            title: 'Report - ADR (Confirm)',
             className: 'btn-dark',
         },
     ],
@@ -242,7 +121,7 @@ var tablefalse = $('#reportibloodatrfalse-table').DataTable({
         {
             "data": 'mrn',
             "render": function (data, type, row)  {
-                return '<span>'+row.mrn+'</span>';
+                return '<span>'+row.patientinfo.patient.mrn+'</span>';
             }
         },
         {
@@ -251,63 +130,155 @@ var tablefalse = $('#reportibloodatrfalse-table').DataTable({
                 return '<span>'+row.episodeno+'</span>';
             }
         },
-        {
-            "data": 'bagno',
+        { 
+            "data": 'onset', 
             "render": function (data, type, row)  {
-                return '<span>'+row.bagno+'</span>';
-            }
-        },
-        {
-            "data": 'onset',
-            "render": function (data, type, row)  {
-                if(row.transfuse_start_at == null){
-                    return '<span></span>';
-
-                }else{
-                    return '<span>'+moment(row.transfuse_start_at).format('DD/MM/YYYY HH:mm')+'</span>';
-                }
-            }
-        },
-        {
-            "data": 'location',
-            "render": function (data, type, row)  {
-                if(row.location == null ){
-                    return '<span></span>';
-
-                }else{
-                    return '<span>'+row.location+'</span>';
+                if(row.descriptions.onsettime == null){
+                    return '<span></span>'; 
+                }else { 
+                    return '<span>'+moment(row.created_at).format('DD/MM/YYYY HH:mm')+'</span>'; 
                 }
             }
         },
         {
             "data": 'reportedby',
             "render": function (data, type, row)  {
-                if(row.name == null){
-                    return '<span></span>';
-
-                }else{
-                    return '<span>'+row.name+'</span>';
-                }
+                return '<span>'+row.createdby.name+'</span>';
             }
         },
         {
             "data": 'reporteddate',
             "render": function (data, type, row)  {
                 if(row.created_at == null){
-                    return '<span></span>';
-
-                }else{
-                    return '<span>'+moment(row.created_at).format('DD/MM/YYYY HH:mm')+'</span>';
+                    return '<span></span>'; 
+                }else { 
+                    return '<span>'+moment(row.created_at).format('DD/MM/YYYY HH:mm')+'</span>'; 
                 }
+            }
+        },
+        {
+            "data": 'suspecteddrug',
+            "render": function (data, type, row) {
+                var susdrugs = row.susdrugs;
+                var html = '<ul>';
+        
+                susdrugs.forEach(function(response) {
+                    html += '<li>' + response.product + '</li>'; 
+                });
+        
+                html += '</ul>'; 
+                return html; 
             }
         },
         {
             "data": 'age',
             "render": function (data, type, row) {
-                if (row.transfuse_stop_at == null) {
+                if (row.created_at == null) {
                     return '<span></span>';
                 } else {
-                    var stopDate = moment(row.transfuse_stop_at); // Parse the transfuse_stop_at date
+                    var stopDate = moment(row.created_at); // Parse the transfuse_stop_at date
+                    var today = moment(); // Get today's date
+                    var daysDifference = today.diff(stopDate, 'days'); // Calculate the difference in days
+                    
+                    return '<span>' + daysDifference + ' day(s)</span>';
+                }
+            }
+        },
+        { 
+            "data": 'report',
+            "render": function (data, type, row)  {
+                return '<div class="col-md-3"><button class="badge btn-sm badge-light-primary gen-report" data-bs-toggle="tooltip" data-bs-placement="top" title="View Report" data-bagno="' + row.bagno + '" data-episodeno="' + row.episodeno + '"><i class="fa-regular fa-file-lines"></i></button></div>'; 
+            }
+        },
+    ],
+    ajax: {
+        method: 'get',
+        url: config.routes.ireporting.adr.worklistconfirm,
+        dataSrc: "data",
+        data: function (d) {
+            d.dateRange = $('#filterdateconfirm').val();
+        },
+        dataType: "json",
+    },
+});
+
+var tablefalse = $('#reportadrfalse-table').DataTable({
+    lengthMenu: [5, 10, 20, 50],
+    dom       : 'rtipl',
+    scrollX   : "300px",
+    buttons: [
+        {
+            extend: 'excel',
+            title: 'Report - ADR (False Report)',
+            className: 'btn-dark',
+        },
+    ],
+    columns: [
+        {
+            "data": null,
+            "render": function (data, type, row, meta) {
+                return meta.row + 1;
+            }
+        },
+        {
+            "data": 'mrn',
+            "render": function (data, type, row)  {
+                return '<span>'+row.patientinfo.patient.mrn+'</span>';
+            }
+        },
+        {
+            "data": 'episodeno',
+            "render": function (data, type, row)  {
+                return '<span>'+row.episodeno+'</span>';
+            }
+        },
+        { 
+            "data": 'onset', 
+            "render": function (data, type, row)  {
+                if(row.descriptions.onsettime == null){
+                    return '<span></span>'; 
+                }else { 
+                    return '<span>'+moment(row.created_at).format('DD/MM/YYYY HH:mm')+'</span>'; 
+                }
+            }
+        },
+        {
+            "data": 'reportedby',
+            "render": function (data, type, row)  {
+                return '<span>'+row.createdby.name+'</span>';
+            }
+        },
+        {
+            "data": 'reporteddate',
+            "render": function (data, type, row)  {
+                if(row.created_at == null){
+                    return '<span></span>'; 
+                }else { 
+                    return '<span>'+moment(row.created_at).format('DD/MM/YYYY HH:mm')+'</span>'; 
+                }
+            }
+        },
+        {
+            "data": 'suspecteddrug',
+            "render": function (data, type, row) {
+                var susdrugs = row.susdrugs;
+                var html = '<ul>';
+        
+                susdrugs.forEach(function(response) {
+                    html += '<li>' + response.product + '</li>'; 
+                });
+        
+                html += '</ul>'; 
+                return html; 
+            }
+        },
+        {
+            "data": 'age',
+            "render": function (data, type, row) {
+                if (row.created_at == null) {
+                    return '<span></span>';
+                } else {
+                    var stopDate = moment(row.created_at); // Parse the transfuse_stop_at date
                     var today = moment(); // Get today's date
                     var daysDifference = today.diff(stopDate, 'days'); // Calculate the difference in days
                     
@@ -318,7 +289,7 @@ var tablefalse = $('#reportibloodatrfalse-table').DataTable({
     ],
     ajax: {
         method: 'get',
-        url: config.routes.ireporting.iblood.atr.worklistfalse,
+        url: config.routes.ireporting.adr.worklistfalse,
         dataSrc: "data",
         data: function (d) {
             d.dateRange = $('#filterdatefalse').val();
@@ -327,7 +298,9 @@ var tablefalse = $('#reportibloodatrfalse-table').DataTable({
     },
 });
 
+
 $(document).ready(function() {
+
 
     //Suspected
     $('#searchsuspect').on('keyup', function() {
@@ -336,28 +309,6 @@ $(document).ready(function() {
 
     $('#exportsuspect').on('click', function () {
         tablesuspect.button('.buttons-excel').trigger();  
-    });
-
-    $('#reportibloodatr-table tbody').on('click', '.gen-report', function(e) {
-        e.preventDefault();
-    
-        var bagno = $(this).data('bagno');
-        var epsdno = $(this).data('episodeno');
-        var baseUrl = config.routes.ireporting.iblood.atr.report;
-    
-        // Append parameters to the URL
-        var reportUrl = baseUrl + '&bagno=' + encodeURIComponent(bagno) + '&epsdno=' + encodeURIComponent(epsdno);
-    
-        // Load the report in the iframe
-        $('#report-iframe').attr('src', reportUrl);
-        $('.btn-maximize, .save-finalization').hide();
-        $('.btn-maximize, .save-false').hide();  
-        $('#adverse-event-report').modal('show');
-    });
-
-    $('.btn-print').on('click', function() {
-        var iframe = document.getElementById('report-iframe');
-        iframe.contentWindow.print();
     });
 
     $('#filterdate').daterangepicker({
@@ -369,6 +320,7 @@ $(document).ready(function() {
     });
     //
 
+
     //Confirmed
     $('#tableSearchInput').on('keyup', function() {
         tableconfirm.search(this.value).draw();
@@ -376,23 +328,6 @@ $(document).ready(function() {
 
     $('#exportExcelBtn').on('click', function () {
         tableconfirm.button('.buttons-excel').trigger(); 
-    });
-
-    $('#reportibloodatrconfirm-table tbody').on('click', '.gen-report', function(e) {
-        e.preventDefault();
-    
-        var bagno = $(this).data('bagno');
-        var epsdno = $(this).data('episodeno');
-        var baseUrl = config.routes.ireporting.iblood.atr.reportconfirm;
-    
-        // Append parameters to the URL
-        var reportUrl = baseUrl + '&bagno=' + encodeURIComponent(bagno) + '&epsdno=' + encodeURIComponent(epsdno);
-    
-        // Load the report in the iframe
-        $('#report-iframe').attr('src', reportUrl);
-        $('.btn-maximize, .save-finalization').hide();
-        $('.btn-maximize, .save-false').hide();   
-        $('#adverse-event-report').modal('show');
     });
 
     $('#filterdateconfirm').daterangepicker({

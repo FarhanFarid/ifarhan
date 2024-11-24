@@ -742,6 +742,11 @@ class Authsystem
                 'ireporting/ida/preadmission/getpreadmissioninventory',
                 'ireporting/discharge-summary',
                 'ireporting/discharge-summary/list',
+                'ireporting/adr',
+                'ireporting/adr/getworklistsuspect',
+                'ireporting/adr/getworklistconfirm',
+                'ireporting/adr/getworklistfalse',
+                'ireporting/adr/generateconfirm',
             ];
             if(in_array($request->path(), $ipharmacyArr)){
                 try

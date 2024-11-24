@@ -19,8 +19,7 @@ use App\Models\BloodBloodComponent;
 use App\Models\Patient;
 use App\Models\PatientInformation;
 use App\Models\Dischargesummary;
-
-
+use App\Models\AdrReport;
 
 use DB;
 use Auth;
@@ -589,4 +588,93 @@ class iReportingMainController extends Controller
             'episode',
         ));
     }
+
+    public function indexAdrWorklist(Request $request)
+    {
+        $explode = explode('?', $request->getRequestUri());
+
+        $url = $explode[1];
+
+        return view('ireporting.adr.index', compact('url'));
+    }
+
+    public function getAdrWorklistSuspect(Request $request)
+    {
+        $report = AdrReport::with([
+            'descriptions',
+            'susdrugs' => function ($query) use ($request) {
+                $query->where('status_id', 1);
+            },
+            'concodrugs' => function ($query) use ($request) {
+                $query->where('status_id', 1);
+            },
+            'createdby:id,name', 
+            'updatedby:id,name',
+            'patientinfo.patient'
+        ])->where('status_id', 1 )->orderBy('id', 'desc');
+
+        // Filter by Date Range
+        if ($request->has('dateRange')) {
+            $dateRange = explode(' - ', $request->dateRange);
+            $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+            $endDate = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+            $report->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        return response()->json(['data' => $report->get()]);
+    }
+
+    public function getAdrWorklistConfirm(Request $request)
+    {
+        $report = AdrReport::with([
+            'descriptions',
+            'susdrugs' => function ($query) use ($request) {
+                $query->where('status_id', 3);
+            },
+            'concodrugs' => function ($query) use ($request) {
+                $query->where('status_id', 3);
+            },
+            'createdby:id,name', 
+            'updatedby:id,name',
+            'patientinfo.patient'
+        ])->where('status_id', 2 )->orderBy('id', 'desc');
+
+        // Filter by Date Range
+        if ($request->has('dateRange')) {
+            $dateRange = explode(' - ', $request->dateRange);
+            $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+            $endDate = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+            $report->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        return response()->json(['data' => $report->get()]);
+    }
+
+    public function getAdrWorklistFalse(Request $request)
+    {
+        $report = AdrReport::with([
+            'descriptions',
+            'susdrugs' => function ($query) use ($request) {
+                $query->where('status_id', 3);
+            },
+            'concodrugs' => function ($query) use ($request) {
+                $query->where('status_id', 3);
+            },
+            'createdby:id,name', 
+            'updatedby:id,name',
+            'patientinfo.patient'
+        ])->where('status_id', 3 )->orderBy('id', 'desc');
+
+        // Filter by Date Range
+        if ($request->has('dateRange')) {
+            $dateRange = explode(' - ', $request->dateRange);
+            $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+            $endDate = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+            $report->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        return response()->json(['data' => $report->get()]);
+    }
+
+
 }

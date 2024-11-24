@@ -182,6 +182,14 @@ Route::group(['middleware' => ['authsystem']], function() {
             Route::get('/', [iReportingMainController::class, 'indexDischargeSummary'])->name('report.dischargesummary');
             Route::get('/list', [iReportingMainController::class, 'apiGetDataDischargeSummary'])->name('report.dischargesummary.list');
         });
+
+        Route::group(['prefix' => 'adr'], function () {
+            Route::get('/', [iReportingMainController::class, 'indexAdrWorklist'])->name('report.adr.index');
+            Route::get('/getworklistsuspect', [iReportingMainController::class, 'getAdrWorklistSuspect'])->name('report.adr.getworklistsuspect');
+            Route::get('/getworklistconfirm', [iReportingMainController::class, 'getAdrWorklistConfirm'])->name('report.adr.getworklistconfirm');
+            Route::get('/getworklistfalse', [iReportingMainController::class, 'getAdrWorklistFalse'])->name('report.adr.getworklistfalse');
+            Route::get('/generateconfirm', [iReportingMainController::class, 'genReportConfirm'])->name('report.iblood.atr.generateconfirm');   
+        });
     });
 
     //ADR
@@ -189,7 +197,9 @@ Route::group(['middleware' => ['authsystem']], function() {
         Route::group(['prefix' => 'report'], function () {
             Route::get('/', [AdrController::class, 'index'])->name('adr.report.index');   
             Route::get('/generate', [AdrController::class, 'genReport'])->name('adr.report.generate');   
-            Route::post('/finalize', [AdrController::class, 'finalize'])->name('adr.report.finalize');                             
+            Route::post('/save-finalize', [AdrController::class, 'saveFinalize'])->name('adr.report.savefinalize');
+            Route::post('/save-false', [AdrController::class, 'saveFalse'])->name('adr.report.savefalse');
+            Route::post('/save-record', [AdrController::class, 'saveRecord'])->name('adr.report.saverecord');                             
         });
 
     });
