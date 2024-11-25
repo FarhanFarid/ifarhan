@@ -162,9 +162,7 @@
     </div>
 </div>
 
-@include('iblood.reaction.report.modal')
-{{-- // report: "{{ route('blood.reaction.report.generate') }}?{!! $url !!}",
-// reportconfirm: "{{ route('report.adr.generateconfirm') }}?{!! $url !!}", --}}
+@include('adr.report.modal')
 
 @endsection
 @push('script')
@@ -178,6 +176,8 @@
                     worklistsuspect : "{{ route('report.adr.getworklistsuspect') }}?{!! $url !!}",
                     worklistconfirm : "{{ route('report.adr.getworklistconfirm') }}?{!! $url !!}",
                     worklistfalse : "{{ route('report.adr.getworklistfalse') }}?{!! $url !!}",
+                    reportconfirm: "{{ route('report.adr.generateconfirm') }}?{!! $url !!}",
+                    reportsuspect: "{{ route('report.adr.generatesuspect') }}?{!! $url !!}",
                 },
             },
         },

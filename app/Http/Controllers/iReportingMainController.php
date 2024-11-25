@@ -676,5 +676,76 @@ class iReportingMainController extends Controller
         return response()->json(['data' => $report->get()]);
     }
 
+    public function AdrReportConfirm(Request $request)
+    {
+        $explode = explode('?', $request->getRequestUri());
+
+        $url = $explode[1];
+
+        $report = AdrReport::with([
+            'descriptions',
+            'susdrugs' => function ($query) use ($request) {
+                $query->where('status_id', 3);
+            },
+            'concodrugs' => function ($query) use ($request) {
+                $query->where('status_id', 3);
+            },
+            'createdby', 
+            'updatedby',
+        ])->where('episodeno', $request->epsdno)->where('status_id', 2 )->orderBy('id', 'desc')->first();
+
+        //PatDemo
+        $uri = env('PAT_DEMO'). $request->epsdno;
+        $client = new \GuzzleHttp\Client(['defaults' => ['verify' => false]]);
+
+        $response = $client->request('GET', $uri);
+
+        $statusCode = $response->getStatusCode();
+        $content = json_decode($response->getBody(), true);
+
+        $patdemo = $content['data'];
+
+        return view('adr.report.subviews.report', compact(
+            'url', 
+            'report',
+            'patdemo',
+        ));
+    }
+
+    public function AdrReportSuspect(Request $request)
+    {
+        $explode = explode('?', $request->getRequestUri());
+
+        $url = $explode[1];
+
+        $report = AdrReport::with([
+            'descriptions',
+            'susdrugs' => function ($query) use ($request) {
+                $query->where('status_id', 1);
+            },
+            'concodrugs' => function ($query) use ($request) {
+                $query->where('status_id', 1);
+            },
+            'createdby', 
+            'updatedby',
+        ])->where('episodeno', $request->epsdno)->where('status_id', 1 )->orderBy('id', 'desc')->first();
+
+        //PatDemo
+        $uri = env('PAT_DEMO'). $request->epsdno;
+        $client = new \GuzzleHttp\Client(['defaults' => ['verify' => false]]);
+
+        $response = $client->request('GET', $uri);
+
+        $statusCode = $response->getStatusCode();
+        $content = json_decode($response->getBody(), true);
+
+        $patdemo = $content['data'];
+
+        return view('adr.report.subviews.report', compact(
+            'url', 
+            'report',
+            'patdemo',
+        ));
+    }
 
 }

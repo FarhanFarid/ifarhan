@@ -85,7 +85,7 @@ var tablesuspect = $('#reportadr-table').DataTable({
         { 
             "data": 'report',
             "render": function (data, type, row)  {
-                return '<div class="col-md-3"><button class="badge btn-sm badge-light-primary gen-report" data-bs-toggle="tooltip" data-bs-placement="top" title="View Report" data-bagno="' + row.bagno + '" data-episodeno="' + row.episodeno + '"><i class="fa-regular fa-file-lines"></i></button></div>'; 
+                return '<div class="col-md-3"><button class="badge btn-sm badge-light-primary gen-report" data-bs-toggle="tooltip" data-bs-placement="top" title="View Report" data-episodeno="' + row.episodeno + '"><i class="fa-regular fa-file-lines"></i></button></div>'; 
             }
         },
     ],
@@ -187,7 +187,7 @@ var tableconfirm = $('#reportadrconfirm-table').DataTable({
         { 
             "data": 'report',
             "render": function (data, type, row)  {
-                return '<div class="col-md-3"><button class="badge btn-sm badge-light-primary gen-report" data-bs-toggle="tooltip" data-bs-placement="top" title="View Report" data-bagno="' + row.bagno + '" data-episodeno="' + row.episodeno + '"><i class="fa-regular fa-file-lines"></i></button></div>'; 
+                return '<div class="col-md-3"><button class="badge btn-sm badge-light-primary gen-report" data-bs-toggle="tooltip" data-bs-placement="top" title="View Report" data-episodeno="' + row.episodeno + '"><i class="fa-regular fa-file-lines"></i></button></div>'; 
             }
         },
     ],
@@ -318,6 +318,23 @@ $(document).ready(function() {
     }).on('apply.daterangepicker', function(ev, picker) {
         tablesuspect.ajax.reload(); 
     });
+
+    $('#reportadr-table tbody').on('click', '.gen-report', function(e) {
+        e.preventDefault();
+
+    
+        var epsdno = $(this).data('episodeno');
+        var baseUrl = config.routes.ireporting.adr.reportsuspect;
+    
+        // Append parameters to the URL
+        var reportUrl = baseUrl + '&epsdno=' + encodeURIComponent(epsdno);
+    
+        // // Load the report in the iframe
+        $('#report-iframe').attr('src', reportUrl);
+        $('.btn-maximize, .save-finalization').hide();
+        $('.btn-maximize, .save-false').hide();   
+        $('#adverse-drug-report').modal('show');
+    });
     //
 
 
@@ -336,6 +353,25 @@ $(document).ready(function() {
         },
     }).on('apply.daterangepicker', function(ev, picker) {
         tableconfirm.ajax.reload(); 
+    });
+
+    $('#reportadrconfirm-table tbody').on('click', '.gen-report', function(e) {
+        e.preventDefault();
+
+    
+        var epsdno = $(this).data('episodeno');
+        var baseUrl = config.routes.ireporting.adr.reportconfirm;
+    
+        // console.log(epsdno);
+
+        // Append parameters to the URL
+        var reportUrl = baseUrl + '&epsdno=' + encodeURIComponent(epsdno);
+    
+        // // Load the report in the iframe
+        $('#report-iframe').attr('src', reportUrl);
+        $('.btn-maximize, .save-finalization').hide();
+        $('.btn-maximize, .save-false').hide();   
+        $('#adverse-drug-report').modal('show');
     });
     //
 
