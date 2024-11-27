@@ -228,41 +228,8 @@ class Authsystem
 
             if($content['status'] == "success")
             {
-                $holdAllergy    = null;
-                $arrAllergy     = [];
                 $holdPayor      = null;
                 $arrPayor       = [];
-
-                if(isset($content['data']['allergyList']))
-                {
-                    if(count($content['data']['allergyList']) > 0)
-                    {
-                        foreach($content['data']['allergyList'] as $allergy)
-                        {
-                            if($allergy['status'] == 'active')
-                            {
-                                if($allergy['substance'] != '')
-                                {
-                                    array_push($arrAllergy, $allergy['substance']);
-                                }
-                                else
-                                {
-                                    array_push($arrAllergy, $allergy['freetxtall']);
-                                }
-                            }
-                        }
-
-                        $holdAllergy = implode(', ', $arrAllergy);
-                    }
-                    else
-                    {
-                        $holdAllergy = null;
-                    }
-                }
-                else
-                {
-                    $holdAllergy = null;
-                }
 
                 if(isset($content['data']['payorList']))
                 {
@@ -349,184 +316,43 @@ class Authsystem
 
                 $holdmrnpatient = $content['data']['prn'];
 
-                $checkIfMrnExist = Patient::where('mrn', $content['data']['prn'])
-                                    ->where('status_id', 2)
-                                    ->first();
-
-                if($checkIfMrnExist == null)
+                if($holdmrnpatient != null)
                 {
-                    $storePatient = new Patient();
-                    $storePatient->patid        = $getPatid;
-                    $storePatient->mrn          = $content['data']['prn'];
-                    $storePatient->name         = $content['data']['pName'];
-                    $storePatient->nric         = $content['data']['pnric'];
-                    $storePatient->dob          = $content['data']['pdob'] != '' ? Carbon::createFromFormat('d/m/Y', $content['data']['pdob'])->format('Y-m-d') : null;
-                    $storePatient->sex          = $content['data']['pgender'];
-                    $storePatient->status_id    = 2;
-                    $storePatient->created_by   = Auth::user()->id;
-                    $storePatient->created_at   = Carbon::now();
-                    $storePatient->save();
-
-                    $holpatientid = $storePatient['id'];
-
-                    $storeInfo = new PatientInformation();
-                    $storeInfo->episodenumber           = $getEpsdNo;
-                    $storeInfo->epid                    = $getEpid;
-                    $storeInfo->epsiodedate             = $content['data']['epiDate'] != '' && $content['data']['epiTime'] != '' ? Carbon::createFromFormat('d/m/Y', $content['data']['epiDate'])->format('Y-m-d').' '.$content['data']['epiTime'] : null;
-                    $storeInfo->admissiondate           = $content['data']['epiDate'] != '' && $content['data']['epiTime'] != '' ? Carbon::createFromFormat('d/m/Y', $content['data']['epiDate'])->format('Y-m-d').' '.$content['data']['epiTime'] : null;
-                    $storeInfo->dischargedate           = $content['data']['epiDiscDate'] != '' && $content['data']['epiDiscTime'] != '' ? Carbon::createFromFormat('d/m/Y', $content['data']['epiDiscDate'])->format('Y-m-d').' '.$content['data']['epiDiscTime'] : null;
-                    $storeInfo->episodedept             = $content['data']['epiDept'] != '' ? $content['data']['epiDept'] : null;
-                    $storeInfo->episodedeptname         = $content['data']['epiDeptDesc'] != '' ? $content['data']['epiDeptDesc'] : null;
-                    $storeInfo->consultantname          = $content['data']['epiDoc'] != '' ? $content['data']['epiDoc'] : null;
-                    $storeInfo->patient_id              = $storePatient->id;
-                    $storeInfo->age                     = $content['data']['age'] != '' ? $content['data']['age'] : null;
-                    $storeInfo->agem                    = $content['data']['ageM'] != '' ? $content['data']['ageM'] : null;
-                    $storeInfo->aged                    = $content['data']['ageD'] != '' ? $content['data']['ageD'] : null;
-                    $storeInfo->epiward                 = $content['data']['epiWard'] != '' ? $content['data']['epiWard'] : null;
-                    $storeInfo->epiroom                 = $content['data']['epiRoom'] != '' ? $content['data']['epiRoom'] : null;
-                    $storeInfo->epistat                 = $content['data']['epiStat'] != '' ? $content['data']['epiStat'] : null;
-                    $storeInfo->bloodtype               = $content['data']['bgDesc'] != '' ? $content['data']['bgDesc'] : null;
-                    $storeInfo->unfit                   = $content['data']['epiunfit'] == 1 ? 1 : null;
-                    $storeInfo->pchcflag                = $content['data']['pchcFlag'] != '' ? $content['data']['pchcFlag'] : null;
-                    $storeInfo->phosp                   = $content['data']['pHosp'] != '' ? $content['data']['pHosp'] : null;
-                    $storeInfo->height                  = $holdheight;
-                    $storeInfo->weight                  = $holdweight;
-                    $storeInfo->bmi                     = $holdbmi;
-                    $storeInfo->sysbp                   = $holdsystolic;
-                    $storeInfo->diasbp                  = $holddiastolic;
-                    $storeInfo->heartrate               = $holdheartrate;
-                    $storeInfo->heartrate_datetime      = $holdheartratedate;
-                    $storeInfo->pulse                   = $holdpulse;
-                    $storeInfo->pulse_datetime          = $holdpulsedate;
-                    $storeInfo->spo2                    = $holdspo2;
-                    $storeInfo->resprate                = $holdresprate;
-                    $storeInfo->bsa                     = $holdbsa;
-                    $storeInfo->temperature             = $content['data']['temp'] != '' ? $content['data']['temp'] : null;
-                    $storeInfo->epiinterv               = $content['data']['epiInterv'] != '' ? $content['data']['epiInterv'] : null;
-                    $storeInfo->vs_datetime             = $holdlastupdate;
-                    $storeInfo->payor                   = $holdPayor;
-                    $storeInfo->allergy                 = $holdAllergy;
-                    $storeInfo->currentmedication       = $holdMedication;
-                    $storeInfo->medicationepisodeno     = $holdMedEpiNo;
-                    $storeInfo->medicationepisodedate   = $holdMedEpiDate != null ? Carbon::createFromFormat('d/m/Y', $holdMedEpiDate)->format('Y-m-d') : null;
-                    $storeInfo->dischargedate           = $content['data']['epiDiscDate'] != '' ? Carbon::createFromFormat('d/m/Y', $content['data']['epiDiscDate'])->format('Y-m-d') : null;
-                    $storeInfo->ef                      = $content['data']['ef'] != '' ? $content['data']['ef'] : null;
-                    $storeInfo->efc                     = $content['data']['efc'] != '' ? $content['data']['efc'] : null;
-                    $storeInfo->painscore               = null;
-                    $storeInfo->painsite                = null;
-                    $storeInfo->status_id               = 2;
-                    $storeInfo->created_by              = Auth::user()->id;
-                    $storeInfo->created_at              = Carbon::now();
-                    $storeInfo->save();
-
-                    if(isset($content['data']['allergyList']))
-                    {
-                        if(count($content['data']['allergyList']) > 0)
-                        {
-                            foreach($content['data']['allergyList'] as $allergy)
-                            {
-                                $storeAllergy = new PatientAllergy();
-                                $storeAllergy->patient_id      = $storePatient->id;
-                                $storeAllergy->episodenumber   = $getEpsdNo;
-                                $storeAllergy->epid            = $getEpid;
-                                $storeAllergy->substance       = $allergy['substance'];
-                                $storeAllergy->freetxtall      = $allergy['freetxtall'];
-                                $storeAllergy->nature          = $allergy['nature'];
-                                $storeAllergy->severity        = $allergy['severity'];
-                                $storeAllergy->comment         = '-';
-                                $storeAllergy->date            = Carbon::createFromFormat('d/m/Y', $allergy['upDate'])->format('Y-m-d');
-                                $storeAllergy->time            = $allergy['upTime'];
-                                $storeAllergy->algid           = $allergy['ALGID'];
-                                $storeAllergy->status_id       = $allergy['status'] == 'inactive' ? 1 : 2;
-                                $storeAllergy->created_by      = Auth::user()->id;
-                                $storeAllergy->created_at      = Carbon::now();
-                                $storeAllergy->save();
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    $updatePatient = Patient::where('id', $checkIfMrnExist->id)
-                                        ->where('status_id', 2)
-                                        ->first();
-                    $updatePatient->patid        = $getPatid;
-                    $updatePatient->name         = $content['data']['pName'];
-                    $updatePatient->nric         = $content['data']['pnric'];
-                    $updatePatient->dob          = $content['data']['pdob'] != '' ? Carbon::createFromFormat('d/m/Y', $content['data']['pdob'])->format('Y-m-d') : null;
-                    $updatePatient->sex          = $content['data']['pgender'];
-                    $updatePatient->status_id    = 2;
-                    $updatePatient->updated_by   = Auth::user()->id;
-                    $updatePatient->updated_at   = Carbon::now();
-                    $updatePatient->save();
-
-                    $holpatientid = $updatePatient['id'];
-
-                    $checkIfEpsNoSame = PatientInformation::where('episodenumber', $getEpsdNo)
-                                        ->where('patient_id', $updatePatient->id)
+                    $checkIfMrnExist = Patient::where('mrn', $content['data']['prn'])
                                         ->where('status_id', 2)
                                         ->first();
 
-                    if($checkIfEpsNoSame != null)
+                    if($checkIfMrnExist == null)
                     {
-                        $checkIfEpsNoSame->epid                  = $getEpid;
-                        $checkIfEpsNoSame->epsiodedate           = $content['data']['epiDate'] != '' && $content['data']['epiTime'] != '' ? Carbon::createFromFormat('d/m/Y', $content['data']['epiDate'])->format('Y-m-d').' '.$content['data']['epiTime'] : null;
-                        $checkIfEpsNoSame->admissiondate         = $content['data']['epiDate'] != '' && $content['data']['epiTime'] != '' ? Carbon::createFromFormat('d/m/Y', $content['data']['epiDate'])->format('Y-m-d').' '.$content['data']['epiTime'] : null;
-                        $checkIfEpsNoSame->dischargedate         = $content['data']['epiDiscDate'] != '' && $content['data']['epiDiscTime'] != '' ? Carbon::createFromFormat('d/m/Y', $content['data']['epiDiscDate'])->format('Y-m-d').' '.$content['data']['epiDiscTime'] : null;
-                        $checkIfEpsNoSame->episodedept           = $content['data']['epiDept'] != '' ? $content['data']['epiDept'] : null;
-                        $checkIfEpsNoSame->episodedeptname       = $content['data']['epiDeptDesc'] != '' ? $content['data']['epiDeptDesc'] : null;
-                        $checkIfEpsNoSame->consultantname        = $content['data']['epiDoc'] != '' ? $content['data']['epiDoc'] : null;
-                        $checkIfEpsNoSame->age                   = $content['data']['age'] != '' ? $content['data']['age'] : null;
-                        $checkIfEpsNoSame->agem                  = $content['data']['ageM'] != '' ? $content['data']['ageM'] : null;
-                        $checkIfEpsNoSame->aged                  = $content['data']['ageD'] != '' ? $content['data']['ageD'] : null;
-                        $checkIfEpsNoSame->epiward               = $content['data']['epiWard'] != '' ? $content['data']['epiWard'] : null;
-                        $checkIfEpsNoSame->epiroom               = $content['data']['epiRoom'] != '' ? $content['data']['epiRoom'] : null;
-                        $checkIfEpsNoSame->epistat               = $content['data']['epiStat'] != '' ? $content['data']['epiStat'] : null;
-                        $checkIfEpsNoSame->bloodtype             = $content['data']['bgDesc'] != '' ? $content['data']['bgDesc'] : null;
-                        $checkIfEpsNoSame->unfit                 = $content['data']['epiunfit'] == 1 ? 1 : null;
-                        $checkIfEpsNoSame->pchcflag              = $content['data']['pchcFlag'] != '' ? $content['data']['pchcFlag'] : null;
-                        $checkIfEpsNoSame->phosp                 = $content['data']['pHosp'] != '' ? $content['data']['pHosp'] : null;
-                        $checkIfEpsNoSame->height                = $holdheight;
-                        $checkIfEpsNoSame->weight                = $holdweight;
-                        $checkIfEpsNoSame->bmi                   = $holdbmi;
-                        $checkIfEpsNoSame->sysbp                 = $holdsystolic;
-                        $checkIfEpsNoSame->diasbp                = $holddiastolic;
-                        $checkIfEpsNoSame->heartrate             = $holdheartrate;
-                        $checkIfEpsNoSame->spo2                  = $holdspo2;
-                        $checkIfEpsNoSame->resprate              = $holdresprate;
-                        $checkIfEpsNoSame->heartrate_datetime    = $holdheartratedate;
-                        $checkIfEpsNoSame->pulse                 = $holdpulse;
-                        $checkIfEpsNoSame->pulse_datetime        = $holdpulsedate;
-                        $checkIfEpsNoSame->bsa                   = $holdbsa;
-                        $checkIfEpsNoSame->temperature           = $content['data']['temp'] != '' ? $content['data']['temp'] : null;
-                        $checkIfEpsNoSame->epiinterv             = $content['data']['epiInterv'] != '' ? $content['data']['epiInterv'] : null;
-                        $checkIfEpsNoSame->vs_datetime           = $holdlastupdate;
-                        $checkIfEpsNoSame->payor                 = $holdPayor;
-                        $checkIfEpsNoSame->allergy               = $holdAllergy;
-                        $checkIfEpsNoSame->currentmedication     = $holdMedication;
-                        $checkIfEpsNoSame->medicationepisodeno   = $holdMedEpiNo;
-                        $checkIfEpsNoSame->medicationepisodedate = $holdMedEpiDate != null ? Carbon::createFromFormat('d/m/Y', $holdMedEpiDate)->format('Y-m-d') : null;
-                        $checkIfEpsNoSame->ef                    = $content['data']['ef'] != '' ? $content['data']['ef'] : null;
-                        $checkIfEpsNoSame->efc                   = $content['data']['efc'] != '' ? $content['data']['efc'] : null;
-                        $checkIfEpsNoSame->painscore             = null;
-                        $checkIfEpsNoSame->painsite              = null;
-                        $checkIfEpsNoSame->status_id             = 2;
-                        $checkIfEpsNoSame->updated_by            = Auth::user()->id;
-                        $checkIfEpsNoSame->updated_at            = Carbon::now();
-                        $checkIfEpsNoSame->save();
-                    }
-                    else
-                    {
+                        $storePatient = new Patient();
+                        $storePatient->patid        = $getPatid;
+                        $storePatient->mrn          = $content['data']['prn'];
+                        $storePatient->name         = $content['data']['pName'];
+                        $storePatient->nric         = $content['data']['pnric'];
+                        $storePatient->dob          = $content['data']['pdob'] != '' ? Carbon::createFromFormat('d/m/Y', $content['data']['pdob'])->format('Y-m-d') : null;
+                        $storePatient->sex          = $content['data']['pgender'];
+                        $storePatient->status_id    = 2;
+                        $storePatient->created_by   = Auth::user()->id;
+                        $storePatient->created_at   = Carbon::now();
+                        $storePatient->save();
+
+                        $holpatientid = $storePatient['id'];
+
                         $storeInfo = new PatientInformation();
-                        $storeInfo->epid                    = $getEpid;
                         $storeInfo->episodenumber           = $getEpsdNo;
+                        $storeInfo->epid                    = $getEpid;
                         $storeInfo->epsiodedate             = $content['data']['epiDate'] != '' && $content['data']['epiTime'] != '' ? Carbon::createFromFormat('d/m/Y', $content['data']['epiDate'])->format('Y-m-d').' '.$content['data']['epiTime'] : null;
                         $storeInfo->admissiondate           = $content['data']['epiDate'] != '' && $content['data']['epiTime'] != '' ? Carbon::createFromFormat('d/m/Y', $content['data']['epiDate'])->format('Y-m-d').' '.$content['data']['epiTime'] : null;
                         $storeInfo->dischargedate           = $content['data']['epiDiscDate'] != '' && $content['data']['epiDiscTime'] != '' ? Carbon::createFromFormat('d/m/Y', $content['data']['epiDiscDate'])->format('Y-m-d').' '.$content['data']['epiDiscTime'] : null;
                         $storeInfo->episodedept             = $content['data']['epiDept'] != '' ? $content['data']['epiDept'] : null;
                         $storeInfo->episodedeptname         = $content['data']['epiDeptDesc'] != '' ? $content['data']['epiDeptDesc'] : null;
                         $storeInfo->consultantname          = $content['data']['epiDoc'] != '' ? $content['data']['epiDoc'] : null;
-                        $storeInfo->patient_id              = $updatePatient->id;
+                        $storeInfo->padd                    = $content['data']['padd'] != '' ? $content['data']['padd'] : null;
+                        $storeInfo->pposcode                = $content['data']['pposcode'] != '' ? $content['data']['pposcode'] : null;
+                        $storeInfo->pcity                   = $content['data']['pcity'] != '' ? $content['data']['pcity'] : null;
+                        $storeInfo->pstate                  = $content['data']['pstate'] != '' ? $content['data']['pstate'] : null;
+                        $storeInfo->pcountry                = $content['data']['pcountry'] != '' ? $content['data']['pcountry'] : null;
+                        $storeInfo->patient_id              = $storePatient->id;
                         $storeInfo->age                     = $content['data']['age'] != '' ? $content['data']['age'] : null;
                         $storeInfo->agem                    = $content['data']['ageM'] != '' ? $content['data']['ageM'] : null;
                         $storeInfo->aged                    = $content['data']['ageD'] != '' ? $content['data']['ageD'] : null;
@@ -553,10 +379,10 @@ class Authsystem
                         $storeInfo->epiinterv               = $content['data']['epiInterv'] != '' ? $content['data']['epiInterv'] : null;
                         $storeInfo->vs_datetime             = $holdlastupdate;
                         $storeInfo->payor                   = $holdPayor;
-                        $storeInfo->allergy                 = $holdAllergy;
                         $storeInfo->currentmedication       = $holdMedication;
                         $storeInfo->medicationepisodeno     = $holdMedEpiNo;
                         $storeInfo->medicationepisodedate   = $holdMedEpiDate != null ? Carbon::createFromFormat('d/m/Y', $holdMedEpiDate)->format('Y-m-d') : null;
+                        $storeInfo->dischargedate           = $content['data']['epiDiscDate'] != '' ? Carbon::createFromFormat('d/m/Y', $content['data']['epiDiscDate'])->format('Y-m-d') : null;
                         $storeInfo->ef                      = $content['data']['ef'] != '' ? $content['data']['ef'] : null;
                         $storeInfo->efc                     = $content['data']['efc'] != '' ? $content['data']['efc'] : null;
                         $storeInfo->painscore               = null;
@@ -566,52 +392,22 @@ class Authsystem
                         $storeInfo->created_at              = Carbon::now();
                         $storeInfo->save();
                     }
+                }
+                else
+                {
+                    $holdmrnpatient = null;
 
-                    if(isset($content['data']['allergyList']))
-                    {
-                        if(count($content['data']['allergyList']) > 0)
-                        {
-                            $deleteAllergy = PatientAllergy::where('episodenumber', $getEpsdNo)
-                                            ->where('patient_id', $updatePatient->id)
-                                            ->delete();
+                    DB::rollBack();
 
-                            foreach($content['data']['allergyList'] as $allergy)
-                            {
-                                $storeAllergy = new PatientAllergy();
-                                $storeAllergy->patient_id      = $updatePatient->id;
-                                $storeAllergy->episodenumber   = $getEpsdNo;
-                                $storeAllergy->epid            = $getEpid;
-                                $storeAllergy->substance       = $allergy['substance'];
-                                $storeAllergy->freetxtall      = $allergy['freetxtall'];
-                                $storeAllergy->nature          = $allergy['nature'];
-                                $storeAllergy->severity        = $allergy['severity'];
-                                $storeAllergy->comment         = '-';
-                                if($allergy['upDate'] != '')
-                                {
-                                    $storeAllergy->date = Carbon::createFromFormat('d/m/Y', $allergy['upDate']);
-                                    $storeAllergy->time = $allergy['upTime'];
-                                }
-                                $storeAllergy->algid           = $allergy['ALGID'];
-                                $storeAllergy->status_id       = $allergy['status'] == 'inactive' ? 1 : 2;
-                                $storeAllergy->created_by      = Auth::user()->id;
-                                $storeAllergy->created_at      = Carbon::now();
-                                $storeAllergy->save();
-                            }
-                        }
-                        else
-                        {
-                            $deleteAllergy = PatientAllergy::where('episodenumber', $getEpsdNo)
-                                            ->where('patient_id', $updatePatient->id)
-                                            ->delete();
-                        }
-                    }
-                    else
-                    {
-                        $deleteAllergy = PatientAllergy::where('episodenumber', $getEpsdNo)
-                                        ->where('patient_id', $updatePatient->id)
-                                        ->delete();
-                    }
-                } 
+                    $response = response()->json(
+                        [
+                          'status'  => 'failed',
+                          'message' => 'No MRN'
+                        ], 200
+                    );
+
+                    return $response;
+                }
             }
             else
             {
@@ -627,91 +423,6 @@ class Authsystem
                 );
 
                 return $response;
-            }
-
-            if($holdmrnpatient != null)
-            {
-                $urlSurgical = env('SUR_INVEN').$holdmrnpatient.'/'.$getEpsdNo;
-
-                //local
-                $clientSurgical = new \GuzzleHttp\Client(['defaults' => ['verify' => false]]);
-
-                //production
-                //$client = new \GuzzleHttp\Client();
-                
-                try
-                {
-                    $responseSurgical = $clientSurgical->request('GET', $urlSurgical);
-
-                    $statusCodeMed      = $responseSurgical->getStatusCode();
-                    $contentSurgical    = $responseSurgical->getBody();
-                    $contentSurgical    = json_decode($responseSurgical->getBody(), true);
-
-                    if($contentSurgical != null)
-                    {
-                        if($contentSurgical['status'] == "success")
-                        {
-                            if(isset($contentSurgical['data']))
-                            {
-                                if(count($contentSurgical['data']) > 0)
-                                {
-                                    $deleteSurgical = PatientSurgical::where('episodenumber', $getEpsdNo)
-                                                        ->where('patient_id', $holpatientid)
-                                                        ->delete();
-
-                                    foreach($contentSurgical['data'] as $surgical)
-                                    {
-                                        $storeSurgical = new PatientSurgical();
-                                        $storeSurgical->patient_id     = $holpatientid;
-                                        $storeSurgical->episodenumber  = $getEpsdNo;
-                                        $storeSurgical->emrsurdesc     = $surgical['emrsurdesc'];
-                                        $storeSurgical->emrsuropdate   = Carbon::createFromFormat('d/m/Y', $surgical['emrsuropdate'])->format('Y-m-d');
-                                        $storeSurgical->emrsurepi      = $surgical['emrsurepi'];
-                                        $storeSurgical->status_id      = 2;
-                                        $storeSurgical->created_by     = Auth::user()->id;
-                                        $storeSurgical->created_at     = Carbon::now();
-                                        $storeSurgical->save();
-                                    }
-                                }
-                                else
-                                {
-                                    $deleteSurgical = PatientSurgical::where('episodenumber', $getEpsdNo)
-                                                        ->where('patient_id', $holpatientid)
-                                                        ->delete();
-                                }
-                            }
-                            else
-                            {
-                                $deleteSurgical = PatientSurgical::where('episodenumber', $getEpsdNo)
-                                                    ->where('patient_id', $holpatientid)
-                                                    ->delete();
-                            }
-                        }
-                        else
-                        {
-                            $deleteSurgical = PatientSurgical::where('episodenumber', $getEpsdNo)
-                                                ->where('patient_id', $holpatientid)
-                                                ->delete();
-                        }
-                    }
-                }
-                catch (\Exception $e)
-                {
-                    $deleteSurgical = PatientSurgical::where('episodenumber', $getEpsdNo)
-                                        ->where('patient_id', $holpatientid)
-                                        ->delete();
-                                                
-                    DB::rollBack();
-
-                    $response = response()->json(
-                        [
-                        'status'  => 'failed',
-                        'message' => 'API Error'
-                        ], 200
-                    );
-
-                    return $response;
-                }
             }
 
             //commit the transaction
