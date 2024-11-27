@@ -189,7 +189,8 @@ Route::group(['middleware' => ['authsystem']], function() {
             Route::get('/getworklistconfirm', [iReportingMainController::class, 'getAdrWorklistConfirm'])->name('report.adr.getworklistconfirm');
             Route::get('/getworklistfalse', [iReportingMainController::class, 'getAdrWorklistFalse'])->name('report.adr.getworklistfalse');
             Route::get('/generateconfirm', [iReportingMainController::class, 'AdrReportConfirm'])->name('report.adr.generateconfirm');
-            Route::get('/generatesuspect', [iReportingMainController::class, 'AdrReportSuspect'])->name('report.adr.generatesuspect');      
+            Route::get('/generatesuspect', [iReportingMainController::class, 'AdrReportSuspect'])->name('report.adr.generatesuspect'); 
+            Route::post('/getpatientinfo', [iReportingMainController::class, 'getPatientInfo'])->name('report.adr.getpatientinfo');     
         });
     });
 

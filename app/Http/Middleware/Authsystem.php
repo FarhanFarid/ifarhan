@@ -748,6 +748,7 @@ class Authsystem
                 'ireporting/adr/getworklistfalse',
                 'ireporting/adr/generateconfirm',
                 'ireporting/adr/generatesuspect',
+                'ireporting/adr/getpatientinfo',
             ];
             if(in_array($request->path(), $ipharmacyArr)){
                 try

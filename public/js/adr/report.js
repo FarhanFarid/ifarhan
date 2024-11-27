@@ -139,5 +139,10 @@ $(document).ready(function () {
         });
     });
 
+    $('.btn-print').on('click', function() {
+        var iframe = document.getElementById('report-iframe');
+        iframe.contentWindow.print();
+    });
+
 
 });

@@ -85,7 +85,14 @@ var tablesuspect = $('#reportadr-table').DataTable({
         { 
             "data": 'report',
             "render": function (data, type, row)  {
-                return '<div class="col-md-3"><button class="badge btn-sm badge-light-primary gen-report" data-bs-toggle="tooltip" data-bs-placement="top" title="View Report" data-episodeno="' + row.episodeno + '"><i class="fa-regular fa-file-lines"></i></button></div>'; 
+                var html = '';
+
+                html += '<div class="row">';
+                html += '<div class="col-md-4"><button class="badge btn-sm badge-light-primary gen-report" data-bs-toggle="tooltip" data-bs-placement="top" title="View Report" data-episodeno="' + row.episodeno + '"><i class="fa-regular fa-file-lines"></i></button></div>'; 
+                html += '<div class="col-md-4"><button class="badge btn-sm badge-light-warning edit-report" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Report" data-episodeno="' + row.episodeno + '"><i class="fa-solid fa-pen-to-square"></i></button></div>'; 
+                html += '</div>'
+
+                return html;
             }
         },
     ],
@@ -334,6 +341,42 @@ $(document).ready(function() {
         $('.btn-maximize, .save-finalization').hide();
         $('.btn-maximize, .save-false').hide();   
         $('#adverse-drug-report').modal('show');
+    });
+
+    $('#reportadr-table tbody').on('click', '.edit-report', function(e) {
+        e.preventDefault();
+
+        var episodeno = $(this).data('episodeno');
+        var url = config.routes.ireporting.adr.getpatientinfo;
+        var urlform = config.routes.ireporting.adr.form;
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            dataType: "json",
+            data: { episodeno: episodeno },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') 
+            },
+            success: function(response) {
+                if (response.status === 'success') {
+
+                    var urlObj = new URL(urlform);
+                    var searchParams = urlObj.searchParams;
+
+                    searchParams.set('epsdno', response.data.episodenumber);
+                    searchParams.set('epid', response.data.epid);
+                    searchParams.set('patid', response.data.patient.patid);
+
+                    var updatedUrl = urlObj.origin + urlObj.pathname + '?' + searchParams.toString();
+
+                    window.location.href = updatedUrl;
+                } 
+            },
+            error: function(xhr, status, error) {
+                toastr.error('Error: ' + error, {timeOut: 5000});
+            }
+        });
     });
     //
 

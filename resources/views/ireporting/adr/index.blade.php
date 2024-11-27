@@ -178,6 +178,8 @@
                     worklistfalse : "{{ route('report.adr.getworklistfalse') }}?{!! $url !!}",
                     reportconfirm: "{{ route('report.adr.generateconfirm') }}?{!! $url !!}",
                     reportsuspect: "{{ route('report.adr.generatesuspect') }}?{!! $url !!}",
+                    getpatientinfo: "{{ route('report.adr.getpatientinfo') }}?{!! $url !!}",
+                    form: "{{ route('adr.report.index') }}?{!! $url !!}",
                 },
             },
         },

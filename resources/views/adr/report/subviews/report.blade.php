@@ -171,12 +171,12 @@
             </div>
             <div class="patient">
                 <div class="management">
-                    <div class="description" style="border: 1px solid black; padding: 0;">
+                    <div class="description" style="border: 1px solid black; padding: 0; width: 100%; height: 150px; display: flex; flex-direction: column;">
                         <div style="background-color: black; padding: 5px; border-bottom: 1px solid black; color: white;">
                             <b>ADVERSE REACTION DESCRIPTION</b> (inc. sequence of adverse events, details of rechallenge, interactions)
                         </div>
-                        <div class="row" style="padding: 50px">
-                            
+                        <div class="content" style="padding: 10px; overflow-y: auto; flex-grow: 1;">
+                            {{ $report->descriptions->description ?? '' }}
                         </div>
                     </div>
                     <div class="reactiontime" style="border: 1px solid black; padding: 0;">

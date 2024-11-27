@@ -748,4 +748,20 @@ class iReportingMainController extends Controller
         ));
     }
 
+    public function getPatientInfo(Request $request)
+    {
+        $info = PatientInformation::with('patient')->where('episodenumber', $request->episodeno)->first();
+        // IP0403242
+
+        $response = response()->json(
+            [
+              'status'  => 'success',
+              'data'    => $info
+            ], 200
+        );
+
+        return $response;
+
+    }
+
 }
