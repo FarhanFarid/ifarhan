@@ -20,13 +20,21 @@ var table = $('#reportiblood-table').DataTable({
         {
             "data": 'mrn',
             "render": function (data, type, row) {
-                return '<span>' + row.patinfo.patient.mrn + '</span>';
+                if (row.patinfo == null) {
+                    return '<span>-</span>';
+                } else {
+                    return '<span>' + row.patinfo.patient.mrn + '</span>';
+                }
             }
         },
         {
             "data": 'name',
             "render": function (data, type, row) {
-                return '<span>' + row.patinfo.patient.name + '</span>';
+                if (row.patinfo == null) {
+                    return '<span>-</span>';
+                } else {
+                    return '<span>' + row.patinfo.patient.name + '</span>';
+                }
             }
         },
         {

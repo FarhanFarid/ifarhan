@@ -20,7 +20,7 @@
         <div class="row mb-5">
             <div class="col-md-6">
                 <label for="surgery" class="form-check-label">Name of procedure / surgery</label>
-                <input type="text" class="form-control form-control-sm" id="surgery" name="surgery" value="{{ $procedure->surgery  ?? ''}}"/>
+                <input type="text" class="form-control form-control-sm" id="surgery" name="surgery" value="{{ $procedure->surgery ?? $latestsurgical ?? '' }}" />            
             </div> 
         </div>
         <div class="row mb-5">

@@ -19,7 +19,7 @@ var tablesuspect = $('#reportibloodatr-table').DataTable({
         {
             "data": 'mrn',
             "render": function (data, type, row)  {
-                return '<span>'+row.mrn+'</span>';
+                return '<span>'+row.patinfo.patient.mrn+'</span>';
             }
         },
         {
@@ -41,18 +41,18 @@ var tablesuspect = $('#reportibloodatr-table').DataTable({
                     return '<span></span>';
 
                 }else{
-                    return '<span>'+moment(row.transfuse_start_at).format('DD/MM/YYYY HH:mm')+'</span>';
+                    return '<span>'+moment(row.transfuse_stop_at).format('DD/MM/YYYY HH:mm')+'</span>';
                 }
             }
         },
         {
             "data": 'location',
             "render": function (data, type, row)  {
-                if(row.location == null ){
-                    return '<span></span>';
+                if(row.locs == null ){
+                    return '<span>-</span>';
 
                 }else{
-                    return '<span>'+row.location+'</span>';
+                    return '<span>'+row.locs.location+'</span>';
                 }
             }
         },
@@ -96,6 +96,53 @@ var tablesuspect = $('#reportibloodatr-table').DataTable({
             "data": 'report',
             "render": function (data, type, row)  {
                 return '<div class="col-md-3"><button class="badge btn-sm badge-light-primary gen-report" data-bs-toggle="tooltip" data-bs-placement="top" title="View Report" data-bagno="' + row.bagno + '" data-episodeno="' + row.episodeno + '"><i class="fa-regular fa-file-lines"></i></button></div>';
+            }
+        },
+
+        {
+            "data": 'statusid',
+            "render": function (data, type, row)  {
+                var html = '';
+
+                html += '<div class="row px-15 mb-3">'
+                html += '<span class="badge badge-warning">Pending Nurse: '
+                if(row.detailprocedures == null){
+                    html += 'Detail of Procedure,' 
+                }
+                if(row.bloodcomponents == null){
+                    html += ' Section D' 
+                }
+                if(row.symptoms == null){
+                    html += ', Section G' 
+                }
+                html += '</span>'
+                html += '</div>'
+
+                html += '<div class="row px-15 mb-3">'
+                html += '<span class="badge badge-warning">Pending Doctor: '
+                if(row.clinicalhistories == null){
+                    html += 'Section F,' 
+                }
+                if(row.investigations == null){
+                    html += ' Section H' 
+                }
+                if(row.adverseoutcomes == null){
+                    html += ', Section I' 
+                }
+                html += '</span>'
+                html += '</div>'
+
+                html += '<div class="row px-15 mb-3">'
+                html += '<span class="badge badge-warning">Pending Lab: '
+                if(row.adverseevents == null){
+                    html += 'Section J' 
+                }
+                html += '</span>'
+                html += '</div>'
+
+
+
+                return html;
             }
         },
     ],

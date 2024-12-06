@@ -13,6 +13,8 @@ use App\Models\AdrSuspectedDrug;
 
 use Auth;
 
+use App\Helpers\UpdatePatient;
+
 
 class AdrController extends Controller
 {
@@ -21,6 +23,12 @@ class AdrController extends Controller
         $explode = explode('?', $request->getRequestUri());
 
         $url = $explode[1];
+
+        $epno = $request->epsdno;
+        $epid = $request->epid;
+        $patid = $request->patid;
+        $patdemo     = new UpdatePatient();
+        $datapatdemo = $patdemo->updatepatient($epno, $epid, $patid);
 
         $report = AdrReport::with([
             'descriptions',

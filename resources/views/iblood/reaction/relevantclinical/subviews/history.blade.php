@@ -31,7 +31,7 @@
         <div class="row mb-5">
             <div class="col-md-6">
                 <label for="indication" class="form-check-label">Indication for transfusion</label>
-                <input type="text" class="form-control form-control-sm" id="indication" name="indication" value="{{ $relevanthistory->indication  ?? ''}}"/>
+                <input type="text" class="form-control form-control-sm" id="indication" name="indication" value="{{ $relevanthistory->indication  ?? $reasontransfusion ?? '' }}"/>
             </div>
             <div class="col-md-6">
                 <label for="relevanthistory" class="form-check-label">Other relevant medical and/or surgical history</label>

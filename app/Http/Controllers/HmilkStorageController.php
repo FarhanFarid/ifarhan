@@ -13,6 +13,8 @@ use App\Models\PatientInformation;
 use Auth;
 use DB;
 
+use App\Helpers\UpdatePatient;
+
 
 class HmilkStorageController extends Controller
 {
@@ -21,6 +23,13 @@ class HmilkStorageController extends Controller
         $explode = explode('?', $request->getRequestUri());
 
         $url = $explode[1];
+
+
+        $epno = $request->epsdno;
+        $epid = $request->epid;
+        $patid = $request->patid;
+        $patdemo     = new UpdatePatient();
+        $datapatdemo = $patdemo->updatepatient($epno, $epid, $patid);
 
         //TotalEBM
         $totalebm = Inventory::where('episodeNo', $request->input('epsdno'))->count();

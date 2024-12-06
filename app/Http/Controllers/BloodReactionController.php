@@ -98,12 +98,9 @@ class BloodReactionController extends Controller
 
         $uri = env('PAT_DEMO'). $request->epsdno;
         $client = new \GuzzleHttp\Client(['defaults' => ['verify' => false]]);
-
         $response = $client->request('GET', $uri);
-
         $statusCode = $response->getStatusCode();
         $content = json_decode($response->getBody(), true);
-
         $patdemo = $content['data'];
 
         $vitaltemp = !empty($record->temperature) ? $record->temperature : ($patdemo['temp'] ?? '');
@@ -111,6 +108,28 @@ class BloodReactionController extends Controller
         $vitaldysto = !empty($record->diasto) ? $record->diasto : ($patdemo['diasBP'] ?? '');
         $vitalpulse = !empty($record->pulserate) ? $record->pulserate : ($patdemo['pulRate'] ?? '');
         $vitalspo = !empty($record->spo) ? $record->spo : ($patdemo['spO'] ?? '');
+
+        $urisurge = env('SUR_INVEN').$patdemo['prn']."/".$request->epsdno;
+        $client = new \GuzzleHttp\Client(['defaults' => ['verify' => false]]);
+        $responsesurge = $client->request('GET', $urisurge);
+        $statusCode = $responsesurge->getStatusCode();
+        $contentsurge = json_decode($responsesurge->getBody(), true);
+        $surgical = $contentsurge['data'];
+
+
+        if (!empty($surgical)) {
+            $lastElement = end($surgical);
+            $latestsurgical = $lastElement['emrsurdesc'] ?? null;
+        } else {
+            $latestsurgical = "";
+        }
+
+        $urilaborder = env('LAB_ORDER'). $inventory->labno;
+        $client = new \GuzzleHttp\Client(['defaults' => ['verify' => false]]);
+        $responselaborder = $client->request('GET', $urilaborder);
+        $statusCode = $responselaborder->getStatusCode();
+        $contentlaborder = json_decode($responselaborder->getBody(), true);
+        $reasontransfusion = $contentlaborder['reasonForTransfusion'];
 
         return view('iblood.reaction.index', compact(
             'url', 
@@ -128,6 +147,8 @@ class BloodReactionController extends Controller
             'procedure' ,
             'inventory',
             'component',
+            'latestsurgical',
+            'reasontransfusion',
         ));
 
     }

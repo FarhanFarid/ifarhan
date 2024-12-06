@@ -45,6 +45,7 @@
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Report Date/Time</th>
                                     <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">ATR Ageing</th>
                                     <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">Report</th>
+                                    <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">Status</th>
                                 </tr>
                             </thead>
                             <tbody>

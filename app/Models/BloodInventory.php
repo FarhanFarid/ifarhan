@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 use Illuminate\Database\Eloquent\Model;
@@ -17,7 +18,46 @@ class BloodInventory extends Model
     public function locations(): HasMany
     {
         return $this->hasMany(BloodLocation::class, 'inventory_bagno', 'bagno');
-        // return $this->hasMany(BloodLocation::class, ['inventory_bagno', 'episodeno'], ['bagno', 'episodeno']);
+    }
+
+    public function locs(): HasOne
+    {
+        return $this->hasOne(BloodLocation::class, 'inventory_bagno', 'bagno');
+    }
+
+    public function detailprocedures(): HasOne
+    {
+        return $this->hasOne(BloodDetailProcedure::class, 'inventory_bagno', 'bagno');
+    }
+
+    public function bloodcomponents(): HasOne
+    {
+        return $this->hasOne(BloodBloodComponent::class, 'inventory_bagno', 'bagno');
+    }
+
+    public function clinicalhistories(): HasOne
+    {
+        return $this->hasOne(BloodRelevantHistory::class, 'inventory_bagno', 'bagno');
+    }
+
+    public function symptoms(): HasOne
+    {
+        return $this->hasOne(BloodSignSymptom::class, 'inventory_bagno', 'bagno');
+    }
+
+    public function investigations(): HasOne
+    {
+        return $this->hasOne(BloodRelevantInvestigation::class, 'inventory_bagno', 'bagno');
+    }
+
+    public function adverseoutcomes(): HasOne
+    {
+        return $this->hasOne(BloodOutcomeAdverseEvent::class, 'inventory_bagno', 'bagno');
+    }
+
+    public function adverseevents(): HasOne
+    {
+        return $this->hasOne(BloodTypeAdverseEvent::class, 'inventory_bagno', 'bagno');
     }
 
     public function reactions(): HasMany

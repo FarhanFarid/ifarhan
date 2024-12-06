@@ -15,6 +15,9 @@ use App\Models\PatientInformation;
 
 use Auth;
 
+use App\Helpers\UpdatePatient;
+
+
 
 class BloodInventoryController extends Controller
 {
@@ -23,6 +26,12 @@ class BloodInventoryController extends Controller
         $explode = explode('?', $request->getRequestUri());
 
         $url = $explode[1];
+
+        $epno = $request->epsdno;
+        $epid = $request->epid;
+        $patid = $request->patid;
+        $patdemo     = new UpdatePatient();
+        $datapatdemo = $patdemo->updatepatient($epno, $epid, $patid);
 
         return view('iblood.inventory.index', compact('url'));
 
