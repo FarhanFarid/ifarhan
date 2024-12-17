@@ -1,6 +1,17 @@
-<div class="card card-custom gutter-b" style="border-radius: 0px !important; background-color: #eaeaea; margin: 0 !important; padding: 0 !important;">
+<div class="card card-custom gutter-b" style="border-radius: 0px !important; background-color: #eaeaea; margin: 0 !important; padding: 0 !important; position: relative;">
     <div class="d-flex justify-content-center">
         <h4 class="text-center" style="padding: 0.5rem !important; margin: 0 !important; color: #1d69e3;">Procedure</h4>
+    </div>
+    <div style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #333; padding-top:2px;">
+        <small>
+            <b>Last Updated By:</b> 
+            {{ $procedure && $procedure->updatedby ? $procedure->updatedby->name : ($procedure && $procedure->createdby ? $procedure->createdby->name : '-') }}
+        </small><br>
+    
+        <small>
+            <b>Updated At:</b> 
+            {{ $procedure && $procedure->updated_at ? \Carbon\Carbon::parse($procedure->updated_at)->format('d/m/Y H:i') : ($procedure && $procedure->created_at ? \Carbon\Carbon::parse($procedure->created_at)->format('d-m-Y H:i') : '-') }}
+        </small>
     </div>
 </div>
 <div class="card card-custom gutter-b flex-grow-1 d-flex flex-column" style="box-shadow: 0px 2px 6px 2px #dcdcdc !important; border-radius: 0px !important;">
@@ -9,7 +20,7 @@
         <div class="row mb-5">
             <div class="col-md-6">
                 <label for="surgery" class="form-check-label">Name of procedure / surgery</label>
-                <input type="text" class="form-control form-control-sm" id="surgery" name="surgery" value="{{ $procedure->surgery  ?? ''}}"/>
+                <input type="text" class="form-control form-control-sm" id="surgery" name="surgery" value="{{ $procedure->surgery ?? $latestsurgical ?? '' }}" />            
             </div> 
         </div>
         <div class="row mb-5">

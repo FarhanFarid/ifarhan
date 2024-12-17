@@ -130,7 +130,7 @@ Route::group(['middleware' => ['authsystem']], function() {
             Route::group(['prefix' => 'report'], function () {
                 Route::get('/generate', [BloodReactionController::class, 'genReport'])->name('blood.reaction.report.generate');   
                 Route::post('/finalize', [BloodReactionController::class, 'finalize'])->name('blood.reaction.report.finalize');
-                Route::post('/false', [BloodReactionController::class, 'falsReport'])->name('blood.reaction.report.false');                                                          
+                Route::post('/false', [BloodReactionController::class, 'falseReport'])->name('blood.reaction.report.false');                                                          
             });
         });
     });
@@ -156,6 +156,7 @@ Route::group(['middleware' => ['authsystem']], function() {
         Route::group(['prefix' => 'imilk'], function () {
             Route::get('/', [iReportingMainController::class, 'indexImilk'])->name('report.imilk.index');
             Route::get('/getimilkinventory', [iReportingMainController::class, 'getImilkInventory'])->name('report.imilk.getinventory');
+            Route::get('/getimilkcompliance', [iReportingMainController::class, 'getImilkCompliance'])->name('report.imilk.getcompliance');
         });
         Route::group(['prefix' => 'iblood'], function () {
             Route::get('/', [iReportingMainController::class, 'indexIblood'])->name('report.iblood.index');
@@ -166,6 +167,9 @@ Route::group(['middleware' => ['authsystem']], function() {
             Route::group(['prefix' => 'atr'], function () {
                 Route::get('/', [iReportingMainController::class, 'indexIbloodAtr'])->name('report.iblood.atr.index');
                 Route::get('/getworklist', [iReportingMainController::class, 'getIBloodAtrWorklist'])->name('report.iblood.atr.getworklist');
+                Route::get('/getworklistconfirm', [iReportingMainController::class, 'getIBloodAtrWorklistConfirm'])->name('report.iblood.atr.getworklistconfirm');
+                Route::get('/getworklistfalse', [iReportingMainController::class, 'getIBloodAtrWorklistFalse'])->name('report.iblood.atr.getworklistfalse');
+                Route::get('/generateconfirm', [iReportingMainController::class, 'genReportConfirm'])->name('report.iblood.atr.generateconfirm');   
             });
         });
         Route::group(['prefix' => 'ida'], function () {
@@ -178,6 +182,16 @@ Route::group(['middleware' => ['authsystem']], function() {
             Route::get('/', [iReportingMainController::class, 'indexDischargeSummary'])->name('report.dischargesummary');
             Route::get('/list', [iReportingMainController::class, 'apiGetDataDischargeSummary'])->name('report.dischargesummary.list');
         });
+
+        Route::group(['prefix' => 'adr'], function () {
+            Route::get('/', [iReportingMainController::class, 'indexAdrWorklist'])->name('report.adr.index');
+            Route::get('/getworklistsuspect', [iReportingMainController::class, 'getAdrWorklistSuspect'])->name('report.adr.getworklistsuspect');
+            Route::get('/getworklistconfirm', [iReportingMainController::class, 'getAdrWorklistConfirm'])->name('report.adr.getworklistconfirm');
+            Route::get('/getworklistfalse', [iReportingMainController::class, 'getAdrWorklistFalse'])->name('report.adr.getworklistfalse');
+            Route::get('/generateconfirm', [iReportingMainController::class, 'AdrReportConfirm'])->name('report.adr.generateconfirm');
+            Route::get('/generatesuspect', [iReportingMainController::class, 'AdrReportSuspect'])->name('report.adr.generatesuspect'); 
+            Route::post('/getpatientinfo', [iReportingMainController::class, 'getPatientInfo'])->name('report.adr.getpatientinfo');     
+        });
     });
 
     //ADR
@@ -185,7 +199,9 @@ Route::group(['middleware' => ['authsystem']], function() {
         Route::group(['prefix' => 'report'], function () {
             Route::get('/', [AdrController::class, 'index'])->name('adr.report.index');   
             Route::get('/generate', [AdrController::class, 'genReport'])->name('adr.report.generate');   
-            Route::post('/finalize', [AdrController::class, 'finalize'])->name('adr.report.finalize');                             
+            Route::post('/save-finalize', [AdrController::class, 'saveFinalize'])->name('adr.report.savefinalize');
+            Route::post('/save-false', [AdrController::class, 'saveFalse'])->name('adr.report.savefalse');
+            Route::post('/save-record', [AdrController::class, 'saveRecord'])->name('adr.report.saverecord');                             
         });
 
     });

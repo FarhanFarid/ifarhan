@@ -40,6 +40,20 @@
                                                     <input class="form-control form-control-solid" type="datetime-local" name="actualsuspenddate" id="actualsuspenddate" value="{{ \Carbon\Carbon::now()->format('Y-m-d\TH:i') }}">
                                                 </div>
                                             </div>
+                                            <div class="row m-1 mb-3" id="suspendreason" style="display: none;">
+                                                <div class="col-md-4 pt-4">
+                                                    <b>Change Date Reason</b>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <select class="form-select form-select-solid" name="suspendcdreason" id="suspendcdreason">
+                                                        <option></option>
+                                                        <option value="Emergency/Severe Case">Emergency/Severe Case</option>
+                                                        <option value="System Down/Code White">System Down/Code White</option>
+                                                        <option value="Misconduct/Malpractice">Misconduct/Malpractice</option>
+                                                        <option value="Hardware Malfunction">Hardware Malfunction</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                             <div class="row m-1 mb-3">
                                                 <div class="col-md-4 pt-4">
                                                     <b>Reaction</b>

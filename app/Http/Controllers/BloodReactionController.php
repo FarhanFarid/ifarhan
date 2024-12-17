@@ -35,7 +35,10 @@ class BloodReactionController extends Controller
 
         $bagno = $request->bagno;
 
-        $record = BloodSignSymptom::where('inventory_bagno', $bagno)->where('status_id', '1')->first();
+        $record = BloodSignSymptom::where('inventory_bagno', $bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->with([
+            'createdby:id,name',
+            'updatedby:id,name',
+        ])->first();
 
         if ($record) {
             $record->general = explode(', ', $record->general);
@@ -46,26 +49,48 @@ class BloodReactionController extends Controller
             $record->cardio = explode(', ', $record->cardio);
         }
 
-        $typeadverseevent = BloodTypeAdverseEvent::where('inventory_bagno', $bagno)->where('status_id', '1')->first();
+        $typeadverseevent = BloodTypeAdverseEvent::where('inventory_bagno', $bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->with([
+            'createdby:id,name',
+            'updatedby:id,name',
+        ])->first();
 
         if ($typeadverseevent) {
             $typeadverseevent->section1 = explode(', ', $typeadverseevent->section1);
             $typeadverseevent->section5 = explode(', ', $typeadverseevent->section5);
         }
 
-        $outcomeadverseevent = BloodOutcomeAdverseEvent::where('inventory_bagno', $bagno)->where('status_id', '1')->first();
+        $outcomeadverseevent = BloodOutcomeAdverseEvent::where('inventory_bagno', $bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->with([
+            'createdby:id,name',
+            'updatedby:id,name',
+        ])->first();
 
         if ($outcomeadverseevent) {
             $outcomeadverseevent->recovered = explode(', ', $outcomeadverseevent->recovered);
             $outcomeadverseevent->death     = explode(', ', $outcomeadverseevent->death);
         }
 
-        $relevantinvestigation = BloodRelevantInvestigation::where('inventory_bagno', $bagno)->where('status_id', '1')->first();
-        $relevanthistory = BloodRelevantHistory::where('inventory_bagno', $bagno)->where('status_id', '1')->first();
-        $procedure = BloodDetailProcedure::where('inventory_bagno', $bagno)->where('status_id', '1')->first();
+        $relevantinvestigation = BloodRelevantInvestigation::where('inventory_bagno', $bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->with([
+            'user:id,name',
+            'updatedby:id,name',
+        ])->first();
+        $relevanthistory = BloodRelevantHistory::where('inventory_bagno', $bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->with([
+            'createdby:id,name',
+            'updatedby:id,name',
+        ])->first();
+
+        $procedure = BloodDetailProcedure::where('inventory_bagno', $bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->with([
+            'createdby:id,name',
+            'updatedby:id,name',
+        ])->first();
+
+        // dd($procedure->updatedby->name);
+
         $inventory = BloodInventory::where('bagno', $request->input('bagno'))->where('episodeno', $request->epsdno)->first();
 
-        $component = BloodBloodComponent::where('inventory_bagno', $bagno)->where('status_id', '1')->first();
+        $component = BloodBloodComponent::where('inventory_bagno', $bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->with([
+            'createdby:id,name',
+            'updatedby:id,name',
+        ])->first();
 
         if ($component) {
             $component->product = explode(', ', $component->product);
@@ -73,12 +98,9 @@ class BloodReactionController extends Controller
 
         $uri = env('PAT_DEMO'). $request->epsdno;
         $client = new \GuzzleHttp\Client(['defaults' => ['verify' => false]]);
-
         $response = $client->request('GET', $uri);
-
         $statusCode = $response->getStatusCode();
         $content = json_decode($response->getBody(), true);
-
         $patdemo = $content['data'];
 
         $vitaltemp = !empty($record->temperature) ? $record->temperature : ($patdemo['temp'] ?? '');
@@ -86,6 +108,28 @@ class BloodReactionController extends Controller
         $vitaldysto = !empty($record->diasto) ? $record->diasto : ($patdemo['diasBP'] ?? '');
         $vitalpulse = !empty($record->pulserate) ? $record->pulserate : ($patdemo['pulRate'] ?? '');
         $vitalspo = !empty($record->spo) ? $record->spo : ($patdemo['spO'] ?? '');
+
+        $urisurge = env('SUR_INVEN').$patdemo['prn']."/".$request->epsdno;
+        $client = new \GuzzleHttp\Client(['defaults' => ['verify' => false]]);
+        $responsesurge = $client->request('GET', $urisurge);
+        $statusCode = $responsesurge->getStatusCode();
+        $contentsurge = json_decode($responsesurge->getBody(), true);
+        $surgical = $contentsurge['data'];
+
+
+        if (!empty($surgical)) {
+            $lastElement = end($surgical);
+            $latestsurgical = $lastElement['emrsurdesc'] ?? null;
+        } else {
+            $latestsurgical = "";
+        }
+
+        $urilaborder = env('LAB_ORDER'). $inventory->labno;
+        $client = new \GuzzleHttp\Client(['defaults' => ['verify' => false]]);
+        $responselaborder = $client->request('GET', $urilaborder);
+        $statusCode = $responselaborder->getStatusCode();
+        $contentlaborder = json_decode($responselaborder->getBody(), true);
+        $reasontransfusion = $contentlaborder['reasonForTransfusion'];
 
         return view('iblood.reaction.index', compact(
             'url', 
@@ -103,6 +147,8 @@ class BloodReactionController extends Controller
             'procedure' ,
             'inventory',
             'component',
+            'latestsurgical',
+            'reasontransfusion',
         ));
 
     }
@@ -112,7 +158,11 @@ class BloodReactionController extends Controller
 
         try{ 
 
-            $record = BloodSignSymptom::where('inventory_bagno', $request->bagNo)->where('status_id', '1')->first();
+            $record = BloodSignSymptom::where('inventory_bagno', $request->bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->first();
+            $inventory = BloodInventory::where('bagno', $request->input('bagno'))->where('episodeno', $request->epsdno)->first();
+
+
+            // dd($request->all());
 
             if($record == null){
                 $generalarr = [
@@ -178,7 +228,7 @@ class BloodReactionController extends Controller
     
                 $storereaction                      = new BloodSignSymptom();
                 $storereaction->episodenumber       = $request->epsdno;
-                $storereaction->inventory_bagno     = $request->bagNo;
+                $storereaction->inventory_bagno     = $request->bagno;
                 $storereaction->temperature         = $request->vitaltemp;
                 $storereaction->systo               = $request->vitalsysto;
                 $storereaction->diasto              = $request->vitaldysto;
@@ -205,6 +255,11 @@ class BloodReactionController extends Controller
                 $storereaction->created_by          = Auth::user()->id;
                 $storereaction->created_at          = Carbon::now();
                 $storereaction->save();
+
+                if($inventory->atr_status_id == null){
+                    $inventory->atr_status_id = 1;
+                    $inventory->save();
+                }
     
                 return response()->json(
                     [
@@ -277,10 +332,10 @@ class BloodReactionController extends Controller
                 $cardio = implode(", ", array_values($cardioarr));
                 $respi = implode(", ", array_values($respiarr));
 
-                $updatereaction = BloodSignSymptom::where('inventory_bagno', $request->bagNo)->where('status_id', '1')->first();
+                $updatereaction = BloodSignSymptom::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
 
                 $updatereaction->episodenumber       = $request->epsdno;
-                $updatereaction->inventory_bagno     = $request->bagNo;
+                $updatereaction->inventory_bagno     = $request->bagno;
                 $updatereaction->temperature         = $request->vitaltemp;
                 $updatereaction->systo               = $request->vitalsysto;
                 $updatereaction->diasto              = $request->vitaldysto;
@@ -379,6 +434,7 @@ class BloodReactionController extends Controller
         try{ 
 
             $record = BloodTypeAdverseEvent::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
+            $inventory = BloodInventory::where('bagno', $request->input('bagno'))->where('episodeno', $request->epsdno)->first();
 
             if($record == null){
                 
@@ -428,6 +484,11 @@ class BloodReactionController extends Controller
                 $storereaction->created_by          = Auth::user()->id;
                 $storereaction->created_at          = Carbon::now();
                 $storereaction->save();
+
+                if($inventory->atr_status_id == null){
+                    $inventory->atr_status_id = 1;
+                    $inventory->save();
+                }
 
                 return response()->json(
                     [
@@ -516,6 +577,7 @@ class BloodReactionController extends Controller
         try{
 
             $record = BloodOutcomeAdverseEvent::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
+            $inventory = BloodInventory::where('bagno', $request->input('bagno'))->where('episodeno', $request->epsdno)->first();
 
             if($record == null){
 
@@ -544,6 +606,11 @@ class BloodReactionController extends Controller
                 $storereaction->created_by          = Auth::user()->id;
                 $storereaction->created_at          = Carbon::now();
                 $storereaction->save();
+
+                if($inventory->atr_status_id == null){
+                    $inventory->atr_status_id = 1;
+                    $inventory->save();
+                }
 
                 return response()->json(
                     [
@@ -613,6 +680,7 @@ class BloodReactionController extends Controller
         try{
 
             $record = BloodRelevantInvestigation::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
+            $inventory = BloodInventory::where('bagno', $request->input('bagno'))->where('episodeno', $request->epsdno)->first();
 
             if($record == null){
 
@@ -639,6 +707,11 @@ class BloodReactionController extends Controller
                 $storereaction->created_by          = Auth::user()->id;
                 $storereaction->created_at          = Carbon::now();
                 $storereaction->save();
+
+                if($inventory->atr_status_id == null){
+                    $inventory->atr_status_id = 1;
+                    $inventory->save();
+                }
 
                 return response()->json(
                     [
@@ -713,6 +786,7 @@ class BloodReactionController extends Controller
             // );
 
             $record = BloodRelevantHistory::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
+            $inventory = BloodInventory::where('bagno', $request->input('bagno'))->where('episodeno', $request->epsdno)->first();
 
             if($record == null){
 
@@ -729,6 +803,11 @@ class BloodReactionController extends Controller
                 $storereaction->created_by          = Auth::user()->id;
                 $storereaction->created_at          = Carbon::now();
                 $storereaction->save();
+
+                if($inventory->atr_status_id == null){
+                    $inventory->atr_status_id = 1;
+                    $inventory->save();
+                }
 
                 return response()->json(
                     [
@@ -786,6 +865,7 @@ class BloodReactionController extends Controller
         try{
 
             $record = BloodDetailProcedure::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
+            $inventory = BloodInventory::where('bagno', $request->input('bagno'))->where('episodeno', $request->epsdno)->first();
 
             if($record == null){
 
@@ -802,6 +882,11 @@ class BloodReactionController extends Controller
                 $storereaction->created_by          = Auth::user()->id;
                 $storereaction->created_at          = Carbon::now();
                 $storereaction->save();
+
+                if($inventory->atr_status_id == null){
+                    $inventory->atr_status_id = 1;
+                    $inventory->save();
+                }
 
                 return response()->json(
                     [
@@ -859,6 +944,7 @@ class BloodReactionController extends Controller
         try{
      
             $record = BloodBloodComponent::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
+            $inventory = BloodInventory::where('bagno', $request->input('bagno'))->where('episodeno', $request->epsdno)->first();
 
             if($record == null){
 
@@ -886,6 +972,11 @@ class BloodReactionController extends Controller
                 $storereaction->created_by          = Auth::user()->id;
                 $storereaction->created_at          = Carbon::now();
                 $storereaction->save();
+
+                if($inventory->atr_status_id == null){
+                    $inventory->atr_status_id = 1;
+                    $inventory->save();
+                }
 
                 return response()->json(
                     [
@@ -1073,89 +1164,128 @@ class BloodReactionController extends Controller
 
         try{
 
-            $procedure = BloodDetailProcedure::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
 
-            if ($procedure != null) {
+
+            $procedure = BloodDetailProcedure::where('inventory_bagno', $request->bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->first();
+            $relevanthistory = BloodRelevantHistory::where('inventory_bagno', $request->bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->first();
+            $signsymptom = BloodSignSymptom::where('inventory_bagno', $request->bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->first();
+            $typeadverseevent = BloodTypeAdverseEvent::where('inventory_bagno', $request->bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->first();
+            $outcomeadverseevent = BloodOutcomeAdverseEvent::where('inventory_bagno', $request->bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->first();
+            $relevantinvestigation = BloodRelevantInvestigation::where('inventory_bagno', $request->bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->first();
+            $bloodcomponent = BloodBloodComponent::where('inventory_bagno', $request->bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->first();
+            $inventory = BloodInventory::where('bagno', $request->input('bagno'))->where('episodeno', $request->epsdno)->first();
+
+
+            if ($procedure == null) {
                 
+                return response()->json(
+                    [
+                        'status'  => 'failed',
+                        'message' => 'Please fill detail procedure section.'
+                    ], 200
+                );
+
+            }elseif ($relevanthistory == null) {
+                
+                return response()->json(
+                    [
+                        'status'  => 'failed',
+                        'message' => 'Please fill relevant clinical history section.'
+                    ], 200
+                );
+                
+            }elseif ($signsymptom == null) {
+                
+                return response()->json(
+                    [
+                        'status'  => 'failed',
+                        'message' => 'Please fill sign and symptoms section.'
+                    ], 200
+                );
+                
+            }elseif ($typeadverseevent == null) {
+                
+                return response()->json(
+                    [
+                        'status'  => 'failed',
+                        'message' => 'Please fill type of adverse event section.'
+                    ], 200
+                );
+                
+            }elseif ($outcomeadverseevent == null) {
+                
+                return response()->json(
+                    [
+                        'status'  => 'failed',
+                        'message' => 'Please fill adverse event outcome section.'
+                    ], 200
+                );
+                
+            }elseif ($relevantinvestigation == null) {
+                
+                return response()->json(
+                    [
+                        'status'  => 'failed',
+                        'message' => 'Please fill relevant investigation section.'
+                    ], 200
+                );
+                
+            }elseif ($bloodcomponent == null) {
+                
+                return response()->json(
+                    [
+                        'status'  => 'failed',
+                        'message' => 'Please fill detail procedure section.'
+                    ], 200
+                );
+                
+            }else{
+
                 $procedure->status_id       = 2;
                 $procedure->finalize_by     = Auth::user()->id;
                 $procedure->finalize_at     = Carbon::now();
                 $procedure->save();
 
-            }
-
-            $relevanthistory = BloodRelevantHistory::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
-
-            if ($relevanthistory != null) {
-                
                 $relevanthistory->status_id       = 2;
                 $relevanthistory->finalize_by     = Auth::user()->id;
                 $relevanthistory->finalize_at     = Carbon::now();
                 $relevanthistory->save();
-                
-            }
 
-            $signsymptom = BloodSignSymptom::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
-
-            if ($signsymptom != null) {
-                
                 $signsymptom->status_id       = 2;
                 $signsymptom->finalize_by     = Auth::user()->id;
                 $signsymptom->finalize_at     = Carbon::now();
                 $signsymptom->save();
-                
-            }
 
-            $typeadverseevent = BloodTypeAdverseEvent::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
-
-            if ($typeadverseevent != null) {
-                
                 $typeadverseevent->status_id       = 2;
                 $typeadverseevent->finalize_by     = Auth::user()->id;
                 $typeadverseevent->finalize_at     = Carbon::now();
                 $typeadverseevent->save();
-                
-            }
 
-            $outcomeadverseevent = BloodOutcomeAdverseEvent::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
-
-            if ($outcomeadverseevent != null) {
-                
                 $outcomeadverseevent->status_id       = 2;
                 $outcomeadverseevent->finalize_by     = Auth::user()->id;
                 $outcomeadverseevent->finalize_at     = Carbon::now();
                 $outcomeadverseevent->save();
-                
-            }
 
-            $relevantinvestigation = BloodRelevantInvestigation::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
-
-            if ($relevantinvestigation != null) {
-                
                 $relevantinvestigation->status_id       = 2;
                 $relevantinvestigation->finalize_by     = Auth::user()->id;
                 $relevantinvestigation->finalize_at     = Carbon::now();
                 $relevantinvestigation->save();
-                
-            }
 
-            $bloodcomponent = BloodBloodComponent::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
-
-            if ($bloodcomponent != null) {
-                
                 $bloodcomponent->status_id       = 2;
                 $bloodcomponent->finalize_by     = Auth::user()->id;
                 $bloodcomponent->finalize_at     = Carbon::now();
                 $bloodcomponent->save();
-                
-            }
 
-            return response()->json(
-                [
-                    'status'  => 'success',
-                    'message' => 'Successfully finalize report.'
-                ], 200
-            );
+                $inventory->atr_status_id = 2;
+                $inventory->save();
+
+                return response()->json(
+                    [
+                        'status'  => 'success',
+                        'message' => 'Successfully finalize report.'
+                    ], 200
+                );
+            }
 
         }catch (\Exception $e){
             Log::error($e->getMessage(), [
@@ -1180,7 +1310,8 @@ class BloodReactionController extends Controller
 
         try{
 
-            $procedure = BloodDetailProcedure::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
+            $inventory = BloodInventory::where('bagno', $request->input('bagno'))->where('episodeno', $request->epsdno)->first();
+            $procedure = BloodDetailProcedure::where('inventory_bagno', $request->bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->first();
 
             if ($procedure != null) {
                 
@@ -1191,7 +1322,7 @@ class BloodReactionController extends Controller
 
             }
 
-            $relevanthistory = BloodRelevantHistory::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
+            $relevanthistory = BloodRelevantHistory::where('inventory_bagno', $request->bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->first();
 
             if ($relevanthistory != null) {
                 
@@ -1202,7 +1333,7 @@ class BloodReactionController extends Controller
                 
             }
 
-            $signsymptom = BloodSignSymptom::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
+            $signsymptom = BloodSignSymptom::where('inventory_bagno', $request->bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->first();
 
             if ($signsymptom != null) {
                 
@@ -1213,7 +1344,7 @@ class BloodReactionController extends Controller
                 
             }
 
-            $typeadverseevent = BloodTypeAdverseEvent::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
+            $typeadverseevent = BloodTypeAdverseEvent::where('inventory_bagno', $request->bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->first();
 
             if ($typeadverseevent != null) {
                 
@@ -1224,7 +1355,7 @@ class BloodReactionController extends Controller
                 
             }
 
-            $outcomeadverseevent = BloodOutcomeAdverseEvent::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
+            $outcomeadverseevent = BloodOutcomeAdverseEvent::where('inventory_bagno', $request->bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->first();
 
             if ($outcomeadverseevent != null) {
                 
@@ -1235,7 +1366,7 @@ class BloodReactionController extends Controller
                 
             }
 
-            $relevantinvestigation = BloodRelevantInvestigation::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
+            $relevantinvestigation = BloodRelevantInvestigation::where('inventory_bagno', $request->bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->first();
 
             if ($relevantinvestigation != null) {
                 
@@ -1246,7 +1377,7 @@ class BloodReactionController extends Controller
                 
             }
 
-            $bloodcomponent = BloodBloodComponent::where('inventory_bagno', $request->bagno)->where('status_id', '1')->first();
+            $bloodcomponent = BloodBloodComponent::where('inventory_bagno', $request->bagno)->where('episodenumber', $request->epsdno)->where('status_id', '1')->first();
 
             if ($bloodcomponent != null) {
                 
@@ -1256,6 +1387,9 @@ class BloodReactionController extends Controller
                 $bloodcomponent->save();
                 
             }
+
+            $inventory->atr_status_id = 3;
+            $inventory->save();
 
             return response()->json(
                 [

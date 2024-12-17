@@ -89,6 +89,20 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row m-5" id="receivereason" style="display: none;">
+                                    {{-- <div class="row m-5" id="receivereason"> --}}
+                                        <div class="col-md-2">
+                                            <div class="row p-1">
+                                                <select class="form-select form-select-solid" name="receivecdreason" id="receivecdreason">
+                                                    <option value="">Please select reason</option>
+                                                    <option value="Emergency/Severe Case">Emergency/Severe Case</option>
+                                                    <option value="System Down/Code White">System Down/Code White</option>
+                                                    <option value="Misconduct/Malpractice">Misconduct/Malpractice</option>
+                                                    <option value="Hardware Malfunction">Hardware Malfunction</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-md-12 d-flex justify-content-center">
                                             <button type="button" id="add-blood" class="btn btn-primary btn-md font-weight-bold mx-5 mb-3 px-20">{{__('ADD')}}</button>

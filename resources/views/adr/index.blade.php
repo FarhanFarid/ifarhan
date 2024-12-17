@@ -61,6 +61,8 @@
     </div>
 
     @include('adr.report.modal')
+    @include('adr.forms.subviews.adddrug')
+
 
 
 @endsection
@@ -114,7 +116,9 @@
                     adr :{
                         report : {
                             generate: "{{ route('adr.report.generate') }}?{!! $url !!}",
-                            finalize: "{{ route('adr.report.finalize') }}?{!! $url !!}",
+                            finalize: "{{ route('adr.report.savefinalize') }}?{!! $url !!}",
+                            false   : "{{ route('adr.report.savefalse') }}?{!! $url !!}",
+                            save    : "{{ route('adr.report.saverecord') }}?{!! $url !!}",
                         }, 
                     }       
                 }

@@ -15,6 +15,9 @@ use App\Models\PatientInformation;
 
 use Auth;
 
+use App\Helpers\UpdatePatient;
+
+
 
 class BloodInventoryController extends Controller
 {
@@ -23,6 +26,12 @@ class BloodInventoryController extends Controller
         $explode = explode('?', $request->getRequestUri());
 
         $url = $explode[1];
+
+        $epno = $request->epsdno;
+        $epid = $request->epid;
+        $patid = $request->patid;
+        $patdemo     = new UpdatePatient();
+        $datapatdemo = $patdemo->updatepatient($epno, $epid, $patid);
 
         return view('iblood.inventory.index', compact('url'));
 
@@ -176,7 +185,7 @@ class BloodInventoryController extends Controller
                         }else{
                             $storelocation->received_at         = Carbon::now();
                         }
-
+                        $storelocation->receive_reason          = $data['receivecdreason'];
                         $storelocation->status_id               = '1';
                         $storelocation->created_at              = Carbon::now();
                         $storelocation->save(); 
@@ -220,6 +229,7 @@ class BloodInventoryController extends Controller
                             $storelocation->received_at         = Carbon::now();
                         }
 
+                        $storelocation->receive_reason          = $data['receivecdreason'];
                         $storelocation->status_id               = '1';
                         $storelocation->created_at              = Carbon::now();
                         $storelocation->save();
@@ -266,6 +276,7 @@ class BloodInventoryController extends Controller
                     }else{
                         $storelocation->received_at         = Carbon::now();
                     }
+                    $storelocation->receive_reason          = $data['receivecdreason'];
                     $storelocation->status_id               = '1';
                     $storelocation->created_at              = Carbon::now();
                     $storelocation->save();
@@ -356,8 +367,9 @@ class BloodInventoryController extends Controller
             }])
             ->with(['locations' => function ($query) use ($episodeno) {
                 $query->where('episodeno', $episodeno)
-                      ->with('user');
-            }])
+                      ->with('user')
+                      ->orderBy('id', 'desc');
+                }])
             ->orderBy('id', 'desc') // Order by latest record
             ->get();
             
@@ -422,6 +434,7 @@ class BloodInventoryController extends Controller
                             $location->status_id                    = 3;
                             $location->transfer_by                  = Auth::user()->id;
                             $location->transfer_at                  = $request->input('transferdate');
+                            $location->transfer_reason              = $request->input('transfercdreason');
                             $location->save();
         
                             $storelocation                          = new BloodLocation();
@@ -448,6 +461,8 @@ class BloodInventoryController extends Controller
                             $location->status_id        = 2;
                             $location->transfer_by      = Auth::user()->id;
                             $location->transfer_at      = $request->input('transferdate');
+                            $location->transfer_reason  = $request->input('transfercdreason');
+
                             $location->save();
                         
                             return $response = response()->json(
@@ -468,6 +483,7 @@ class BloodInventoryController extends Controller
                     $location->status_id                    = 3;
                     $location->transfer_by                  = Auth::user()->id;
                     $location->transfer_at                  = $request->input('transferdate');
+                    $location->transfer_reason              = $request->input('transfercdreason');
                     $location->save();
 
                     $storelocation                          = new BloodLocation();
@@ -497,6 +513,7 @@ class BloodInventoryController extends Controller
                     $location->status_id                    = 3;
                     $location->transfer_by                  = Auth::user()->id;
                     $location->transfer_at                  = $request->input('transferdate');
+                    $location->transfer_reason              = $request->input('transfercdreason');
                     $location->save();
 
                     $storelocation                          = new BloodLocation();
@@ -517,12 +534,14 @@ class BloodInventoryController extends Controller
                     );
 
                 }else {
+
                     $inventory->transfer_to     = $request->input('location');
                     $inventory->save();
     
                     $location->status_id        = 2;
                     $location->transfer_by      = Auth::user()->id;
                     $location->transfer_at      = $request->input('transferdate');
+                    $location->transfer_reason  = $request->input('transfercdreason');
                     $location->save();
                 
                     return $response = response()->json(
@@ -680,12 +699,18 @@ class BloodInventoryController extends Controller
             {
 
                 $inventory->reaction                   = $request->input('reaction');
+                if($inventory->reaction == "Yes" ){
+
+                    $inventory->atr_status_id          = 1;
+                     
+                }
                 $inventory->reaction_detail            = $request->input('details');
                 $inventory->volume                     = $request->input('volume');
                 $inventory->transfuse_completion_id    = 2;
                 $inventory->transfuse_status_id        = 7;
                 $inventory->transfuse_stop_by          = Auth::user()->id;
                 $inventory->transfuse_stop_at          = $request->input('suspenddate');
+                $inventory->suspendcd_reason           = $request->input('suspendcdreason');
                 $inventory->save();
     
                 $location->status_id                    = 3;

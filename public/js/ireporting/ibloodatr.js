@@ -1,54 +1,12 @@
-var table = $('#reportibloodatr-table').DataTable({
+var tablesuspect = $('#reportibloodatr-table').DataTable({
     lengthMenu: [5, 10, 20, 50],
-    dom       : 'Bfrtipl',
+    dom       : 'rtipl',
     scrollX   : "300px",
     buttons: [
         {
             extend: 'excel',
-            title: 'Report - IBLOOD-ATR',
+            title: 'Report - IBLOOD-ATR (Suspected)',
             className: 'btn-dark',
-        },
-    ],
-    columnDefs: [
-        {
-            "targets": 0,
-            "width": "10%"
-        },
-        {
-            "targets": 1,
-            "width": "10%"
-        },
-        {
-            "targets": 2,
-            "width": "20%"
-        },
-        {
-            "targets": 3,
-            "width": "10%"
-        },
-        {
-            "targets": 4,
-            "width": "10%"
-        },
-        {
-            "targets": 5,
-            "width": "10%"
-        },
-        {
-            "targets": 6,
-            "width": "20%"
-        },
-        {
-            "targets": 7,
-            "width": "10%"
-        },
-        {
-            "targets": 8,
-            "width": "10%"
-        },
-        {
-            "targets": 9,
-            "width": "10%"
         },
     ],
     columns: [
@@ -61,7 +19,7 @@ var table = $('#reportibloodatr-table').DataTable({
         {
             "data": 'mrn',
             "render": function (data, type, row)  {
-                return '<span>'+row.mrn+'</span>';
+                return '<span>'+row.patinfo.patient.mrn+'</span>';
             }
         },
         {
@@ -83,7 +41,18 @@ var table = $('#reportibloodatr-table').DataTable({
                     return '<span></span>';
 
                 }else{
-                    return '<span>'+moment(row.transfuse_start_at).format('DD/MM/YYYY HH:mm')+'</span>';
+                    return '<span>'+moment(row.transfuse_stop_at).format('DD/MM/YYYY HH:mm')+'</span>';
+                }
+            }
+        },
+        {
+            "data": 'location',
+            "render": function (data, type, row)  {
+                if(row.locs == null ){
+                    return '<span>-</span>';
+
+                }else{
+                    return '<span>'+row.locs.location+'</span>';
                 }
             }
         },
@@ -124,21 +93,56 @@ var table = $('#reportibloodatr-table').DataTable({
             }
         },
         {
-            "data": 'status',
-            "render": function (data, type, row)  {
-                if(row.status_id == 1){
-                    return '<span class="badge badge-light mr-5">Not Finalized</span>';
-                }else if(row.status_id == 2){
-                    return '<span class="badge badge-success mr-5">Finalized</span>';
-                }else{
-                    return '<span class="badge badge-warning mr-5">Pending</span>';
-                }
-            }
-        },
-        {
             "data": 'report',
             "render": function (data, type, row)  {
                 return '<div class="col-md-3"><button class="badge btn-sm badge-light-primary gen-report" data-bs-toggle="tooltip" data-bs-placement="top" title="View Report" data-bagno="' + row.bagno + '" data-episodeno="' + row.episodeno + '"><i class="fa-regular fa-file-lines"></i></button></div>';
+            }
+        },
+
+        {
+            "data": 'statusid',
+            "render": function (data, type, row)  {
+                var html = '';
+
+                html += '<div class="row px-15 mb-3">'
+                html += '<span class="badge badge-warning">Pending Nurse: '
+                if(row.detailprocedures == null){
+                    html += 'Detail of Procedure,' 
+                }
+                if(row.bloodcomponents == null){
+                    html += ' Section D' 
+                }
+                if(row.symptoms == null){
+                    html += ', Section G' 
+                }
+                html += '</span>'
+                html += '</div>'
+
+                html += '<div class="row px-15 mb-3">'
+                html += '<span class="badge badge-warning">Pending Doctor: '
+                if(row.clinicalhistories == null){
+                    html += 'Section F,' 
+                }
+                if(row.investigations == null){
+                    html += ' Section H' 
+                }
+                if(row.adverseoutcomes == null){
+                    html += ', Section I' 
+                }
+                html += '</span>'
+                html += '</div>'
+
+                html += '<div class="row px-15 mb-3">'
+                html += '<span class="badge badge-warning">Pending Lab: '
+                if(row.adverseevents == null){
+                    html += 'Section J' 
+                }
+                html += '</span>'
+                html += '</div>'
+
+
+
+                return html;
             }
         },
     ],
@@ -148,134 +152,130 @@ var table = $('#reportibloodatr-table').DataTable({
         dataSrc: "data",
         data: function (d) {
             d.dateRange = $('#filterdate').val();
-            d.status = $('#filterstatus').val();
         },
         dataType: "json",
     },
 });
 
-var table = $('#reportibloodatrconfirm-table').DataTable({
+var tableconfirm = $('#reportibloodatrconfirm-table').DataTable({
     lengthMenu: [5, 10, 20, 50],
-    dom       : 'Bfrtipl',
+    dom       : 'rtipl',
     scrollX   : "300px",
     buttons: [
         {
             extend: 'excel',
-            title: 'Report - IBLOOD-ATR',
+            title: 'Report - IBLOOD-ATR (Confirm)',
             className: 'btn-dark',
         },
     ],
     columns: [
-        {
+        { 
             "data": null,
             "render": function (data, type, row, meta) {
-                return meta.row + 1;
+                return meta.row + 1; 
             }
         },
-        {
+        { 
             "data": 'mrn',
-            "render": function (data, type, row)  {
-                return '<span>'+row.mrn+'</span>';
+            "render": function (data, type, row)  { 
+                return '<span>'+row.mrn+'</span>'; 
             }
         },
-        {
-            "data": 'episodeno',
-            "render": function (data, type, row)  {
-                return '<span>'+row.episodeno+'</span>';
+        { 
+            "data": 'episodeno', 
+            "render": function (data, type, row)  { 
+                return '<span>'+row.episodeno+'</span>'; 
             }
         },
-        {
-            "data": 'bagno',
+        { 
+            "data": 'bagno', 
             "render": function (data, type, row)  {
-                return '<span>'+row.bagno+'</span>';
+                return '<span>'+row.bagno+'</span>'; 
             }
         },
-        {
-            "data": 'onset',
+        { 
+            "data": 'onset', 
             "render": function (data, type, row)  {
                 if(row.transfuse_start_at == null){
-                    return '<span></span>';
-
-                }else{
-                    return '<span>'+moment(row.transfuse_start_at).format('DD/MM/YYYY HH:mm')+'</span>';
+                    return '<span></span>'; 
+                }else { 
+                    return '<span>'+moment(row.transfuse_start_at).format('DD/MM/YYYY HH:mm')+'</span>'; 
                 }
             }
         },
-        {
+        { 
+            "data": 'location', 
+            "render": function (data, type, row)  {
+                if(row.location == null ){
+                    return '<span></span>'; 
+                }else { 
+                    return '<span>'+row.location+'</span>'; 
+                }
+            }
+        },
+        {   
             "data": 'reportedby',
             "render": function (data, type, row)  {
-                if(row.name == null){
-                    return '<span></span>';
-
-                }else{
-                    return '<span>'+row.name+'</span>';
+                if(row.name == null){ 
+                    return '<span></span>'; 
+                }
+                else { 
+                    return '<span>'+row.name+'</span>'; 
                 }
             }
         },
-        {
+        { 
             "data": 'reporteddate',
             "render": function (data, type, row)  {
-                if(row.created_at == null){
-                    return '<span></span>';
-
-                }else{
-                    return '<span>'+moment(row.created_at).format('DD/MM/YYYY HH:mm')+'</span>';
+                if(row.created_at == null){ 
+                    return '<span></span>'; 
+                }else { 
+                    return '<span>'+moment(row.created_at).format('DD/MM/YYYY HH:mm')+'</span>'; 
                 }
             }
         },
-        {
-            "data": 'age',
+        { 
+            "data": 'age', 
             "render": function (data, type, row) {
-                if (row.transfuse_stop_at == null) {
-                    return '<span></span>';
-                } else {
-                    var stopDate = moment(row.transfuse_stop_at); // Parse the transfuse_stop_at date
-                    var today = moment(); // Get today's date
-                    var daysDifference = today.diff(stopDate, 'days'); // Calculate the difference in days
-                    
-                    return '<span>' + daysDifference + ' day(s)</span>';
+                if (row.transfuse_stop_at == null) { 
+                    return '<span></span>'; 
+                }else { 
+                    var stopDate = moment(row.transfuse_stop_at); 
+                    var today = moment(); 
+                    var daysDifference = today.diff(stopDate, 'days');
+                    return '<span>' + daysDifference + ' day(s)</span>'; 
                 }
             }
         },
-        {
-            "data": 'status',
-            "render": function (data, type, row)  {
-                if(row.status_id == 1){
-                    return '<span class="badge badge-light mr-5">Not Finalized</span>';
-                }else if(row.status_id == 2){
-                    return '<span class="badge badge-success mr-5">Finalized</span>';
-                }else{
-                    return '<span class="badge badge-warning mr-5">Pending</span>';
-                }
-            }
-        },
-        {
+        { 
             "data": 'report',
             "render": function (data, type, row)  {
-                return '<div class="col-md-3"><button class="badge btn-sm badge-light-primary gen-report" data-bs-toggle="tooltip" data-bs-placement="top" title="View Report" data-bagno="' + row.bagno + '" data-episodeno="' + row.episodeno + '"><i class="fa-regular fa-file-lines"></i></button></div>';
+                return '<div class="col-md-3"><button class="badge btn-sm badge-light-primary gen-report" data-bs-toggle="tooltip" data-bs-placement="top" title="View Report" data-bagno="' + row.bagno + '" data-episodeno="' + row.episodeno + '"><i class="fa-regular fa-file-lines"></i></button></div>'; 
             }
         },
     ],
     ajax: {
         method: 'get',
-        url: config.routes.ireporting.iblood.atr.worklist,
+        url: config.routes.ireporting.iblood.atr.worklistconfirm,
         dataSrc: "data",
         data: function (d) {
-            d.dateRange = $('#filterdate').val();
-            d.status = $('#filterstatus').val();
+            d.dateRange = $('#filterdateconfirm').val();
         },
         dataType: "json",
     },
 });
 
-var table = $('#reportibloodatrfalse-table').DataTable({
+
+
+
+var tablefalse = $('#reportibloodatrfalse-table').DataTable({
     lengthMenu: [5, 10, 20, 50],
-    dom       : 'Bfrtipl',
+    dom       : 'rtipl',
     scrollX   : "300px",
     buttons: [
         {
             extend: 'excel',
-            title: 'Report - IBLOOD-ATR',
+            title: 'Report - IBLOOD-ATR (False Report)',
             className: 'btn-dark',
         },
     ],
@@ -316,6 +316,17 @@ var table = $('#reportibloodatrfalse-table').DataTable({
             }
         },
         {
+            "data": 'location',
+            "render": function (data, type, row)  {
+                if(row.location == null ){
+                    return '<span></span>';
+
+                }else{
+                    return '<span>'+row.location+'</span>';
+                }
+            }
+        },
+        {
             "data": 'reportedby',
             "render": function (data, type, row)  {
                 if(row.name == null){
@@ -351,38 +362,28 @@ var table = $('#reportibloodatrfalse-table').DataTable({
                 }
             }
         },
-        {
-            "data": 'status',
-            "render": function (data, type, row)  {
-                if(row.status_id == 1){
-                    return '<span class="badge badge-light mr-5">Not Finalized</span>';
-                }else if(row.status_id == 2){
-                    return '<span class="badge badge-success mr-5">Finalized</span>';
-                }else{
-                    return '<span class="badge badge-warning mr-5">Pending</span>';
-                }
-            }
-        },
-        {
-            "data": 'report',
-            "render": function (data, type, row)  {
-                return '<div class="col-md-3"><button class="badge btn-sm badge-light-primary gen-report" data-bs-toggle="tooltip" data-bs-placement="top" title="View Report" data-bagno="' + row.bagno + '" data-episodeno="' + row.episodeno + '"><i class="fa-regular fa-file-lines"></i></button></div>';
-            }
-        },
     ],
     ajax: {
         method: 'get',
-        url: config.routes.ireporting.iblood.atr.worklist,
+        url: config.routes.ireporting.iblood.atr.worklistfalse,
         dataSrc: "data",
         data: function (d) {
-            d.dateRange = $('#filterdate').val();
-            d.status = $('#filterstatus').val();
+            d.dateRange = $('#filterdatefalse').val();
         },
         dataType: "json",
     },
 });
 
 $(document).ready(function() {
+
+    //Suspected
+    $('#searchsuspect').on('keyup', function() {
+        tablesuspect.search(this.value).draw();
+    });
+
+    $('#exportsuspect').on('click', function () {
+        tablesuspect.button('.buttons-excel').trigger();  
+    });
 
     $('#reportibloodatr-table tbody').on('click', '.gen-report', function(e) {
         e.preventDefault();
@@ -393,18 +394,17 @@ $(document).ready(function() {
     
         // Append parameters to the URL
         var reportUrl = baseUrl + '&bagno=' + encodeURIComponent(bagno) + '&epsdno=' + encodeURIComponent(epsdno);
-
-        console.log(reportUrl);
     
         // Load the report in the iframe
         $('#report-iframe').attr('src', reportUrl);
-        $('.btn-maximize, .save-finalization').hide(); 
+        $('.btn-maximize, .save-finalization').hide();
+        $('.btn-maximize, .save-false').hide();  
         $('#adverse-event-report').modal('show');
-    });  
-    
+    });
+
     $('.btn-print').on('click', function() {
         var iframe = document.getElementById('report-iframe');
-        iframe.contentWindow.print(); // Trigger the print function of the iframe
+        iframe.contentWindow.print();
     });
 
     $('#filterdate').daterangepicker({
@@ -412,30 +412,61 @@ $(document).ready(function() {
             format: 'DD/MM/YYYY'
         },
     }).on('apply.daterangepicker', function(ev, picker) {
-        table.ajax.reload(); 
+        tablesuspect.ajax.reload(); 
+    });
+    //
+
+    //Confirmed
+    $('#tableSearchInput').on('keyup', function() {
+        tableconfirm.search(this.value).draw();
     });
 
-  
-    $('#filterstatus').on('change', function() {
-        table.draw();  
+    $('#exportExcelBtn').on('click', function () {
+        tableconfirm.button('.buttons-excel').trigger(); 
     });
 
-    $.fn.dataTable.ext.search.push(
-        function(settings, data, dataIndex) {
-            var status = $('#filterstatus').val();
-            var expiryDate = moment(data[7], 'DD/MM/YYYY HH:mm'); 
+    $('#reportibloodatrconfirm-table tbody').on('click', '.gen-report', function(e) {
+        e.preventDefault();
+    
+        var bagno = $(this).data('bagno');
+        var epsdno = $(this).data('episodeno');
+        var baseUrl = config.routes.ireporting.iblood.atr.reportconfirm;
+    
+        // Append parameters to the URL
+        var reportUrl = baseUrl + '&bagno=' + encodeURIComponent(bagno) + '&epsdno=' + encodeURIComponent(epsdno);
+    
+        // Load the report in the iframe
+        $('#report-iframe').attr('src', reportUrl);
+        $('.btn-maximize, .save-finalization').hide();
+        $('.btn-maximize, .save-false').hide();   
+        $('#adverse-event-report').modal('show');
+    });
 
-            if (status === 'all') {
-                return true;
-            }
+    $('#filterdateconfirm').daterangepicker({
+        locale: {
+            format: 'DD/MM/YYYY'
+        },
+    }).on('apply.daterangepicker', function(ev, picker) {
+        tableconfirm.ajax.reload(); 
+    });
+    //
 
-            if (status === '2' && data[9] === 'Finalized') {
-                return true;  // Finalized
-            } else if (status === '1' && data[9] === 'Not Finalized') {
-                return true;  // Not Finalized
-            }
+    //False
+    $('#searchfalse').on('keyup', function() {
+        tablefalse.search(this.value).draw();
+    });
 
-            return false;
-        }
-    );
+    $('#exportfalse').on('click', function () {
+        tablefalse.button('.buttons-excel').trigger(); 
+    });
+
+    $('#filterdatefalse').daterangepicker({
+        locale: {
+            format: 'DD/MM/YYYY'
+        },
+    }).on('apply.daterangepicker', function(ev, picker) {
+        tablefalse.ajax.reload(); 
+    });
+    //
+
 });

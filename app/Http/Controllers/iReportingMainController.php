@@ -10,10 +10,16 @@ use App\Models\Inventory;
 use App\Models\BloodInventory;
 use App\Models\BloodLocation;
 use App\Models\BloodDetailProcedure;
+use App\Models\BloodSignSymptom;
+use App\Models\BloodTypeAdverseEvent;
+use App\Models\BloodOutcomeAdverseEvent;
+use App\Models\BloodRelevantInvestigation;
+use App\Models\BloodRelevantHistory;
+use App\Models\BloodBloodComponent;
 use App\Models\Patient;
 use App\Models\PatientInformation;
 use App\Models\Dischargesummary;
-
+use App\Models\AdrReport;
 
 use DB;
 use Auth;
@@ -64,7 +70,7 @@ class iReportingMainController extends Controller
                 'totalatr',
              ));
                          
-        }elseif($request->usrGrp == "LABManager" || $request->usrGrp == "LABMLT" || $request->usrGrp == "LABTemp" || $request->usrGrp == "LABClerk" || $request->usrGrp == "QualityManagement"){
+        }elseif($request->usrGrp == "LABManager" || $request->usrGrp == "LABMLT" || $request->usrGrp == "LABTemp" || $request->usrGrp == "LABClerk" || $request->usrGrp == "QualityManagement" || $request->usrGrp == "Doctors" || $request->usrGrp == "WardNurse" || $request->usrGrp == "WardNursePrivate" || $request->usrGrp == "WardClerk" || $request->usrGrp == "WardManagerOrMentor" || $request->usrGrp == "OPDNurse"){
 
             return view('ireporting.iblood.atrworklist', compact('url'));
    
@@ -218,12 +224,7 @@ class iReportingMainController extends Controller
             'transfuse_start_by:id,name',
             'transfuse_verify_by:id,name',
         ]);
-
-        // $location = BloodLocation::where('inventory_bagno', $request->bagNo)->where('episodeno', $request->episodeNo)->with([
-        //     'transfer_by:id,name',
-        //     'user:id,name', 
-        // ]);
-
+      
         return response()->json(['data' => $inventory->first()]);
     }
 
@@ -239,11 +240,87 @@ class iReportingMainController extends Controller
 
     public function getIBloodAtrWorklist(Request $request)
     {
+        // $data = DB::table('iblood_inventories as inv')
+        // ->leftJoin('patient_information as patinfo', 'inv.episodeno', '=', 'patinfo.episodenumber')
+        // ->leftJoin('patients as pats', 'patinfo.patient_id', '=', 'pats.id')
+        // ->leftJoin('iblood_relevantinvestigation as ri', 'inv.bagno', '=', 'ri.inventory_bagno')
+        // ->leftJoin('users as u', 'ri.created_by', '=', 'u.id')
+        // ->leftJoin('iblood_locations as l', 'inv.bagno', '=', 'l.inventory_bagno')
+        // ->selectRaw('
+        //     pats.mrn, 
+        //     inv.episodeno, 
+        //     inv.bagno, 
+        //     inv.transfuse_start_at, 
+        //     inv.expiry_date, 
+        //     inv.transfuse_status_id, 
+        //     ri.created_at, 
+        //     u.name, 
+        //     inv.transfuse_stop_at, 
+        //     ri.status_id,
+        //     l.location,
+        //     l.stop_transfusion
+        // ')
+        // ->where(function ($query) {
+        //     $query->where('inv.atr_status_id', 1)
+        //           ->where('l.stop_transfusion','!=', null);
+
+        // });
+
+        $data = BloodInventory::with([
+            'locs' => function ($query) use ($request) {
+                $query->where('stop_transfusion', '!=' , null);
+            },
+            'locs.transfer_by:id,name',
+            'locs.user:id,name', 
+            'user:id,name',
+            'transfuse_start_by:id,name',
+            'transfuse_verify_by:id,name',
+            'patinfo.patient',
+            'detailprocedures' => function ($query) use ($request) {
+                $query->where('status_id', 1);
+            },
+            'bloodcomponents' => function ($query) use ($request) {
+                $query->where('status_id', 1);
+            },
+            'clinicalhistories' => function ($query) use ($request) {
+                $query->where('status_id', 1);
+            },
+            'symptoms' => function ($query) use ($request) {
+                $query->where('status_id', 1);
+            },
+            'investigations' => function ($query) use ($request) {
+                $query->where('status_id', 1);
+            },
+            'adverseoutcomes' => function ($query) use ($request) {
+                $query->where('status_id', 1);
+            },
+            'adverseevents' => function ($query) use ($request) {
+                $query->where('status_id', 1);
+            },
+        ])->orderBy('id', 'desc')->where('atr_status_id', 1);
+
+        // dd($data->get());
+
+        // Filter by Date Range
+        if ($request->has('dateRange')) {
+            $dateRange = explode(' - ', $request->dateRange);
+            $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+            $endDate = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+            $data->whereBetween('transfuse_stop_at', [$startDate, $endDate]);
+        }   
+
+        return response()->json(['data' => $data->get()]);
+
+    }
+
+    public function getIBloodAtrWorklistConfirm(Request $request)
+    {
         $data = DB::table('iblood_inventories as inv')
         ->leftJoin('patient_information as patinfo', 'inv.episodeno', '=', 'patinfo.episodenumber')
         ->leftJoin('patients as pats', 'patinfo.patient_id', '=', 'pats.id')
         ->leftJoin('iblood_relevantinvestigation as ri', 'inv.bagno', '=', 'ri.inventory_bagno')
         ->leftJoin('users as u', 'ri.created_by', '=', 'u.id')
+        ->leftJoin('iblood_locations as l', 'inv.bagno', '=', 'l.inventory_bagno')
         ->selectRaw('
             pats.mrn, 
             inv.episodeno, 
@@ -254,11 +331,13 @@ class iReportingMainController extends Controller
             ri.created_at, 
             u.name, 
             inv.transfuse_stop_at, 
-            ri.status_id
+            ri.status_id,
+            l.location,
+            l.stop_transfusion
         ')
         ->where(function ($query) {
-            $query->where('inv.reaction', 'Yes')
-                  ->orWhereNotNull('ri.created_at');
+            $query->where('inv.atr_status_id', 2)
+                  ->where('l.stop_transfusion','!=', null);
         });
 
         // Filter by Date Range
@@ -269,9 +348,43 @@ class iReportingMainController extends Controller
             $data->whereBetween('inv.created_at', [$startDate, $endDate]);
         }
     
-        // Filter by Status
-        if ($request->has('status') && $request->status != 'all') {
-            $data->where('ri.status_id', $request->status);
+        return response()->json(['data' => $data->get()]);
+
+    }
+
+    public function getIBloodAtrWorklistFalse(Request $request)
+    {
+        $data = DB::table('iblood_inventories as inv')
+        ->leftJoin('patient_information as patinfo', 'inv.episodeno', '=', 'patinfo.episodenumber')
+        ->leftJoin('patients as pats', 'patinfo.patient_id', '=', 'pats.id')
+        ->leftJoin('iblood_relevantinvestigation as ri', 'inv.bagno', '=', 'ri.inventory_bagno')
+        ->leftJoin('users as u', 'ri.created_by', '=', 'u.id')
+        ->leftJoin('iblood_locations as l', 'inv.bagno', '=', 'l.inventory_bagno')
+        ->selectRaw('
+            pats.mrn, 
+            inv.episodeno, 
+            inv.bagno, 
+            inv.transfuse_start_at, 
+            inv.expiry_date, 
+            inv.transfuse_status_id, 
+            ri.created_at, 
+            u.name, 
+            inv.transfuse_stop_at, 
+            ri.status_id,
+            l.location,
+            l.stop_transfusion
+        ')
+        ->where(function ($query) {
+            $query->where('inv.atr_status_id', 3)
+                  ->where('l.stop_transfusion','!=', null);
+        });
+
+        // Filter by Date Range
+        if ($request->has('dateRange')) {
+            $dateRange = explode(' - ', $request->dateRange);
+            $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+            $endDate = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+            $data->whereBetween('inv.created_at', [$startDate, $endDate]);
         }
 
         return response()->json(['data' => $data->get()]);
@@ -302,66 +415,63 @@ class iReportingMainController extends Controller
     {
         try
         {
-            $getEpisodeAll = PatientInformation::where('status_id', 2)
-                                ->with('patient', function($q){
-                                    $q->select('id', 'mrn', 'name');
-                                })
-                                ->orderBy('id', 'desc')
-                                ->get();
-
             $dateRange  = explode(' - ', $request->dateRange);
             $startDate  = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
             $endDate    = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
 
+            $hasDs = Dischargesummary::whereBetween('dischargedate', [$startDate, $endDate])
+                        ->with('createdby', function($q){
+                            $q->select('id', 'name');
+                        })
+                        ->with('updatedby', function($q){
+                            $q->select('id', 'name');
+                        })
+                        ->where('status_id', 2)
+                        ->orderBy('dischargedate', 'desc')
+                        ->get();
+
             $data = [];
 
-            foreach($getEpisodeAll as $epsd)
+            // dd($hasDs);
+
+            foreach($hasDs as $ds)
             {
                 $temp = [];
 
-                $checkIfHasDs = Dischargesummary::where('patientinformation_id', $epsd['id'])
-                                ->where('episodeno', $epsd['episodenumber'])
-                                ->with('createdby', function($q){
-                                    $q->select('id', 'name');
+                $getPatInfo = PatientInformation::where('status_id', 2)
+                                ->select('id', 'patient_id', 'episodenumber', 'epsiodedate')
+                                ->where('id', $ds['patientinformation_id'])
+                                ->with('patient', function($q){
+                                    $q->select('id', 'mrn', 'name');
                                 })
-                                ->with('updatedby', function($q){
-                                    $q->select('id', 'name');
-                                })
-                                ->whereBetween('created_at', [$startDate, $endDate])
-                                ->where('status_id', 2)
                                 ->first();
 
-                if($checkIfHasDs != null)
-                {
-                    $holddataencounter = Carbon::parse($checkIfHasDs['created_at'])->format('d/m/Y');
+                $temp['name']                       = $getPatInfo['patient']['name'];
+                $temp['mrn']                        = $getPatInfo['patient']['mrn'];
+                $temp['episode']                    = $getPatInfo['episodenumber'];
+                $temp['episodedate']                = Carbon::parse($getPatInfo['epsiodedate'])->format('Y-m-d');
+                $temp['dischargedate']              = Carbon::parse($ds['dischargedate'])->format('Y-m-d');
+                $temp['reasonforadmission']         = $ds['reasonforadmission'];
+                $temp['primarydiagnosis']           = $ds['primarydiagnosis'];
+                $temp['secondarydiagnosis']         = $ds['secondarydiagnosis'];
+                $temp['previoussurgery']            = $ds['previoussurgery'];
+                $temp['relevantphysicalfinding']    = $ds['relevantphysicalfinding'];
+                $temp['principalprocedurefinding']  = $ds['principalprocedurefinding'];
+                $temp['briefhospitalcourse']        = $ds['briefhospitalcourse'];
+                $temp['briefhospitalcoursedesc']    = $ds['briefhospitalcoursedesc'];
+                $temp['significantinpatientmed']    = $ds['significantinpatientmed'];
+                $temp['conditionpatientdis']        = $ds['conditionpatientdis'];
+                $temp['dischargemedication']        = $ds['dischargemedication'];
+                $temp['followupcareclinicvisit']    = $ds['followupcareclinicvisit'];
+                $temp['planmanagement']             = $ds['planmanagement'];
+                $temp['referringdoctoraddress']     = $ds['referringdoctoraddress'];
+                $temp['finalby']                    = $ds['finalby'];
+                $temp['createdby']                  = $ds['createdby']['name'];
+                $temp['createdat']                  = $ds['created_at'];
+                $temp['updatedby']                  = $ds['updatedby'] != null ? $ds['updatedby']['name'] : null;
+                $temp['updatedat']                  = $ds['updated_at'] != null ? $ds['updated_at'] : null;
 
-                    $temp['name']                       = $epsd['patient']['name'];
-                    $temp['mrn']                        = $epsd['patient']['mrn'];
-                    $temp['episode']                    = $epsd['episodenumber'];
-                    $temp['episodedate']                = Carbon::parse($epsd['epsiodedate'])->format('Y-m-d');
-                    $temp['dischargedate']              = Carbon::parse($checkIfHasDs['dischargedate'])->format('Y-m-d');
-                    $temp['reasonforadmission']         = $checkIfHasDs['reasonforadmission'];
-                    $temp['primarydiagnosis']           = $checkIfHasDs['primarydiagnosis'];
-                    $temp['secondarydiagnosis']         = $checkIfHasDs['secondarydiagnosis'];
-                    $temp['previoussurgery']            = $checkIfHasDs['previoussurgery'];
-                    $temp['relevantphysicalfinding']    = $checkIfHasDs['relevantphysicalfinding'];
-                    $temp['principalprocedurefinding']  = $checkIfHasDs['principalprocedurefinding'];
-                    $temp['briefhospitalcourse']        = $checkIfHasDs['briefhospitalcourse'];
-                    $temp['briefhospitalcoursedesc']    = $checkIfHasDs['briefhospitalcoursedesc'];
-                    $temp['significantinpatientmed']    = $checkIfHasDs['significantinpatientmed'];
-                    $temp['conditionpatientdis']        = $checkIfHasDs['conditionpatientdis'];
-                    $temp['dischargemedication']        = $checkIfHasDs['dischargemedication'];
-                    $temp['followupcareclinicvisit']    = $checkIfHasDs['followupcareclinicvisit'];
-                    $temp['planmanagement']             = $checkIfHasDs['planmanagement'];
-                    $temp['referringdoctoraddress']     = $checkIfHasDs['referringdoctoraddress'];
-                    $temp['finalby']                    = $checkIfHasDs['finalby'];
-                    $temp['createdby']                  = $checkIfHasDs['createdby']['name'];
-                    $temp['createdat']                  = $checkIfHasDs['created_at'];
-                    $temp['updatedby']                  = $checkIfHasDs['updatedby'] != null ? $checkIfHasDs['updatedby']['name'] : null;
-                    $temp['updatedat']                  = $checkIfHasDs['updated_at'] != null ? $checkIfHasDs['updated_at'] : null;
-
-                    array_push($data, $temp);
-                }
+                array_push($data, $temp);
             }
 
             $response = response()->json(
@@ -392,4 +502,298 @@ class iReportingMainController extends Controller
         }
     }
     //end discharge esummary
+
+    public function genReportConfirm(Request $request)
+    {
+        $explode = explode('?', $request->getRequestUri());
+
+        $url = $explode[1];
+
+        $bagno = $request->bagno;
+        $episode = $request->epsdno;
+
+        //DETAIL PROCEDURE
+        $procedure = BloodDetailProcedure::where('inventory_bagno', $bagno)->where('status_id', '2')->first();
+
+        //SECTION D
+        $component = BloodBloodComponent::where('inventory_bagno', $bagno)->where('status_id', '2')->first();
+        if ($component) {
+            $component->product = explode(', ', $component->product);
+        }
+        
+        //Section F
+        $relevanthistory = BloodRelevantHistory::where('inventory_bagno', $bagno)->where('status_id', '2')->first();
+
+        //Section G
+        $record = BloodSignSymptom::where('inventory_bagno', $bagno)->where('status_id', '2')->first();
+
+        if ($record) {
+            $record->general = explode(', ', $record->general);
+            $record->pain = explode(', ', $record->pain);
+            $record->renal = explode(', ', $record->renal);
+            $record->respiratory = explode(', ', $record->respiratory);
+            $record->skin = explode(', ', $record->skin);
+            $record->cardio = explode(', ', $record->cardio);
+        }
+
+        //Section J
+        $typeadverseevent = BloodTypeAdverseEvent::where('inventory_bagno', $bagno)->where('status_id', '2')->first();
+
+        if ($typeadverseevent) {
+            $typeadverseevent->section1 = explode(', ', $typeadverseevent->section1);
+            $typeadverseevent->section5 = explode(', ', $typeadverseevent->section5);
+        }
+
+        //Section I
+        $outcomeadverseevent = BloodOutcomeAdverseEvent::where('inventory_bagno', $bagno)->where('status_id', '2')->first();
+
+        if ($outcomeadverseevent) {
+            $outcomeadverseevent->recovered = explode(', ', $outcomeadverseevent->recovered);
+            $outcomeadverseevent->death     = explode(', ', $outcomeadverseevent->death);
+        }
+
+        //Section H
+        $relevantinvestigation = BloodRelevantInvestigation::with('user')->where('inventory_bagno', $bagno)->where('status_id', '2')->first();
+
+        //PatDemo
+        $uri = env('PAT_DEMO'). $request->epsdno;
+        $client = new \GuzzleHttp\Client(['defaults' => ['verify' => false]]);
+
+        $response = $client->request('GET', $uri);
+
+        $statusCode = $response->getStatusCode();
+        $content = json_decode($response->getBody(), true);
+
+        $patdemo = $content['data'];
+
+        $vitaltemp  = !empty($record->temperature) ? $record->temperature : ($patdemo['temp'] ?? '__');
+        $vitalsysto = !empty($record->systo) ? $record->systo : ($patdemo['sysBP'] ?? '__');
+        $vitaldysto = !empty($record->diasto) ? $record->diasto : ($patdemo['diasBP'] ?? '');
+        $vitalpulse = !empty($record->pulserate) ? $record->pulserate : ($patdemo['pulRate'] ?? '__');
+        $vitalspo   = !empty($record->spo) ? $record->spo : ($patdemo['spO'] ?? '__');
+
+        //Inventory
+        $inventory = BloodInventory::where('bagno', $request->input('bagno'))->where('episodeno', $request->epsdno)->first();
+
+
+        if($record){
+            if($inventory->transfuse_stop_at != null && $record->created_at != null){
+
+                $transfuseStopAt = Carbon::parse($inventory->transfuse_stop_at);
+                $createdAt = Carbon::parse($record->created_at);
+                
+                if ($createdAt->diffInHours($transfuseStopAt) <= 24) {
+                    $onset = 'immediate';
+                } else {
+                    $onset = 'delayed';
+                }
+    
+            }else{
+                $onset = "immediate";
+            }
+        }else{
+            $onset = "immediate";
+        }
+        
+
+        
+
+
+        return view('iblood.reaction.report.subviews.report', compact(
+            'url', 
+            'bagno', 
+            'record', 
+            'patdemo',  
+            'typeadverseevent', 
+            'outcomeadverseevent', 
+            'relevantinvestigation', 
+            'vitaltemp', 
+            'vitalsysto', 
+            'vitaldysto', 
+            'vitalpulse', 
+            'vitalspo',
+            'onset',
+            'inventory',
+            'relevanthistory',
+            'procedure',
+            'component',
+            'episode',
+        ));
+    }
+
+    public function indexAdrWorklist(Request $request)
+    {
+        $explode = explode('?', $request->getRequestUri());
+
+        $url = $explode[1];
+
+        return view('ireporting.adr.index', compact('url'));
+    }
+
+    public function getAdrWorklistSuspect(Request $request)
+    {
+        $report = AdrReport::with([
+            'descriptions',
+            'susdrugs' => function ($query) use ($request) {
+                $query->where('status_id', 1);
+            },
+            'concodrugs' => function ($query) use ($request) {
+                $query->where('status_id', 1);
+            },
+            'createdby:id,name', 
+            'updatedby:id,name',
+            'patientinfo.patient'
+        ])->where('status_id', 1 )->orderBy('id', 'desc');
+
+        // Filter by Date Range
+        if ($request->has('dateRange')) {
+            $dateRange = explode(' - ', $request->dateRange);
+            $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+            $endDate = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+            $report->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        return response()->json(['data' => $report->get()]);
+    }
+
+    public function getAdrWorklistConfirm(Request $request)
+    {
+        $report = AdrReport::with([
+            'descriptions',
+            'susdrugs' => function ($query) use ($request) {
+                $query->where('status_id', 3);
+            },
+            'concodrugs' => function ($query) use ($request) {
+                $query->where('status_id', 3);
+            },
+            'createdby:id,name', 
+            'updatedby:id,name',
+            'patientinfo.patient'
+        ])->where('status_id', 2 )->orderBy('id', 'desc');
+
+        // Filter by Date Range
+        if ($request->has('dateRange')) {
+            $dateRange = explode(' - ', $request->dateRange);
+            $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+            $endDate = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+            $report->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        return response()->json(['data' => $report->get()]);
+    }
+
+    public function getAdrWorklistFalse(Request $request)
+    {
+        $report = AdrReport::with([
+            'descriptions',
+            'susdrugs' => function ($query) use ($request) {
+                $query->where('status_id', 3);
+            },
+            'concodrugs' => function ($query) use ($request) {
+                $query->where('status_id', 3);
+            },
+            'createdby:id,name', 
+            'updatedby:id,name',
+            'patientinfo.patient'
+        ])->where('status_id', 3 )->orderBy('id', 'desc');
+
+        // Filter by Date Range
+        if ($request->has('dateRange')) {
+            $dateRange = explode(' - ', $request->dateRange);
+            $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+            $endDate = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+            $report->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        return response()->json(['data' => $report->get()]);
+    }
+
+    public function AdrReportConfirm(Request $request)
+    {
+        $explode = explode('?', $request->getRequestUri());
+
+        $url = $explode[1];
+
+        $report = AdrReport::with([
+            'descriptions',
+            'susdrugs' => function ($query) use ($request) {
+                $query->where('status_id', 3);
+            },
+            'concodrugs' => function ($query) use ($request) {
+                $query->where('status_id', 3);
+            },
+            'createdby', 
+            'updatedby',
+        ])->where('episodeno', $request->epsdno)->where('status_id', 2 )->orderBy('id', 'desc')->first();
+
+        //PatDemo
+        $uri = env('PAT_DEMO'). $request->epsdno;
+        $client = new \GuzzleHttp\Client(['defaults' => ['verify' => false]]);
+
+        $response = $client->request('GET', $uri);
+
+        $statusCode = $response->getStatusCode();
+        $content = json_decode($response->getBody(), true);
+
+        $patdemo = $content['data'];
+
+        return view('adr.report.subviews.report', compact(
+            'url', 
+            'report',
+            'patdemo',
+        ));
+    }
+
+    public function AdrReportSuspect(Request $request)
+    {
+        $explode = explode('?', $request->getRequestUri());
+
+        $url = $explode[1];
+
+        $report = AdrReport::with([
+            'descriptions',
+            'susdrugs' => function ($query) use ($request) {
+                $query->where('status_id', 1);
+            },
+            'concodrugs' => function ($query) use ($request) {
+                $query->where('status_id', 1);
+            },
+            'createdby', 
+            'updatedby',
+        ])->where('episodeno', $request->epsdno)->where('status_id', 1 )->orderBy('id', 'desc')->first();
+
+        //PatDemo
+        $uri = env('PAT_DEMO'). $request->epsdno;
+        $client = new \GuzzleHttp\Client(['defaults' => ['verify' => false]]);
+
+        $response = $client->request('GET', $uri);
+
+        $statusCode = $response->getStatusCode();
+        $content = json_decode($response->getBody(), true);
+
+        $patdemo = $content['data'];
+
+        return view('adr.report.subviews.report', compact(
+            'url', 
+            'report',
+            'patdemo',
+        ));
+    }
+
+    public function getPatientInfo(Request $request)
+    {
+        $info = PatientInformation::with('patient')->where('episodenumber', $request->episodeno)->first();
+        // IP0403242
+
+        $response = response()->json(
+            [
+              'status'  => 'success',
+              'data'    => $info
+            ], 200
+        );
+
+        return $response;
+
+    }
+
 }

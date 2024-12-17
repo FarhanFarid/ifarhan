@@ -63,6 +63,20 @@
                                                     <input class="form-control form-control-solid" type="datetime-local" name="actualtransfusedate" id="actualtransfusedate" value="{{ \Carbon\Carbon::now()->format('Y-m-d\TH:i') }}">
                                                 </div>
                                             </div>
+                                            <div class="row m-1 mb-3" id="transfusereason" style="display: none;">
+                                                <div class="col-md-4 pt-4">
+                                                    <b>Change Date Reason</b>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <select class="form-select form-select-solid" name="transfusecdreason" id="transfusecdreason">
+                                                        <option></option>
+                                                        <option value="Emergency/Severe Case">Emergency/Severe Case</option>
+                                                        <option value="System Down/Code White">System Down/Code White</option>
+                                                        <option value="Misconduct/Malpractice">Misconduct/Malpractice</option>
+                                                        <option value="Hardware Malfunction">Hardware Malfunction</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                         <button type="button" id="verifyDetail" class="align-self-end btn btn-danger btn-sm font-weight-bold btn-block mt-3 mb-3" style="margin-top: auto;">{{__('SUBMIT')}}</button>
                                     </div>
