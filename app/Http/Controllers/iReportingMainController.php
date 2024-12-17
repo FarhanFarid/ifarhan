@@ -35,19 +35,23 @@ class iReportingMainController extends Controller
         if($request->usrGrp == "EMY" || $request->usrGrp == "EMYDoctors" || $request->usrGrp == "ICLNurse" || $request->usrGrp == "OTNurse"){
 
             //Issued
-            $totalissuedactive     = BloodInventory::where('transfuse_status_id', '!=' , 7)->count();
-            $totalissuedreturned   = BloodInventory::where('transfuse_status_id', 7)->count();
-            $totalissued           = $totalissuedreturned + $totalissuedactive;
+            $totalissuedactive            = BloodInventory::where('transfuse_status_id', '!=' , 7)->count();
+            $totalissuedreturnedused      = BloodInventory::where('transfuse_status_id', 7)->where('transfuse_completion_id' , 2)->count();
+            $totalissuedreturnednotused   = BloodInventory::where('transfuse_status_id', 7)->where('transfuse_completion_id' , null)->count();
+            $totalissued                  = $totalissuedreturnedused + $totalissuedactive + $totalissuedreturnednotused;
 
             //Transfused
-            $totaltransfuse       = BloodInventory::where('transfuse_stop_at', '!=' , null)->count();
-            $totalyesreaction     = BloodInventory::where('reaction' , 'Yes')->count();
-            $totalnoreaction      = BloodInventory::where('reaction' , 'No')->count();
+            $pending              = BloodInventory::where('transfuse_completion_id' , null)->where('transfuse_status_id' , '!=' , 7)->count();
+            $inprogress           = BloodInventory::where('transfuse_start_at' , '!=', null)->where('transfuse_stop_at' , null)->where('transfuse_status_id' , '!=' , 5)->count();
+            $completed            = BloodInventory::where('transfuse_completion_id' , 2)->count();
+            $totaltransfuse       = $pending + $inprogress + $completed;
+
 
             //ATR
-            $confirm     = BloodDetailProcedure::where('status_id' , 1)->count();
-            $false       = BloodDetailProcedure::where('status_id' , 3)->count();
-            $totalatr    = $confirm + $false + $totalyesreaction;
+            $confirm              = BloodDetailProcedure::where('status_id' , 1)->count();
+            $false                = BloodDetailProcedure::where('status_id' , 3)->count();
+            $totalyesreaction     = BloodInventory::where('reaction' , 'Yes')->count();
+            $totalatr             = $confirm + $false + $totalyesreaction;
 
             //Stored
             $expired       = BloodInventory::where('expiry_date', '!=', null)->where('expiry_date', '<', Carbon::now())->where('transfuse_status_id', 2)->count();
@@ -57,11 +61,14 @@ class iReportingMainController extends Controller
             return view('ireporting.iblood.index', compact(
                 'url', 
                 'totalissuedactive', 
-                'totalissuedreturned', 
+                'totalissuedreturnedused',
+                'totalissuedreturnednotused',  
                 'totalissued',
                 'totaltransfuse',
                 'totalyesreaction',
-                'totalnoreaction',
+                'pending',
+                'inprogress',
+                'completed',
                 'confirm',
                 'false',
                 'expired',
