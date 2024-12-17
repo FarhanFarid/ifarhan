@@ -58,7 +58,7 @@
 </div>
 
 <!-- IDA Dropdown -->
-@if(in_array($usrGrp, ["Administrator"]))
+{{-- @if(in_array($usrGrp, ["Administrator"]))
 	<div class="row {{ request()->routeIs('report.ida.preadmission.index') ? 'bg-teal text-white' : '' }}" 
 		style="padding: 0.5rem; margin: auto; border-bottom: solid 1px #918f8f;">
 		<div class="col-2 mt-2">
@@ -72,24 +72,24 @@
 				data-bs-toggle="collapse" data-bs-target="#idaSubmenu" href="#" style="margin-bottom: 10px;">IDA</a>
 		</div>
 	</div>
-@endif
+@endif --}}
 <!-- Submenu for IDA -->
-<div class="collapse {{ request()->routeIs('report.ida.preadmission.index') ? 'show' : '' }}" id="idaSubmenu">
+{{-- <div class="collapse {{ request()->routeIs('report.ida.preadmission.index') ? 'show' : '' }}" id="idaSubmenu">
    <div class="row" style="padding-left: 30px; margin-top: 10px;">
 	   @if(in_array($usrGrp, ["Administrator"]))
 		   <div class="col-12" style="padding-bottom: 8px;">
 			   <a class="text-hover-success {{ request()->routeIs('report.ida.preadmission.index') ? 'text-teal' : 'text-dark' }}" 
 			   href="{{ route('report.ida.preadmission.index') }}?{{$url}}" style="margin-bottom: 10px;">Pre-Admission</a>
 		   </div>
-	   @endif
+	   @endif --}}
 	   {{-- @if(in_array($usrGrp, ["Administrator", "LABManager", "LABMLT", "LABTemp", "LABClerk", "QualityManagement"]))
 		   <div class="col-12">
 			   <a class="text-hover-success {{ request()->routeIs('report.iblood.atr.index') ? 'text-teal' : 'text-dark' }}" 
 			   href="{{ route('report.iblood.atr.index') }}?{{$url}}" style="margin-bottom: 10px;">Worklist</a>
 		   </div>
 	   @endif --}}
-   </div>
-</div>
+   {{-- </div>
+</div> --}}
 @if(in_array($usrGrp, ["Administrator" , "MROffice"]))
 	<div class="row {{ request()->routeIs('report.dischargesummary') ? 'bg-teal text-white' : '' }}" 
 		style="padding: 0.5rem; margin: auto; border-bottom: solid 1px #918f8f;">
