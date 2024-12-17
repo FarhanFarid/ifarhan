@@ -23,6 +23,9 @@ use App\Http\Controllers\iReportingMainController;
 //ADR
 use App\Http\Controllers\AdrController;
 
+//CLR
+use App\Http\Controllers\ClrController;
+
 //user access controller
 use App\Http\Controllers\UserAccessRoleController;
 
@@ -205,6 +208,11 @@ Route::group(['middleware' => ['authsystem']], function() {
         });
 
     });
+});
+
+//Critical Lab Result
+Route::group(['prefix' => 'critical-lab'], function () {
+    Route::get('/', [ClrController::class, 'index'])->name('clr.index');   
 });
 
 Route::get('/test', [HmilkMainController::class, 'test'])->name('hmilk.main.test');
