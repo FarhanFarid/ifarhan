@@ -272,11 +272,11 @@ class BloodInventoryController extends Controller
                     $storelocation->location                = $data['location'];
                     $storelocation->received_by             = Auth::user()->id;
                     if($data['receivedate'] != null){
-                        $storelocation->received_at             = $data['receivedate'];
+                        $storelocation->received_at         = $data['receivedate'];
                     }else{
                         $storelocation->received_at         = Carbon::now();
                     }
-                    $storelocation->receive_reason          = $data['receivecdreason'];
+                    $storelocation->receive_reason          = $data['receivecdreason'] ?? '';
                     $storelocation->status_id               = '1';
                     $storelocation->created_at              = Carbon::now();
                     $storelocation->save();
