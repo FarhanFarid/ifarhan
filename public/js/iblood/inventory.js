@@ -622,7 +622,7 @@ $(document).ready(function () {
     
 
     $('#verify-labno').on('click', function() {
-        var labno = $('#labno').val();
+        var labno = $('#labno').val().toUpperCase();
         var url = config.routes.blood.inventory.verifylab;
         var url2 = config.routes.blood.inventory.wardList;
     
