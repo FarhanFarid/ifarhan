@@ -10,6 +10,8 @@ use App\Models\AdrReport;
 use App\Models\AdrConcoDrug;
 use App\Models\AdrDescription;
 use App\Models\AdrSuspectedDrug;
+use App\Models\AdrList;
+use App\Models\AdrBridge;
 
 use Auth;
 
@@ -41,10 +43,12 @@ class AdrController extends Controller
             'createdby:id,name', 
             'updatedby:id,name',
         ])->where('episodeno', $request->epsdno)->where('status_id', 1 )->orderBy('id', 'desc')->first();
+        
+        $details = AdrList::where('adr_id', $request->adrid)->first();
 
-        // dd($report);
+        // dd($details);
 
-        return view('adr.index', compact('url', 'report'));
+        return view('adr.index', compact('url', 'report', 'details'));
     }
 
     public function genReport(Request $request)
@@ -88,7 +92,6 @@ class AdrController extends Controller
         try
         { 
             $formData = $request->formData;
-            $suspectedData = $request->suspectedDrugs;
             $concoData = $request->concomitantDrugs;
 
             // dd($request->all());
@@ -131,34 +134,19 @@ class AdrController extends Controller
                 $adrdesc->created_at      = Carbon::now();
                 $adrdesc->save();
 
-
-                $adrsuspected = AdrSuspectedDrug::where('adrreport_id', $report->id)->orderBy('id', 'desc')->get();
-                if ($adrsuspected != null) {
-                    foreach ($adrsuspected as $drug) {
-                        $drug->status_id      = 2;
-                        $drug->updated_at     = Carbon::now();
-                        $drug->save();
-                    }
-                }
+    
+                $updatesuspected                 = AdrSuspectedDrug::where('adrreport_id', $report->id)->where('status_id', 1)->orderBy('id', 'desc')->first();
+                $updatesuspected->product        = $formValues['susdrugname'] ?? null;
+                $updatesuspected->dose           = $formValues['susdose'] ?? null;
+                $updatesuspected->frequency      = $formValues['susfreq'] ?? null;
+                $updatesuspected->batchno        = $formValues['susbatchno'] ?? null;
+                $updatesuspected->start_date     = $formValues['susstartdate'] ?? null;
+                $updatesuspected->stop_date      = $formValues['susstopdate'] ?? null;
+                $updatesuspected->indication     = $formValues['susindication'] ?? null;
+                $updatesuspected->status_id      = 1;
+                $updatesuspected->updated_at     = Carbon::now();
+                $updatesuspected->save();
                 
-                
-                foreach ($suspectedData as $drug) {
-                    if($drug['productName'] != null){
-                        $storesuspected                 = new AdrSuspectedDrug();
-                        $storesuspected->adrreport_id   = $report->id;
-                        $storesuspected->product        = $drug['productName'] ?? null;
-                        $storesuspected->dose           = $drug['doseFrequency'] ?? null;
-                        $storesuspected->batchno        = $drug['malBatchNo'] ?? null;
-                        $storesuspected->start_date     = !empty($drug['therapyStart']) ? Carbon::createFromFormat('d/m/Y', $drug['therapyStart'])->format('Y-m-d') : null;
-                        $storesuspected->stop_date      = !empty($drug['therapyStop']) ? Carbon::createFromFormat('d/m/Y', $drug['therapyStop'])->format('Y-m-d') : null;
-                        $storesuspected->indication     = $drug['indication'] ?? null;
-                        $storesuspected->status_id      = 1;
-                        $storesuspected->created_at     = Carbon::now();
-                        $storesuspected->save();
-                    }         
-                }
-                
-
                 $adrconco = AdrConcoDrug::where('adrreport_id', $report->id)->orderBy('id', 'desc')->get();
                 if ($adrconco  != null) {
                     foreach ($adrconco as $drug) {
@@ -194,6 +182,10 @@ class AdrController extends Controller
                 $storereport->created_at    = Carbon::now();
                 $storereport->save();
 
+                $updatebridge               = AdrBridge::where('adr_id', $request->adrid)->first();
+                $updatebridge->report_id    = $storereport->id;
+                $updatebridge->save();
+
                 $storedesc                  = new AdrDescription();
                 $storedesc->adrreport_id    = $storereport->id;
                 $storedesc->description     = $formValues['desc'] ?? null;
@@ -212,21 +204,19 @@ class AdrController extends Controller
                 $storedesc->created_at      = Carbon::now();
                 $storedesc->save();
 
-                if (!empty($suspectedData)) {
-                    foreach ($suspectedData as $drug) {
-                        $storesuspected                 = new AdrSuspectedDrug();
-                        $storesuspected->adrreport_id   = $storereport->id;
-                        $storesuspected->product        = $drug['productName'] ?? null;
-                        $storesuspected->dose           = $drug['doseFrequency'] ?? null;
-                        $storesuspected->batchno        = $drug['malBatchNo'] ?? null;
-                        $storesuspected->start_date     = Carbon::createFromFormat('d/m/Y', $drug['therapyStart'])->format('Y-m-d') ?? null;
-                        $storesuspected->stop_date      = Carbon::createFromFormat('d/m/Y', $drug['therapyStop'])->format('Y-m-d') ?? null;
-                        $storesuspected->indication     = $drug['indication'] ?? null;
-                        $storesuspected->status_id      = 1;
-                        $storesuspected->created_at     = Carbon::now();
-                        $storesuspected->save();
-                    }
-                }
+                $storesuspected                 = new AdrSuspectedDrug();
+                $storesuspected->adrreport_id   = $storereport->id;
+                $storesuspected->product        = $formValues['susdrugname'] ?? null;
+                $storesuspected->dose           = $formValues['susdose'] ?? null;
+                $storesuspected->frequency      = $formValues['susfreq'] ?? null;
+                $storesuspected->batchno        = $formValues['susbatchno'] ?? null;
+                $storesuspected->start_date     = $formValues['susstartdate'] ?? null;
+                $storesuspected->stop_date      = $formValues['susstopdate'] ?? null;
+                $storesuspected->indication     = $formValues['susindication'] ?? null;
+                $storesuspected->status_id      = 1;
+                $storesuspected->created_at     = Carbon::now();
+                $storesuspected->save();
+            
                 
                 if (!empty($concoData)) {
                     foreach ($concoData as $drug) {
@@ -280,19 +270,15 @@ class AdrController extends Controller
             $report = AdrReport::where('episodeno', $request->epsdno)->where('status_id', 1 )->orderBy('id', 'desc')->first();
             if($report != null){
 
-                $report->status_id     = 2;
+                $report->status_id      = 2;
                 $report->finalize_by    = Auth::user()->id;
-                $report->created_at    = Carbon::now();
+                $report->created_at     = Carbon::now();
                 $report->save();
 
-                $adrsuspected = AdrSuspectedDrug::where('adrreport_id', $report->id)->where('status_id', 1)->orderBy('id', 'desc')->get();
-                if ($adrsuspected != null) {
-                    foreach ($adrsuspected as $drug) {
-                        $drug->status_id      = 3;
-                        $drug->updated_at     = Carbon::now();
-                        $drug->save();
-                    }
-                }
+                $adrsuspected                 = AdrSuspectedDrug::where('adrreport_id', $report->id)->where('status_id', 1)->orderBy('id', 'desc')->first();
+                $adrsuspected->status_id      = 3;
+                $adrsuspected->updated_at     = Carbon::now();
+                $adrsuspected->save();
 
                 $adrconco = AdrConcoDrug::where('adrreport_id', $report->id)->where('status_id', 1)->orderBy('id', 'desc')->get();
                 if ($adrconco  != null) {
@@ -302,6 +288,10 @@ class AdrController extends Controller
                         $drug->save();
                     }
                 }
+
+                $updatebridge               = AdrBridge::where('adr_id', $request->adrid)->where('status_id', 1)->first();
+                $updatebridge->status_id    = 2;
+                $updatebridge->save();
 
                 $response = response()->json(
                     [
@@ -354,14 +344,10 @@ class AdrController extends Controller
                 $report->created_at    = Carbon::now();
                 $report->save();
 
-                $adrsuspected = AdrSuspectedDrug::where('adrreport_id', $report->id)->where('status_id', 1)->orderBy('id', 'desc')->get();
-                if ($adrsuspected != null) {
-                    foreach ($adrsuspected as $drug) {
-                        $drug->status_id      = 3;
-                        $drug->updated_at     = Carbon::now();
-                        $drug->save();
-                    }
-                }
+                $adrsuspected                 = AdrSuspectedDrug::where('adrreport_id', $report->id)->where('status_id', 1)->orderBy('id', 'desc')->first();
+                $adrsuspected->status_id      = 3;
+                $adrsuspected->updated_at     = Carbon::now();
+                $adrsuspected->save();
 
                 $adrconco = AdrConcoDrug::where('adrreport_id', $report->id)->where('status_id', 1)->orderBy('id', 'desc')->get();
                 if ($adrconco  != null) {
@@ -371,6 +357,10 @@ class AdrController extends Controller
                         $drug->save();
                     }
                 }
+
+                $updatebridge               = AdrBridge::where('adr_id', $request->adrid)->where('status_id', 1)->first();
+                $updatebridge->status_id    = 2;
+                $updatebridge->save();
 
                 $response = response()->json(
                     [

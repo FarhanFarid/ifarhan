@@ -20,9 +20,9 @@ class AdrReport extends Model
         return $this->hasOne(AdrDescription::class, 'adrreport_id', 'id');
     }
 
-    public function susdrugs(): HasMany
+    public function susdrugs(): HasOne
     {
-        return $this->hasMany(AdrSuspectedDrug::class, 'adrreport_id', 'id');
+        return $this->hasOne(AdrSuspectedDrug::class, 'adrreport_id', 'id');
     }
 
     public function concodrugs(): HasMany
