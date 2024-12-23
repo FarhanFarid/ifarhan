@@ -82,7 +82,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <button type="button" id="submitsusdrug" class="align-self-end btn btn-danger btn-sm font-weight-bold btn-block mt-3 mb-3" style="margin-top: auto;">{{__('SUBMIT')}}</button>
+                                        <button type="button" id="submitconcodrug" class="align-self-end btn btn-danger btn-sm font-weight-bold btn-block mt-3 mb-3" style="margin-top: auto;">{{__('SUBMIT')}}</button>
                                     </div>
                                 </div>
                             </form>

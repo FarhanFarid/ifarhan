@@ -36,21 +36,21 @@
                             </div>
                             <div class="col-md-9">
                                 <label for="desc" class="form-check-label" style="color: black;">Description</label>
-                                <textarea class="form-control" name="desc" id="desc">{{ $report->descriptions->description  ?? ''}}</textarea>
+                                <textarea class="form-control" name="desc" id="desc" readonly>{{ $details->description  ?? ''}}</textarea>
                             </div>
                         </div>
                         <div class="row mb-5">
                             <div class="col-md-4">
                                 <label for="indication" class="form-check-label" style="color: black;">Time to onset of reaction</label>
-                                <input class="form-control" type="time" name="onsettime" id="onsettime" value="{{ isset($report->descriptions) && $report->descriptions->onsettime ? \Carbon\Carbon::parse($report->descriptions->onsettime)->format('H:i') : '' }}">
+                                <input class="form-control" type="time" name="onsettime" id="onsettime" value="{{ isset($details) && $details->onset_at ? \Carbon\Carbon::parse($details->onset_at)->format('H:i') : '' }}">
                             </div>
                             <div class="col-md-4">
                                 <label for="indication" class="form-check-label" style="color: black;">Date start of reaction</label>
-                                <input class="form-control" type="date" name="reactstart" id="reactstart" value="{{ isset($report->descriptions) && $report->descriptions->date_start ? \Carbon\Carbon::parse($report->descriptions->date_start)->format('Y-m-d') : '' }}">
+                                <input class="form-control" type="date" name="reactstart" id="reactstart" value="{{ isset($details) && $details->onset_at ? \Carbon\Carbon::parse($details->onset_at)->format('Y-m-d') : '' }}">
                             </div>
                             <div class="col-md-4">
                                 <label for="indication" class="form-check-label" style="color: black;">Date end of reaction</label>
-                                <input class="form-control" type="date" name="reactstop" id="reactstop" value="{{ isset($report->descriptions) && $report->descriptions->date_stop ? \Carbon\Carbon::parse($report->descriptions->date_stop)->format('Y-m-d') : '' }}">
+                                <input class="form-control" type="date" name="reactstop" id="reactstop" value="{{ isset($report->descriptions) && $report->descriptions->date_end ? \Carbon\Carbon::parse($report->descriptions->date_end)->format('Y-m-d') : '' }}">
                             </div>
                         </div>
                         <div class="row mb-5">
@@ -363,7 +363,7 @@
             <div class="card card-custom gutter-b" style="border-radius: 0px !important; background-color: #eaeaea; margin: 0 !important; padding: 8px !important;">
                 <div class="d-flex align-items-center justify-content-between px-3">
                     <h4 class="text-center w-100" style="padding: 0.5rem !important; margin: 0 !important; color: #1d69e3;">Suspected Drug</h4>
-                    <button class="btn btn-light-success btn-sm add-drug" type="button" style="position: absolute; right: 2rem;">+</button>
+                    {{-- <button class="btn btn-light-success btn-sm add-drug" type="button" style="position: absolute; right: 2rem;">+</button> --}}
                 </div>
             </div>
             
@@ -372,9 +372,9 @@
                     <table class="table table-bordered" id="suspecteddrug-table">
                         <thead style="background-color: black;">
                             <tr>
-                                <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;"></th>
-                                <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;">{{__('Product / Generic Name')}}</th>
-                                <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;">{{__('Dose & Frequency Given')}}</th>
+                                {{-- <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;"></th> --}}
+                                <th style="min-width: 150px; text-align: center; vertical-align: middle; color: white !important;">{{__('Product / Generic Name')}}</th>
+                                <th style="min-width: 150px; text-align: center; vertical-align: middle; color: white !important;">{{__('Dose & Frequency Given')}}</th>
                                 <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;">{{__('MAL and Batch No.')}}</th>
                                 <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;">{{__('Therapy Start')}}</th>
                                 <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;">{{__('Therapy Stop')}}</th>
@@ -382,7 +382,32 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if($report != null && $report->susdrugs != null)
+                            <tr>
+                                <td><input class="form-control form-control-sm" type="text" name="susdrugname" id="susdrugname" value="{{ $details->drugname  ?? ''}}" readonly></td>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <input class="form-control form-control-sm" type="text" name="susdose" id="susdose" value="{{ $report->susdrugs->dose  ?? ''}}">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <select class="form-select form-select-sm" aria-label="Select example" name="susfreq" id="susfreq">
+                                                <option value=""></option>
+                                                <option value="dly" @selected(($report->susdrugs->frequency ?? '') == 'dly')>dly</option>
+                                                <option value="bid" @selected(($report->susdrugs->frequency ?? '') == 'bid')>bid</option>
+                                                <option value="om" @selected(($report->susdrugs->frequency ?? '') == 'om')>om</option>
+                                                <option value="tid" @selected(($report->susdrugs->frequency ?? '') == 'tid')>tid</option>
+                                                <option value="on" @selected(($report->susdrugs->frequency ?? '') == 'on')>on</option>
+                                                <option value="od" @selected(($report->susdrugs->frequency ?? '') == 'od')>od</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><input class="form-control form-control-sm" type="text" name="susbatchno" id="susbatchno" value="{{ $report->susdrugs->batchno  ?? ''}}"></td>
+                                <td><input class="form-control form-control-sm" type="date" name="susstartdate" id="susstartdate" value="{{ isset($report->susdrugs) && $report->susdrugs->start_date ? \Carbon\Carbon::parse($report->susdrugs->start_date)->format('Y-m-d') : '' }}"></td>
+                                <td><input class="form-control form-control-sm" type="date" name="susstopdate" id="susstopdate" value="{{ isset($report->susdrugs) && $report->susdrugs->stop_date ? \Carbon\Carbon::parse($report->susdrugs->stop_date)->format('Y-m-d') : '' }}"></td>
+                                <td><input class="form-control form-control-sm" type="text" name="susindication" id="susindication" value="{{ $report->susdrugs->indication  ?? ''}}"></td>
+                            </tr>
+                            {{-- @if($report != null && $report->susdrugs != null)
                                 @foreach ( $report->susdrugs as $drug)
                                     <tr>
                                         <td style="min-width: 100px; text-align: center; vertical-align: middle;">
@@ -400,20 +425,21 @@
                                         <td>{{$drug->product}}</td>
                                         <td>{{$drug->dose}}</td>
                                         <td>{{$drug->batchno}}</td>
-                                        <td>{{ $drug->start_date ? \Carbon\Carbon::parse($drug->start_date)->format('d/m/Y') : '' }}</td>
+                                        <td>{{ $drug->startt_date ? \Carbon\Carbon::parse($drug->start_date)->format('d/m/Y') : '' }}</td>
                                         <td>{{ $drug->stop_date ? \Carbon\Carbon::parse($drug->stop_date)->format('d/m/Y') : '' }}</td>
                                         <td>{{$drug->indication}}</td>
                                     </tr>
                                 @endforeach
-                            @endif
+                            @endif --}}
                         </tbody>
                     </table>
                 </div>
             </div>
             <br/>
             <div class="card card-custom gutter-b" style="border-radius: 0px !important; background-color: #eaeaea; margin: 0 !important; padding: 0 !important;">
-                <div class="d-flex justify-content-center">
-                    <h4 class="text-center" style="padding: 0.5rem !important; margin: 0 !important; color: #1d69e3;">Concomitant Drug</h4>
+                <div class="d-flex align-items-center justify-content-between px-3">
+                    <h4 class="text-center w-100" style="padding: 0.5rem !important; margin: 0 !important; color: #1d69e3;">Concomitant Drug</h4>
+                    <button class="btn btn-light-success btn-sm add-drug" type="button" style="position: absolute; right: 2rem;">+</button>
                 </div>
             </div>
             <div class="card card-custom gutter-b flex-grow-1 d-flex flex-column" style="box-shadow: 0px 2px 6px 2px #dcdcdc !important; border-radius: 0px !important;">

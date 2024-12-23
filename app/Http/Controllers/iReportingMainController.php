@@ -20,6 +20,8 @@ use App\Models\Patient;
 use App\Models\PatientInformation;
 use App\Models\Dischargesummary;
 use App\Models\AdrReport;
+use App\Models\AdrList;
+use App\Models\AdrBridge;
 
 use DB;
 use Auth;
@@ -631,26 +633,73 @@ class iReportingMainController extends Controller
     public function indexAdrWorklist(Request $request)
     {
         $explode = explode('?', $request->getRequestUri());
-
         $url = $explode[1];
+
+        // Clear all existing data in AdrList
+        AdrList::truncate();
+
+        // Fetch data from external API
+        $uri = env('ADV_EVENT');
+        $client = new \GuzzleHttp\Client(['defaults' => ['verify' => false]]);
+
+        $response = $client->request('GET', $uri);
+
+        $statusCode = $response->getStatusCode();
+        $content = json_decode($response->getBody(), true);
+
+        $list = $content['data'];
+
+        // Insert new records into AdrList
+        foreach ($list as $record) {
+            $storerecord                 = new AdrList();
+            $storerecord->adr_id         = $record['data'] ?? null;
+            $storerecord->episodeno      = $record['episodeNo'] ?? null;
+            $storerecord->drugname       = $record['itemDesc'] ?? null;
+            $storerecord->reported_at    = isset($record['advsDateReported']) ? Carbon::createFromFormat('d/m/Y', $record['advsDateReported'])->format('Y-m-d H:i:s') : null;
+            $storerecord->onset_at       = isset($record['advsOnSetDate']) ? Carbon::createFromFormat('d/m/Y', $record['advsOnSetDate'])->format('Y-m-d H:i:s') : null;
+            $storerecord->severity       = $record['severityDesc'] ?? null;
+            $storerecord->description    = $record['Desc'] ?? null;
+            $storerecord->errordesc      = $record['advsEnterInErrorReasonDesc'] ?? null;
+            $storerecord->created_at     = Carbon::now();
+            $storerecord->save();
+
+
+            //status_id
+            //1 = active
+            //2 = finalized
+            $adrId = $record['data'] ?? null;
+            if ($adrId && !AdrBridge::where('adr_id', $adrId)->exists()) {
+                $storebridge             = new AdrBridge();
+                $storebridge->adr_id     = $adrId;
+                $storebridge->created_at = Carbon::now();
+                $storebridge->status_id  = 1;
+                $storebridge->save();
+            }
+        }
 
         return view('ireporting.adr.index', compact('url'));
     }
 
+
     public function getAdrWorklistSuspect(Request $request)
     {
-        $report = AdrReport::with([
-            'descriptions',
-            'susdrugs' => function ($query) use ($request) {
-                $query->where('status_id', 1);
-            },
-            'concodrugs' => function ($query) use ($request) {
-                $query->where('status_id', 1);
-            },
-            'createdby:id,name', 
-            'updatedby:id,name',
-            'patientinfo.patient'
-        ])->where('status_id', 1 )->orderBy('id', 'desc');
+        // $report = AdrList::with(['patientinfo.patient']);
+        $report = AdrBridge::with(['adrlist.patientinfo.patient'])->where('status_id', 1);
+
+        // dd($report->get());
+
+        // $report = AdrReport::with([
+        //     'descriptions',
+        //     'susdrugs' => function ($query) use ($request) {
+        //         $query->where('status_id', 1);
+        //     },
+        //     'concodrugs' => function ($query) use ($request) {
+        //         $query->where('status_id', 1);
+        //     },
+        //     'createdby:id,name', 
+        //     'updatedby:id,name',
+        //     'patientinfo.patient'
+        // ])->where('status_id', 1 )->orderBy('id', 'desc');
 
         // Filter by Date Range
         if ($request->has('dateRange')) {
@@ -731,7 +780,7 @@ class iReportingMainController extends Controller
             },
             'createdby', 
             'updatedby',
-        ])->where('episodeno', $request->epsdno)->where('status_id', 2 )->orderBy('id', 'desc')->first();
+        ])->where('episodeno', $request->epsdno)->whereIn('status_id', [2, 3])->orderBy('id', 'desc')->first();
 
         //PatDemo
         $uri = env('PAT_DEMO'). $request->epsdno;

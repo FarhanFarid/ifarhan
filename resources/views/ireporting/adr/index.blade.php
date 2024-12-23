@@ -95,8 +95,7 @@
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Reported By</th>
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Report Date/Time</th>
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Suspected Drug</th>
-                                    <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">ADR Ageing</th>
-                                <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">Report</th>
+                                    <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">Report</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -149,7 +148,7 @@
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Reported By</th>
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Report Date/Time</th>
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Suspected Drug</th>
-                                    <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">ADR Ageing</th>
+                                    <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">Report</th>
                                 </tr>
                             </thead>
                             <tbody>

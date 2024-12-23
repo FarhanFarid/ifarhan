@@ -197,7 +197,7 @@
                                 Date end of reaction :
                             </div>
                             <div class="col-md-2">
-                                <input type="text" class="form-control form-control-sm" type="checkbox" id="icnumber" name="icnumber" value="{{ isset($report->descriptions) && $report->descriptions->date_stop ? \Carbon\Carbon::parse($report->descriptions->date_stop)->format('d/m/Y') : '' }}">
+                                <input type="text" class="form-control form-control-sm" type="checkbox" id="icnumber" name="icnumber" value="{{ isset($report->descriptions) && $report->descriptions->date_end ? \Carbon\Carbon::parse($report->descriptions->date_end)->format('d/m/Y') : '' }}">
                             </div>
                         </div>
                     </div>
@@ -448,16 +448,14 @@
                                 </thead>
                                 <tbody>
                                     @if($report != null && $report->susdrugs != null)
-                                        @foreach ( $report->susdrugs as $drug)
-                                            <tr>
-                                                <td>{{$drug->product}}</td>
-                                                <td>{{$drug->dose}}</td>
-                                                <td>{{$drug->batchno}}</td>
-                                                <td>{{ $drug->start_date ? \Carbon\Carbon::parse($drug->start_date)->format('d/m/Y') : '' }}</td>
-                                                <td>{{ $drug->stop_date ? \Carbon\Carbon::parse($drug->stop_date)->format('d/m/Y') : '' }}</td>
-                                                <td>{{$drug->indication}}</td>
-                                            </tr>
-                                        @endforeach
+                                        <tr>
+                                            <td>{{$report->susdrugs->product}}</td>
+                                            <td>{{$report->susdrugs->dose}} ({{$report->susdrugs->frequency}})</td>
+                                            <td>{{$report->susdrugs->batchno}}</td>
+                                            <td>{{ $report->susdrugs->start_date ? \Carbon\Carbon::parse($report->susdrugs->start_date)->format('d/m/Y') : '' }}</td>
+                                            <td>{{ $report->susdrugs->stop_date ? \Carbon\Carbon::parse($report->susdrugs->stop_date)->format('d/m/Y') : '' }}</td>
+                                            <td>{{$report->susdrugs->indication}}</td>
+                                        </tr>
                                     @else
                                         <tr>
                                             <td></td>

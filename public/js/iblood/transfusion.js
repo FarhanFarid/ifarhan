@@ -86,7 +86,7 @@ $(document).ready(function () {
     });
 
     $('#checkmatch').on('click', function() {
-        var labno = $('#labno').val();
+        var labno = $('#labno').val().toUpperCase();
         var mrn = $('#mrn').val();
         var bagsno = $('#bagsno').val();
         var url = config.routes.blood.transfusion.check;
