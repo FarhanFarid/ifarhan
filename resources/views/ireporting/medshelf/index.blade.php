@@ -23,7 +23,7 @@
                         <table class="table table-bordered table-row-bordered" id="reportms-table">
                             <thead class="thead-light">
                                 <tr class="fw-semibold fs-6">
-                                    <th style="max-width: 50px; color: #14787c; background-color:#ecfefe">No. asd</th>
+                                    <th style="max-width: 50px; color: #14787c; background-color:#ecfefe">No.</th>
                                     <th style="min-width: 250px; color: #14787c; background-color:#ecfefe">First Scan</th>
                                     <th style="min-width: 250px; color: #14787c; background-color:#ecfefe">Second Scan</th>
                                     <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">Scan By</th>
