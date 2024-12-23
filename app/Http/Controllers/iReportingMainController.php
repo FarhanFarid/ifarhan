@@ -22,6 +22,9 @@ use App\Models\Dischargesummary;
 use App\Models\AdrReport;
 use App\Models\AdrList;
 use App\Models\AdrBridge;
+use App\Models\MedShelf;
+use App\Models\MedShelfUser;
+use App\Models\MedShelfUserSSO;
 
 use DB;
 use Auth;
@@ -851,5 +854,98 @@ class iReportingMainController extends Controller
         return $response;
 
     }
+
+    //begin medshelf
+    public function indexMedShelf(Request $request)
+    {
+        $explode = explode('?', $request->getRequestUri());
+
+        $url = $explode[1];
+
+        return view('ireporting.medshelf.index', compact('url'));
+    }
+
+    public function apiGetDataMedShelf(Request $request)
+    {
+        try
+        {
+
+            $dateRange  = explode(' - ', $request->dateRange);
+            $startDate  = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+            $endDate    = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+
+            $hasDs = MedShelf::whereBetween('created_at', [$startDate, $endDate])->orderBy('created_at', 'desc')
+                    ->get();
+
+            $data = [];
+
+            foreach($hasDs as $ds)
+            {
+                $temp = [];
+
+                $userssoid = MedShelfUser::select('user_sso_id')->where('id', $ds['user_id'])->first();
+
+                $username = MedShelfUserSSO::select('name')->where('id', $userssoid->user_sso_id)->first();
+               
+                $getdrugcode = explode('  ',$ds['param_one']);
+                $getdrugname = explode('  ',$ds['param_two']);
+
+                if(isset($getdrugcode[7])){
+                    $drugnamecodeone = $getdrugcode[0] . '(' . $getdrugcode[7] . ')';
+                }
+                else if(isset($getdrugcode[4])){
+                    $drugnamecodeone = $getdrugcode[0] . '(' . $getdrugcode[4] . ')';
+                }
+                else{
+                    $drugnamecodeone = '-';
+                }
+
+                if(isset($getdrugname[7])){
+                    $drugnamecodetwo = $getdrugname[0] . '(' . $getdrugname[7] . ')';
+                }
+                else if(isset($getdrugname[4])){
+                    $drugnamecodetwo = $getdrugname[0] . '(' . $getdrugname[4] . ')';
+                }
+                else{
+                    $drugnamecodetwo = '-';
+                }
+
+                $temp['drugcode']            = $drugnamecodeone;
+                $temp['drugname']            = $drugnamecodetwo;
+                $temp['scanby']              = $username->name;
+                $temp['scandate']            = Carbon::parse($ds['created_at'])->format('Y-m-d');
+                $temp['status']              = $ds['status'];
+
+                array_push($data, $temp);
+            }
+            
+            $response = response()->json(
+                [
+                  'status'  => 'success',
+                  'data'    => $data
+                ], 200
+            );
+
+            return $response;
+        }
+        catch(\Exception $e)
+        {
+            Log::error($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
+
+            $response = response()->json(
+                [
+                    'status'  => 'failed',
+                    'message' => 'Internal error happened. Try again'
+                ], 200
+            );
+
+            return $response;
+        }
+    }
+    //end medshelf
 
 }

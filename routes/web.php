@@ -195,6 +195,11 @@ Route::group(['middleware' => ['authsystem']], function() {
             Route::get('/generatesuspect', [iReportingMainController::class, 'AdrReportSuspect'])->name('report.adr.generatesuspect'); 
             Route::post('/getpatientinfo', [iReportingMainController::class, 'getPatientInfo'])->name('report.adr.getpatientinfo');     
         });
+
+        Route::group(['prefix' => 'medshelf'], function () {
+            Route::get('/', [iReportingMainController::class, 'indexMedShelf'])->name('report.medshelf');
+            Route::get('/list', [iReportingMainController::class, 'apiGetDataMEdShelf'])->name('report.medshelf.list');
+        });
     });
 
     //ADR

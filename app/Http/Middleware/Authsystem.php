@@ -460,6 +460,8 @@ class Authsystem
                 'ireporting/adr/generateconfirm',
                 'ireporting/adr/generatesuspect',
                 'ireporting/adr/getpatientinfo',
+                'ireporting/medshelf',
+                'ireporting/medshelf/list',
             ];
             if(in_array($request->path(), $ipharmacyArr)){
                 try
