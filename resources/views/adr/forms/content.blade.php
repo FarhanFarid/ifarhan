@@ -356,6 +356,16 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row mb-5">
+                            <div class="col-md-4">
+                                <label for="treatment" class="form-check-label mb-1" style="color: black;">Relevant Investigation / Lab Data :</label>
+                                <textarea class="form-control" name="relevantinvestigation" id="relevantinvestigation" style="min-height: 100px;">{{ $report->descriptions->relevantinvest  ?? ''}}</textarea>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="treatment" class="form-check-label mb-1" style="color: black;">Relevant Medical History :</label>
+                                <textarea class="form-control" name="relevantmh" id="relevantmh" style="min-height: 100px;">{{ $report->descriptions->medicalhistory  ?? ''}}</textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -378,68 +388,48 @@
                                 <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;">{{__('MAL and Batch No.')}}</th>
                                 <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;">{{__('Therapy Start')}}</th>
                                 <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;">{{__('Therapy Stop')}}</th>
-                                <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;">{{__('Indication')}}</th>
+                                <th style="min-width: 200px; text-align: center; vertical-align: middle; color: white !important;">{{__('Indication')}}</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td><input class="form-control form-control-sm" type="text" name="susdrugname" id="susdrugname" value="{{ $details->drugname  ?? ''}}" readonly></td>
+                                <td>
+                                    <input class="form-control form-control-sm" type="text" name="susdrugname" id="susdrugname" value="{{ $details->drugname ?? $latestDrug['Itemdesc'] ?? '' }}" readonly>
+                                </td>
                                 <td>
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <input class="form-control form-control-sm" type="text" name="susdose" id="susdose" value="{{ $report->susdrugs->dose  ?? ''}}">
+                                            <input class="form-control form-control-sm" type="text" name="susdose" id="susdose" value="{{ $report->susdrugs->dose ?? $latestDrug['dosageqty'] ?? '' }}">
                                         </div>
                                         <div class="col-md-6">
-                                            <select class="form-select form-select-sm" aria-label="Select example" name="susfreq" id="susfreq">
-                                                <option value=""></option>
-                                                <option value="dly" @selected(($report->susdrugs->frequency ?? '') == 'dly')>dly</option>
-                                                <option value="bid" @selected(($report->susdrugs->frequency ?? '') == 'bid')>bid</option>
-                                                <option value="om" @selected(($report->susdrugs->frequency ?? '') == 'om')>om</option>
-                                                <option value="tid" @selected(($report->susdrugs->frequency ?? '') == 'tid')>tid</option>
-                                                <option value="on" @selected(($report->susdrugs->frequency ?? '') == 'on')>on</option>
-                                                <option value="od" @selected(($report->susdrugs->frequency ?? '') == 'od')>od</option>
-                                            </select>
+                                            <input class="form-control form-control-sm" type="text" name="susfreq" id="susfreq" value="{{ $report->susdrugs->frequency ?? $latestDrug['freqcode'] ?? '' }}">
                                         </div>
                                     </div>
                                 </td>
-                                <td><input class="form-control form-control-sm" type="text" name="susbatchno" id="susbatchno" value="{{ $report->susdrugs->batchno  ?? ''}}"></td>
-                                <td><input class="form-control form-control-sm" type="date" name="susstartdate" id="susstartdate" value="{{ isset($report->susdrugs) && $report->susdrugs->start_date ? \Carbon\Carbon::parse($report->susdrugs->start_date)->format('Y-m-d') : '' }}"></td>
-                                <td><input class="form-control form-control-sm" type="date" name="susstopdate" id="susstopdate" value="{{ isset($report->susdrugs) && $report->susdrugs->stop_date ? \Carbon\Carbon::parse($report->susdrugs->stop_date)->format('Y-m-d') : '' }}"></td>
-                                <td><input class="form-control form-control-sm" type="text" name="susindication" id="susindication" value="{{ $report->susdrugs->indication  ?? ''}}"></td>
+                                <td>
+                                    <input class="form-control form-control-sm" type="text" name="susbatchno" id="susbatchno" value="{{ $report->susdrugs->batchno ?? $latestDrug['prescNum'] ?? '' }}">
+                                </td>
+                                <td>
+                                    <input class="form-control form-control-sm" type="date" name="susstartdate" id="susstartdate" value="{{ isset($report->susdrugs) && $report->susdrugs->start_date ? \Carbon\Carbon::parse($report->susdrugs->start_date)->format('Y-m-d') : (isset($latestDrug['startdate']) ? \Carbon\Carbon::createFromFormat('d/m/Y', $latestDrug['startdate'])->format('Y-m-d') : '') }}">
+                                </td>
+                                <td>
+                                    <input class="form-control form-control-sm" type="date" name="susstopdate" id="susstopdate" value="{{ isset($report->susdrugs) && $report->susdrugs->stop_date ? \Carbon\Carbon::parse($report->susdrugs->stop_date)->format('Y-m-d') : '' }}">
+                                </td>
+                                <td>
+                                    <textarea class="form-control" name="susindication" id="susindication">{{ $report->susdrugs->indication ?? $latestDrug['instruction'] ?? '' }}</textarea>
+                                </td>
                             </tr>
-                            {{-- @if($report != null && $report->susdrugs != null)
-                                @foreach ( $report->susdrugs as $drug)
-                                    <tr>
-                                        <td style="min-width: 100px; text-align: center; vertical-align: middle;">
-                                            <div class="row align-items-center justify-content-center">
-                                                <div class="col-md-3 d-flex justify-content-center">
-                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                                                </div>
-                                                <div class="col-md-3 d-flex justify-content-center">
-                                                    <button class="badge btn-sm badge-light-danger remove-row">
-                                                        <i class="fa-solid fa-trash-can"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>{{$drug->product}}</td>
-                                        <td>{{$drug->dose}}</td>
-                                        <td>{{$drug->batchno}}</td>
-                                        <td>{{ $drug->startt_date ? \Carbon\Carbon::parse($drug->start_date)->format('d/m/Y') : '' }}</td>
-                                        <td>{{ $drug->stop_date ? \Carbon\Carbon::parse($drug->stop_date)->format('d/m/Y') : '' }}</td>
-                                        <td>{{$drug->indication}}</td>
-                                    </tr>
-                                @endforeach
-                            @endif --}}
                         </tbody>
                     </table>
                 </div>
             </div>
             <br/>
             <div class="card card-custom gutter-b" style="border-radius: 0px !important; background-color: #eaeaea; margin: 0 !important; padding: 0 !important;">
-                <div class="d-flex align-items-center justify-content-between px-3">
-                    <h4 class="text-center w-100" style="padding: 0.5rem !important; margin: 0 !important; color: #1d69e3;">Concomitant Drug</h4>
-                    <button class="btn btn-light-success btn-sm add-drug" type="button" style="position: absolute; right: 2rem;">+</button>
+                <div class="card card-custom gutter-b" style="border-radius: 0px !important; background-color: #eaeaea; margin: 0 !important; padding: 8px !important;">
+                    <div class="d-flex align-items-center justify-content-between px-3">
+                        <h4 class="text-center w-100" style="padding: 0.5rem !important; margin: 0 !important; color: #1d69e3;">Concomitant Drug</h4>
+                    {{-- <button class="btn btn-light-success btn-sm add-drug" type="button" style="position: absolute; right: 2rem;">+</button> --}}
+                </div>
                 </div>
             </div>
             <div class="card card-custom gutter-b flex-grow-1 d-flex flex-column" style="box-shadow: 0px 2px 6px 2px #dcdcdc !important; border-radius: 0px !important;">
@@ -447,6 +437,7 @@
                     <table class="table table-bordered" id="concodrug-table">
                         <thead style="background-color: black;">
                             <tr>
+                                <th style="min-width: 50px; text-align: center; vertical-align: middle; color: white !important;"></th>
                                 <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;">{{__('Product / Generic Name')}}</th>
                                 <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;">{{__('Dose & Frequency Given')}}</th>
                                 <th style="min-width: 100px; text-align: center; vertical-align: middle; color: white !important;">{{__('MAL and Batch No.')}}</th>
@@ -456,18 +447,23 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if($report != null && $report->concodrugs != null)
-                                @foreach ( $report->concodrugs as $drug)
-                                    <tr>
-                                        <td>{{$drug->product}}</td>
-                                        <td>{{$drug->dose}}</td>
-                                        <td>{{$drug->batchno}}</td>
-                                        <td>{{ $drug->start_date ? \Carbon\Carbon::parse($drug->start_date)->format('d/m/Y') : '' }}</td>
-                                        <td>{{ $drug->stop_date ? \Carbon\Carbon::parse($drug->stop_date)->format('d/m/Y') : '' }}</td>
-                                        <td>{{$drug->indication}}</td>
-                                    </tr>
-                                @endforeach
-                            @endif
+                            @foreach ( $medhistory as $drug)
+                                <tr>
+                                    <td style="min-width: 50px; text-align: center; vertical-align: middle;">
+                                        <div class="row align-items-center justify-content-center">
+                                            <div class="col-md-3 d-flex justify-content-center">
+                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{$drug['Itemdesc']}}</td>
+                                    <td>{{$drug['dosageqty']}} ({{$drug['freqcode']}})</td>
+                                    <td>{{$drug['prescNum']}}</td>
+                                    <td>{{$drug['startdate']}}</td>
+                                    <td>{{$drug['startdate']}}</td>
+                                    <td>{{$drug['instruction']}}</td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

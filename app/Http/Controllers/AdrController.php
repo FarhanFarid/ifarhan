@@ -42,13 +42,33 @@ class AdrController extends Controller
             },
             'createdby:id,name', 
             'updatedby:id,name',
-        ])->where('episodeno', $request->epsdno)->where('status_id', 1 )->orderBy('id', 'desc')->first();
+        ])->where('episodeno', $request->epsdno)->where('adr_id', $request->adrid)->where('status_id', 1 )->orderBy('id', 'desc')->first();
         
         $details = AdrList::where('adr_id', $request->adrid)->first();
 
-        // dd($details);
+        //PatDemo
+        $uri = env('PAT_DEMO'). $request->epsdno;
+        $client = new \GuzzleHttp\Client(['defaults' => ['verify' => false]]);
 
-        return view('adr.index', compact('url', 'report', 'details'));
+        $response = $client->request('GET', $uri);
+
+        $statusCode = $response->getStatusCode();
+        $content = json_decode($response->getBody(), true);
+
+        $medhistory = $content['data']['medHistory'];
+
+        $latestDrug = null;
+
+        foreach ($medhistory as $drug) {
+            if ($drug['Itemdesc'] == $details->drugname) {
+                $drugStartDate = Carbon::createFromFormat('d/m/Y', $drug['startdate']);
+                if (!$latestDrug || $drugStartDate->gt(Carbon::createFromFormat('d/m/Y', $latestDrug['startdate']))) {
+                    $latestDrug = $drug;
+                }
+            }
+        }
+
+        return view('adr.index', compact('url', 'report', 'details', 'medhistory', 'latestDrug'));
     }
 
     public function genReport(Request $request)
@@ -106,10 +126,11 @@ class AdrController extends Controller
             //2 - finalize
             //3 - false report 
             
-            $report = AdrReport::where('episodeno', $request->epsdno)->where('status_id', 1 )->orderBy('id', 'desc')->first();
+            $report = AdrReport::where('episodeno', $request->epsdno)->where('adr_id', $request->adrid)->where('status_id', 1 )->orderBy('id', 'desc')->first();
             
             if($report != null){
 
+                $report->adr_id        = $request->adrid;
                 $report->episodeno     = $request->epsdno;
                 $report->report        = $formValues['report'] ?? null;
                 $report->status_id     = 1;
@@ -131,6 +152,8 @@ class AdrController extends Controller
                 $adrdesc->outcome         = $formValues['outcome'] ?? null;
                 $adrdesc->fatal_date      = $formValues['fataldate'] ?? null;
                 $adrdesc->fatal_cause     = $formValues['causeofdeath'] ?? null;
+                $adrdesc->relevantinvest  = $formValues['relevantinvestigation'] ?? null;
+                $adrdesc->medicalhistory  = $formValues['relevantmh'] ?? null;
                 $adrdesc->created_at      = Carbon::now();
                 $adrdesc->save();
 
@@ -175,6 +198,7 @@ class AdrController extends Controller
             }else{
                 
                 $storereport                = new AdrReport();
+                $storereport->adr_id        = $request->adrid;
                 $storereport->episodeno     = $request->epsdno;
                 $storereport->report        = $formValues['report'] ?? null;
                 $storereport->status_id     = 1;
@@ -201,6 +225,8 @@ class AdrController extends Controller
                 $storedesc->outcome         = $formValues['outcome'] ?? null;
                 $storedesc->fatal_date      = $formValues['fataldate'] ?? null;
                 $storedesc->fatal_cause     = $formValues['causeofdeath'] ?? null;
+                $storedesc->relevantinvest  = $formValues['relevantinvestigation'] ?? null;
+                $storedesc->medicalhistory  = $formValues['relevantmh'] ?? null;
                 $storedesc->created_at      = Carbon::now();
                 $storedesc->save();
 
