@@ -213,11 +213,13 @@ Route::group(['middleware' => ['authsystem']], function() {
         });
 
     });
-});
 
-//Critical Lab Result
-Route::group(['prefix' => 'critical-lab'], function () {
-    Route::get('/', [ClrController::class, 'index'])->name('clr.index');   
+    //Critical Lab Result
+    Route::group(['prefix' => 'critical-lab'], function () {
+        Route::get('/', [ClrController::class, 'index'])->name('clr.index');  
+        Route::post('/save-eventone', [ClrController::class, 'saveEventOne'])->name('clr.save.eventone');                             
+        Route::post('/save-eventtwo', [ClrController::class, 'saveEventTwo'])->name('clr.save.eventtwo');                             
+    });
 });
 
 Route::get('/test', [HmilkMainController::class, 'test'])->name('hmilk.main.test');
