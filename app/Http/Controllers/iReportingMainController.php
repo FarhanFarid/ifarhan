@@ -633,7 +633,7 @@ class iReportingMainController extends Controller
         ));
     }
 
-    public function indexAdrWorklist(Request $request)
+    public function indexAdrWorklist(Request $request) 
     {
         $explode = explode('?', $request->getRequestUri());
         $url = $explode[1];
@@ -658,18 +658,29 @@ class iReportingMainController extends Controller
             $storerecord->adr_id         = $record['data'] ?? null;
             $storerecord->episodeno      = $record['episodeNo'] ?? null;
             $storerecord->drugname       = $record['itemDesc'] ?? null;
-            $storerecord->reported_at    = isset($record['advsDateReported']) ? Carbon::createFromFormat('d/m/Y', $record['advsDateReported'])->format('Y-m-d H:i:s') : null;
-            $storerecord->onset_at       = isset($record['advsOnSetDate']) ? Carbon::createFromFormat('d/m/Y', $record['advsOnSetDate'])->format('Y-m-d H:i:s') : null;
+
+            // Save reported_at
+            $storerecord->reported_at    = isset($record['advsDateReported']) 
+                ? Carbon::createFromFormat('d/m/Y', $record['advsDateReported'])->format('Y-m-d H:i:s') 
+                : null;
+
+            // Save onset_at (combining advsOnSetDate and advsTimeReported)
+            if (!empty($record['advsOnSetDate']) && !empty($record['advsTimeReported'])) {
+                $datetime = $record['advsOnSetDate'] . ' ' . $record['advsTimeReported'];
+                $storerecord->onset_at = Carbon::createFromFormat('d/m/Y H:i:s', $datetime)->format('Y-m-d H:i:s');
+            } elseif (!empty($record['advsOnSetDate'])) {
+                $storerecord->onset_at = Carbon::createFromFormat('d/m/Y', $record['advsOnSetDate'])->format('Y-m-d H:i:s');
+            } else {
+                $storerecord->onset_at = null;
+            }
+
             $storerecord->severity       = $record['severityDesc'] ?? null;
             $storerecord->description    = $record['Desc'] ?? null;
             $storerecord->errordesc      = $record['advsEnterInErrorReasonDesc'] ?? null;
             $storerecord->created_at     = Carbon::now();
             $storerecord->save();
 
-
-            //status_id
-            //1 = active
-            //2 = finalized
+            // Handle AdrBridge insertion
             $adrId = $record['data'] ?? null;
             if ($adrId && !AdrBridge::where('adr_id', $adrId)->exists()) {
                 $storebridge             = new AdrBridge();
