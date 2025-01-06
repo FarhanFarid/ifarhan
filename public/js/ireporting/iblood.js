@@ -86,7 +86,9 @@ var table = $('#reportiblood-table').DataTable({
                 if (row.expiry_date == null) {
                     return '<span>-</span>';
                 } else {
-                    return '<span>' + moment(row.expiry_date).format('DD/MM/YYYY HH:mm') + '</span>';
+                    const isExpired = moment(row.expiry_date).isBefore(moment());
+                    const color = isExpired ? 'red' : 'black'; 
+                    return '<span style="color: ' + color + ';">' + moment(row.expiry_date).format('DD/MM/YYYY HH:mm') + '</span>';
                 }
             }
         },

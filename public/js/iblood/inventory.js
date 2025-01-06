@@ -33,7 +33,7 @@ $(document).ready(function () {
                 "render": function (data, type, row) {
                     var html = '';
                     if (row.atr_status_id == 1 || row.atr_status_id == 2) {
-                        html += '<span aria-hidden="true" style="font-size: 20px; color: red; animation: blink 1s infinite;">🚨</span>';
+                        html += '<span aria-hidden="true" style="font-size: 20px; color: red; animation: blink 1s infinite;">ðŸš¨</span>';
                         html += '<style>@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }</style>';
                     } else {
                         html += '-';
@@ -211,8 +211,9 @@ $(document).ready(function () {
                     var latestLocation = row.locations.sort((a, b) => new Date(b.created_at) - new Date(a.received_at))[0];
                     var today = moment(); // Get today's date
                     
-                    html += '<div class="row">';
+
                     
+                    html += '<div class="row">';
                     // Check if transfuse_status_id is 1 or 2 and if expiry date has passed
                     if ((row.transfuse_status_id == 1 || row.transfuse_status_id == 2) && moment(row.expiry_date).isBefore(today)) {
                         // Only allow 'Transfer Location'
@@ -234,7 +235,7 @@ $(document).ready(function () {
                                     html += '<div class="col-md-3"><button class="badge btn-sm badge-light-success transfuse-blood" data-bs-toggle="tooltip" data-bs-placement="top" title="Transfuse Blood" data-bagno="' + row.bagno + '" data-episodeno="' + row.episodeno + '"><i class="fa-solid fa-droplet"></i></button></div>';
                                 }
             
-                                html += '<div class="col-md-3"><button class="badge btn-sm badge-light-primary transfer-location" data-bs-toggle="tooltip" data-bs-placement="top" title="Transfer Location" data-bagno="' + row.bagno + '" data-episodeno="' + row.episodeno + '"><i class="fas fa-exchange-alt"></i></button></div>';
+                                html += '<div class="col-md-3"><button class="badge btn-sm badge-light-primary transfer-location" data-bs-toggle="tooltip" data-bs-placement="top" title="Transfer Location" data-bagno="' + row.bagno + '" data-episodeno="' + row.episodeno + '" data-expirydate="' + row.expiry_date + '"><i class="fas fa-exchange-alt"></i></button></div>';
                                 // html += '<div class="col-md-3"><button class="badge btn-sm badge-light-info add-vital" data-bs-toggle="tooltip" data-bs-placement="top" title="Update Vital Sign" data-bagno="' + row.bagno + '" data-episodeno="' + row.episodeno + '"><i class="fa-solid fa-heart-pulse"></i></button></div>';
 
                                 if (row.transfuse_status_id == 1 || row.transfuse_status_id == 7) {
@@ -622,7 +623,7 @@ $(document).ready(function () {
     
 
     $('#verify-labno').on('click', function() {
-        var labno = $('#labno').val();
+        var labno = $('#labno').val().toUpperCase();
         var url = config.routes.blood.inventory.verifylab;
         var url2 = config.routes.blood.inventory.wardList;
     
@@ -815,84 +816,254 @@ $(document).ready(function () {
     });
 
     //TRANSFER LOCATION
+    // $('#bloodinventory-table tbody').on('click', '.transfer-location', function(e) {
+    //     e.preventDefault();
+    
+    //     var bagno = $(this).data('bagno');
+    //     var episodeno = $(this).data('episodeno');
+    //     var expirydate = $(this).data('expirydate');
+    //     var url = config.routes.blood.inventory.wardList;
+    
+    //     $.ajax({
+    //         url: url,
+    //         method: 'GET',
+    //         dataType: 'json',
+    //         data: { bagno: bagno },
+    //         success: function(response) {
+    
+    //             $('#transfer-location').modal('show');
+
+    //             $('#eNumber').val(episodeno);
+    //             $('#bNumber').val(bagno);
+    //             $('#transferLocation').empty();
+    
+    //             $('#transferLocation').append('<option></option>');
+    
+    //             $.each(response.data, function(index, location) {
+    //                 $('#transferLocation').append(
+    //                     $('<option>', {
+    //                         value: location.location_name,
+    //                         text: location.location_name + ' (' + location.location_code + ')',
+    //                     })
+    //                 );
+    //             });
+    
+    //             $('#transferLocation').select2({
+    //                 dropdownParent: $('#transfer-location')
+    //             });
+
+    //             $('#transferLocation').on('change', function() {
+    //                 var selectedLocation = $(this).val();
+    
+    //                 if ((response.inv.product == "CRYOPPT" || 
+    //                      response.inv.product == "PLATELET CONC." || 
+    //                      response.inv.product == "FFP.") &&
+    //                      selectedLocation === "Laboratory and Blood Services") {
+    //                     $('#reasonreturn').show();
+    //                 } else {
+    //                     $('#reasonreturn').hide();
+    //                 }
+
+    //                 if (selectedLocation === "Others") {
+    //                     $('#otherlocationdiv').show();
+    //                 } else {
+    //                     $('#otherlocationdiv').hide();
+    //                 }
+    //             });
+
+    //             $('#actualtransferdate').on('change', function() {
+    //                 const selectedDate = new Date($(this).val());
+    //                 const currentDate = new Date();
+                    
+    //                 // Normalize dates for comparison (ignore seconds and milliseconds)
+    //                 currentDate.setSeconds(0, 0);
+    //                 selectedDate.setSeconds(0, 0);
+            
+    //                 // Show or hide the reason div
+    //                 if (selectedDate.getTime() !== currentDate.getTime()) {
+    //                     $('#transferreason').show();
+    //                 } else {
+    //                     $('#transferreason').hide();
+    //                 }
+    //             });
+    //         },
+    //         error: function(xhr, status, error) {
+    //             Swal.fire(
+    //                 'Error!',
+    //                 'Error occurred while fetching locations: ' + error,
+    //                 'error'
+    //             );
+    //         }
+    //     });
+    // });
+
     $('#bloodinventory-table tbody').on('click', '.transfer-location', function(e) {
         e.preventDefault();
     
         var bagno = $(this).data('bagno');
         var episodeno = $(this).data('episodeno');
+        var expirydate = $(this).data('expirydate');
         var url = config.routes.blood.inventory.wardList;
     
-        $.ajax({
-            url: url,
-            method: 'GET',
-            dataType: 'json',
-            data: { bagno: bagno },
-            success: function(response) {
-    
-                $('#transfer-location').modal('show');
-
-                $('#eNumber').val(episodeno);
-                $('#bNumber').val(bagno);
-                $('#transferLocation').empty();
-    
-                $('#transferLocation').append('<option></option>');
-    
-                $.each(response.data, function(index, location) {
-                    $('#transferLocation').append(
-                        $('<option>', {
-                            value: location.location_name,
-                            text: location.location_name + ' (' + location.location_code + ')',
-                        })
-                    );
-                });
-    
-                $('#transferLocation').select2({
-                    dropdownParent: $('#transfer-location')
-                });
-
-                $('#transferLocation').on('change', function() {
-                    var selectedLocation = $(this).val();
-    
-                    if ((response.inv.product == "CRYOPPT" || 
-                         response.inv.product == "PLATELET CONC." || 
-                         response.inv.product == "FFP.") &&
-                         selectedLocation === "Laboratory and Blood Services") {
-                        $('#reasonreturn').show();
-                    } else {
-                        $('#reasonreturn').hide();
-                    }
-
-                    if (selectedLocation === "Others") {
-                        $('#otherlocationdiv').show();
-                    } else {
-                        $('#otherlocationdiv').hide();
-                    }
-                });
-
-                $('#actualtransferdate').on('change', function() {
-                    const selectedDate = new Date($(this).val());
-                    const currentDate = new Date();
-                    
-                    // Normalize dates for comparison (ignore seconds and milliseconds)
-                    currentDate.setSeconds(0, 0);
-                    selectedDate.setSeconds(0, 0);
+        // Check if expiry date is missing (indicating expired)
+        if (!expirydate) {
+            Swal.fire({
+                title: 'Expired Date!',
+                text: 'This blood bag has an expired date. Please return the bag to lab!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Proceed',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: url,
+                        method: 'GET',
+                        dataType: 'json',
+                        data: { bagno: bagno },
+                        success: function(response) {
+                
+                            $('#transfer-location').modal('show');
             
-                    // Show or hide the reason div
-                    if (selectedDate.getTime() !== currentDate.getTime()) {
-                        $('#transferreason').show();
-                    } else {
-                        $('#transferreason').hide();
-                    }
-                });
-            },
-            error: function(xhr, status, error) {
-                Swal.fire(
-                    'Error!',
-                    'Error occurred while fetching locations: ' + error,
-                    'error'
-                );
-            }
-        });
+                            $('#eNumber').val(episodeno);
+                            $('#bNumber').val(bagno);
+                            $('#transferLocation').empty();
+                
+                            $('#transferLocation').append('<option></option>');
+                
+                            $.each(response.data, function(index, location) {
+                                $('#transferLocation').append(
+                                    $('<option>', {
+                                        value: location.location_name,
+                                        text: location.location_name + ' (' + location.location_code + ')',
+                                    })
+                                );
+                            });
+                
+                            $('#transferLocation').select2({
+                                dropdownParent: $('#transfer-location')
+                            });
+            
+                            $('#transferLocation').on('change', function() {
+                                var selectedLocation = $(this).val();
+                
+                                if ((response.inv.product == "CRYOPPT" || 
+                                     response.inv.product == "PLATELET CONC." || 
+                                     response.inv.product == "FFP.") &&
+                                     selectedLocation === "Laboratory and Blood Services") {
+                                    $('#reasonreturn').show();
+                                } else {
+                                    $('#reasonreturn').hide();
+                                }
+            
+                                if (selectedLocation === "Others") {
+                                    $('#otherlocationdiv').show();
+                                } else {
+                                    $('#otherlocationdiv').hide();
+                                }
+                            });
+            
+                            $('#actualtransferdate').on('change', function() {
+                                const selectedDate = new Date($(this).val());
+                                const currentDate = new Date();
+                                
+                                // Normalize dates for comparison (ignore seconds and milliseconds)
+                                currentDate.setSeconds(0, 0);
+                                selectedDate.setSeconds(0, 0);
+                        
+                                // Show or hide the reason div
+                                if (selectedDate.getTime() !== currentDate.getTime()) {
+                                    $('#transferreason').show();
+                                } else {
+                                    $('#transferreason').hide();
+                                }
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            Swal.fire(
+                                'Error!',
+                                'Error occurred while fetching locations: ' + error,
+                                'error'
+                            );
+                        }
+                    });
+                } else {
+                    console.log('cancel')
+                }
+            });
+        } else {
+            $.ajax({
+                url: url,
+                method: 'GET',
+                dataType: 'json',
+                data: { bagno: bagno },
+                success: function(response) {
+        
+                    $('#transfer-location').modal('show');
+    
+                    $('#eNumber').val(episodeno);
+                    $('#bNumber').val(bagno);
+                    $('#transferLocation').empty();
+        
+                    $('#transferLocation').append('<option></option>');
+        
+                    $.each(response.data, function(index, location) {
+                        $('#transferLocation').append(
+                            $('<option>', {
+                                value: location.location_name,
+                                text: location.location_name + ' (' + location.location_code + ')',
+                            })
+                        );
+                    });
+        
+                    $('#transferLocation').select2({
+                        dropdownParent: $('#transfer-location')
+                    });
+    
+                    $('#transferLocation').on('change', function() {
+                        var selectedLocation = $(this).val();
+        
+                        if ((response.inv.product == "CRYOPPT" || 
+                             response.inv.product == "PLATELET CONC." || 
+                             response.inv.product == "FFP.") &&
+                             selectedLocation === "Laboratory and Blood Services") {
+                            $('#reasonreturn').show();
+                        } else {
+                            $('#reasonreturn').hide();
+                        }
+    
+                        if (selectedLocation === "Others") {
+                            $('#otherlocationdiv').show();
+                        } else {
+                            $('#otherlocationdiv').hide();
+                        }
+                    });
+    
+                    $('#actualtransferdate').on('change', function() {
+                        const selectedDate = new Date($(this).val());
+                        const currentDate = new Date();
+                        
+                        // Normalize dates for comparison (ignore seconds and milliseconds)
+                        currentDate.setSeconds(0, 0);
+                        selectedDate.setSeconds(0, 0);
+                
+                        // Show or hide the reason div
+                        if (selectedDate.getTime() !== currentDate.getTime()) {
+                            $('#transferreason').show();
+                        } else {
+                            $('#transferreason').hide();
+                        }
+                    });
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire(
+                        'Error!',
+                        'Error occurred while fetching locations: ' + error,
+                        'error'
+                    );
+                }
+            });
+        }
     });
 
     $('#transfer-location').on('hidden.bs.modal', function () {
@@ -997,7 +1168,7 @@ $(document).ready(function () {
 
     $('#store-blood2').on('click', function() {
 
-        var labno = $('#labNumber').val();
+        var labno = $('#labNumber').val().toUpperCase();
         var bgNO = $('#bgNumber').val();
         var matchDate = $('#matchdate').val();
         var url = config.routes.blood.inventory.verifylab;

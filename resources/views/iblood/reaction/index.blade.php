@@ -40,12 +40,12 @@
             <div class="mb-5 hover-scroll-x">
                 <div class="d-grid">
                     <ul class="nav nav-tabs flex-nowrap text-nowrap">
-                        @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "Doctors" || Auth::user()->usrGrp == "EMY" || Auth::user()->usrGrp == "EMYDoctors" || Auth::user()->usrGrp == "ICLNurse" || Auth::user()->usrGrp == "OTNurse" || Auth::user()->usergrp == "WardNurse" || Auth::user()->usergrp == "WardNursePrivate" || Auth::user()->usergrp == "WardClerk" || Auth::user()->usergrp == "WardManagerOrMentor" || Auth::user()->usergrp == "OPDNurse" )
+                        @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "Doctors" || Auth::user()->usrGrp == "EMY" || Auth::user()->usrGrp == "EMYDoctors" || Auth::user()->usrGrp == "ICLNurse" || Auth::user()->usrGrp == "OTNurse" || Auth::user()->usergrp == "WardNurse" || Auth::user()->usergrp == "WardNursePrivate" || Auth::user()->usergrp == "WardClerk" || Auth::user()->usergrp == "WardManagerOrMentor" || Auth::user()->usergrp == "OPDNurse" || Auth::user()->usergrp == "LABManager" || Auth::user()->usergrp == "LABMLT" || Auth::user()->usergrp == "LabTemp" || Auth::user()->usergrp == "LabClerk")
                             <li class="nav-item" style="margin-right: 10px;">
                                 <a class="nav-link active btn btn-light-primary btn-active-primary btn-color-light-primary btn-active-color-light rounded-bottom-0" data-bs-toggle="tab" href="#procedure"> DETAIL OF PROCEDURE</a>
                             </li>
                         @endif
-                        @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usrGrp == "EMY" || Auth::user()->usrGrp == "ICLNurse" || Auth::user()->usergrp == "WardNurse" || Auth::user()->usergrp == "WardNursePrivate" || Auth::user()->usergrp == "WardClerk" || Auth::user()->usergrp == "WardManagerOrMentor" || Auth::user()->usergrp == "OPDNurse" )
+                        @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usrGrp == "EMY" || Auth::user()->usrGrp == "ICLNurse" || Auth::user()->usergrp == "WardNurse" || Auth::user()->usergrp == "WardNursePrivate" || Auth::user()->usergrp == "WardClerk" || Auth::user()->usergrp == "WardManagerOrMentor" || Auth::user()->usergrp == "OPDNurse" || Auth::user()->usergrp == "LABManager" || Auth::user()->usergrp == "LABMLT" || Auth::user()->usergrp == "LabTemp" || Auth::user()->usergrp == "LabClerk")
                             <li class="nav-item" style="margin-right: 10px;">
                                 <a class="nav-link btn btn-light-primary btn-active-primary btn-color-light-primary btn-active-color-light rounded-bottom-0" data-bs-toggle="tab" href="#sectiond"><b>SECTION D:</b> BLOOD COMPONENT</a>
                             </li>
@@ -55,22 +55,22 @@
                                 <a class="nav-link btn btn-light-primary btn-active-primary btn-color-light-primary btn-active-color-light rounded-bottom-0" data-bs-toggle="tab" href="#sectionf"><b>SECTION F:</b> RELEVANT CLINICAL HISTORY</a>
                             </li>
                         @endif
-                        @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "Doctors" || Auth::user()->usrGrp == "EMY" || Auth::user()->usrGrp == "EMYDoctors" || Auth::user()->usrGrp == "ICLNurse" || Auth::user()->usergrp == "WardNurse" || Auth::user()->usergrp == "WardNursePrivate" || Auth::user()->usergrp == "WardClerk" || Auth::user()->usergrp == "WardManagerOrMentor" || Auth::user()->usergrp == "OPDNurse" )
+                        @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "Doctors" || Auth::user()->usrGrp == "EMY" || Auth::user()->usrGrp == "EMYDoctors" || Auth::user()->usrGrp == "ICLNurse" || Auth::user()->usergrp == "WardNurse" || Auth::user()->usergrp == "WardNursePrivate" || Auth::user()->usergrp == "WardClerk" || Auth::user()->usergrp == "WardManagerOrMentor" || Auth::user()->usergrp == "OPDNurse" || Auth::user()->usergrp == "LABManager" || Auth::user()->usergrp == "LABMLT" || Auth::user()->usergrp == "LabTemp" || Auth::user()->usergrp == "LabClerk")
                             <li class="nav-item" style="margin-right: 10px;">
                                 <a class="nav-link btn btn-light-primary btn-active-primary btn-color-light-primary btn-active-color-light rounded-bottom-0" data-bs-toggle="tab" href="#sectiong"><b>SECTION G:</b> SIGN AND SYMPTOMS</a>
                             </li>
                         @endif
-                        @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "Doctors" || Auth::user()->usrGrp == "EMYDoctors")
+                        @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "Doctors" || Auth::user()->usrGrp == "EMYDoctors" || Auth::user()->usergrp == "LABManager" || Auth::user()->usergrp == "LABMLT" || Auth::user()->usergrp == "LabTemp" || Auth::user()->usergrp == "LabClerk")
                             <li class="nav-item" style="margin-right: 10px;">
                                 <a class="nav-link btn btn-light-primary btn-active-primary btn-color-light-primary btn-active-color-light rounded-bottom-0" data-bs-toggle="tab" href="#sectionh"><b>SECTION H:</b> RELEVANT INVESTIGATION</a>
                             </li>
                         @endif
-                        @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "Doctors" || Auth::user()->usrGrp == "EMYDoctors")
+                        @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "Doctors" || Auth::user()->usrGrp == "EMYDoctors" || Auth::user()->usergrp == "LABManager" || Auth::user()->usergrp == "LABMLT" || Auth::user()->usergrp == "LabTemp" || Auth::user()->usergrp == "LabClerk")
                             <li class="nav-item" style="margin-right: 10px;">
                                 <a class="nav-link btn btn-light-primary btn-active-primary btn-color-light-primary btn-active-color-light rounded-bottom-0" data-bs-toggle="tab" href="#sectioni"><b>SECTION I:</b> ADVERSE EVENT OUTCOME</a>
                             </li>
                         @endif
-                        @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "LabManager" || Auth::user()->usergrp == "LABMLT" || Auth::user()->usergrp == "LabTemp" || Auth::user()->usergrp == "LabClerk")
+                        @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "LABManager" || Auth::user()->usergrp == "LABMLT" || Auth::user()->usergrp == "LabTemp" || Auth::user()->usergrp == "LabClerk")
                             <li class="nav-item" style="margin-right: 10px;">
                                 <a class="nav-link btn btn-light-primary btn-active-primary btn-color-light-primary btn-active-color-light rounded-bottom-0" data-bs-toggle="tab" href="#sectionj"><b>SECTION J:</b> TYPE OF ADVERSE EVENT</a>
                             </li>
@@ -82,32 +82,32 @@
                 </div>
             </div>
             <div class="tab-content" id="myTabContent">
-                @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "Doctors" || Auth::user()->usergrp == "WardNurse" || Auth::user()->usergrp == "WardNursePrivate" || Auth::user()->usergrp == "WardClerk" || Auth::user()->usergrp == "WardManagerOrMentor" || Auth::user()->usergrp == "OPDNurse" )
+                @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "Doctors" || Auth::user()->usergrp == "WardNurse" || Auth::user()->usergrp == "WardNursePrivate" || Auth::user()->usergrp == "WardClerk" || Auth::user()->usergrp == "WardManagerOrMentor" || Auth::user()->usergrp == "OPDNurse" || Auth::user()->usergrp == "LABManager" || Auth::user()->usergrp == "LABMLT" || Auth::user()->usergrp == "LabTemp" || Auth::user()->usergrp == "LabClerk")
                     <div class="tab-pane fade show active" id="procedure" role="tabpanel">
                         @include('iblood.reaction.detailprocedure.content')
                     </div>
                 @endif
-                @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "WardNurse" || Auth::user()->usergrp == "WardNursePrivate" || Auth::user()->usergrp == "WardClerk" || Auth::user()->usergrp == "WardManagerOrMentor" || Auth::user()->usergrp == "OPDNurse" )
+                @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "WardNurse" || Auth::user()->usergrp == "WardNursePrivate" || Auth::user()->usergrp == "WardClerk" || Auth::user()->usergrp == "WardManagerOrMentor" || Auth::user()->usergrp == "OPDNurse" || Auth::user()->usergrp == "LABManager" || Auth::user()->usergrp == "LABMLT" || Auth::user()->usergrp == "LabTemp" || Auth::user()->usergrp == "LabClerk")
                     <div class="tab-pane fade" id="sectiond" role="tabpanel">
                         @include('iblood.reaction.bloodcomponent.content')
                     </div>
                 @endif
-                @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "Doctors")
+                @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "Doctors" || Auth::user()->usergrp == "LABManager" || Auth::user()->usergrp == "LABMLT" || Auth::user()->usergrp == "LabTemp" || Auth::user()->usergrp == "LabClerk")
                     <div class="tab-pane fade" id="sectionf" role="tabpanel">
                         @include('iblood.reaction.relevantclinical.content')
                     </div>
                 @endif
-                @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "Doctors" || Auth::user()->usergrp == "WardNurse" || Auth::user()->usergrp == "WardNursePrivate" || Auth::user()->usergrp == "WardClerk" || Auth::user()->usergrp == "WardManagerOrMentor" || Auth::user()->usergrp == "OPDNurse" )
+                @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "Doctors" || Auth::user()->usergrp == "WardNurse" || Auth::user()->usergrp == "WardNursePrivate" || Auth::user()->usergrp == "WardClerk" || Auth::user()->usergrp == "WardManagerOrMentor" || Auth::user()->usergrp == "OPDNurse" || Auth::user()->usergrp == "LABManager" || Auth::user()->usergrp == "LABMLT" || Auth::user()->usergrp == "LabTemp" || Auth::user()->usergrp == "LabClerk")
                     <div class="tab-pane fade" id="sectiong" role="tabpanel">
                         @include('iblood.reaction.signandsymptoms.content')
                     </div>
                 @endif
-                @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "Doctors")
+                @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "Doctors" || Auth::user()->usergrp == "LABManager" || Auth::user()->usergrp == "LABMLT" || Auth::user()->usergrp == "LabTemp" || Auth::user()->usergrp == "LabClerk")
                     <div class="tab-pane fade" id="sectionh" role="tabpanel">
                         @include('iblood.reaction.relevantinvestigation.content')
                     </div>
                 @endif
-                @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "Doctors")
+                @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "Doctors" || Auth::user()->usergrp == "LABManager" || Auth::user()->usergrp == "LABMLT" || Auth::user()->usergrp == "LabTemp" || Auth::user()->usergrp == "LabClerk")
                     <div class="tab-pane fade" id="sectioni" role="tabpanel">
                         @include('iblood.reaction.outcomeadverseevent.content')
                     </div> 
