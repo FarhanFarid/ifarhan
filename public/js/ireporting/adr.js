@@ -285,10 +285,11 @@ $(document).ready(function() {
 
     
         var epsdno = $(this).data('episodeno');
+        var adrid = $(this).data('adrid');
         var baseUrl = config.routes.ireporting.adr.reportsuspect;
     
         // Append parameters to the URL
-        var reportUrl = baseUrl + '&epsdno=' + encodeURIComponent(epsdno);
+        var reportUrl = baseUrl + '&epsdno=' + encodeURIComponent(epsdno) + '&adrid=' + encodeURIComponent(adrid);
     
         // // Load the report in the iframe
         $('#report-iframe').attr('src', reportUrl);
@@ -425,4 +426,8 @@ $(document).ready(function() {
     });
     //
 
+    $('.btn-print').on('click', function() {
+        var iframe = document.getElementById('report-iframe');
+        iframe.contentWindow.print();
+    });
 });

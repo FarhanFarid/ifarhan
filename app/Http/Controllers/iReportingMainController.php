@@ -816,6 +816,7 @@ class iReportingMainController extends Controller
 
     public function AdrReportSuspect(Request $request)
     {
+        // dd($request->all());
         $explode = explode('?', $request->getRequestUri());
 
         $url = $explode[1];
@@ -830,7 +831,7 @@ class iReportingMainController extends Controller
             },
             'createdby', 
             'updatedby',
-        ])->where('episodeno', $request->epsdno)->where('status_id', 1 )->orderBy('id', 'desc')->first();
+        ])->where('episodeno', $request->epsdno)->where('adr_id', $request->adrid)->where('status_id', 1 )->orderBy('id', 'desc')->first();
 
         //PatDemo
         $uri = env('PAT_DEMO'). $request->epsdno;
