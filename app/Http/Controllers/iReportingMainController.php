@@ -794,7 +794,7 @@ class iReportingMainController extends Controller
             },
             'createdby', 
             'updatedby',
-        ])->where('episodeno', $request->epsdno)->whereIn('status_id', [2, 3])->orderBy('id', 'desc')->first();
+        ])->where('episodeno', $request->epsdno)->where('adr_id', $request->adrid)->whereIn('status_id', [2, 3])->orderBy('id', 'desc')->first();
 
         //PatDemo
         $uri = env('PAT_DEMO'). $request->epsdno;

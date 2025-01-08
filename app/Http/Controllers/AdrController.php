@@ -77,6 +77,8 @@ class AdrController extends Controller
 
         $url = $explode[1];
 
+        // dd($request->all());
+
         $report = AdrReport::with([
             'descriptions',
             'susdrugs' => function ($query) use ($request) {
@@ -87,7 +89,7 @@ class AdrController extends Controller
             },
             'createdby', 
             'updatedby',
-        ])->where('episodeno', $request->epsdno)->where('status_id', 1 )->orderBy('id', 'desc')->first();
+        ])->where('episodeno', $request->epsdno)->where('adr_id', $request->adrid)->where('status_id', 1 )->orderBy('id', 'desc')->first();
 
         //PatDemo
         $uri = env('PAT_DEMO'). $request->epsdno;

@@ -16,7 +16,7 @@
                                 <div class="form-group">
                                     <label class="form-label fw-semibold fs-6 mt-2">Date&nbsp;:</label>
                                     <div class="fv-row">
-                                        <input class="form-control form-control-md" placeholder="Pick date range" id="filterdate" value="{{ \Carbon\Carbon::now()->subDays(7)->format('d/m/Y') }} - {{ \Carbon\Carbon::now()->format('d/m/Y') }}" readonly />
+                                        <input class="form-control form-control-md" placeholder="Pick date range" id="filterdate" value="{{ \Carbon\Carbon::now()->subYear()->format('d/m/Y') }} - {{ \Carbon\Carbon::now()->format('d/m/Y') }}" readonly />
                                     </div>
                                 </div>
                             </div>

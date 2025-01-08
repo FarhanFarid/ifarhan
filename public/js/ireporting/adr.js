@@ -95,6 +95,9 @@ var tablesuspect = $('#reportadr-table').DataTable({
         method: 'get',
         url: config.routes.ireporting.adr.worklistsuspect,
         dataSrc: "data",
+        data: function (d) {
+            d.dateRange = $('#filterdate').val();
+        },
         dataType: "json",
     },
 });
@@ -164,7 +167,7 @@ var tableconfirm = $('#reportadrconfirm-table').DataTable({
         { 
             "data": 'report',
             "render": function (data, type, row)  {
-                return '<div class="col-md-3"><button class="badge btn-sm badge-light-primary gen-report" data-bs-toggle="tooltip" data-bs-placement="top" title="View Report" data-episodeno="' + row.episodeno + '"><i class="fa-regular fa-file-lines"></i></button></div>'; 
+                return '<div class="col-md-3"><button class="badge btn-sm badge-light-primary gen-report" data-bs-toggle="tooltip" data-bs-placement="top" title="View Report" data-episodeno="' + row.episodeno + '" data-adrid="' + row.adr_id + '"><i class="fa-regular fa-file-lines"></i></button></div>'; 
             }
         },
     ],
@@ -244,7 +247,7 @@ var tablefalse = $('#reportadrfalse-table').DataTable({
         { 
             "data": 'report',
             "render": function (data, type, row)  {
-                return '<div class="col-md-3"><button class="badge btn-sm badge-light-primary gen-report" data-bs-toggle="tooltip" data-bs-placement="top" title="View Report" data-episodeno="' + row.episodeno + '"><i class="fa-regular fa-file-lines"></i></button></div>'; 
+                return '<div class="col-md-3"><button class="badge btn-sm badge-light-primary gen-report" data-bs-toggle="tooltip" data-bs-placement="top" title="View Report" data-episodeno="' + row.episodeno + '" data-adrid="' + row.adr_id + '"><i class="fa-regular fa-file-lines"></i></button></div>'; 
             }
         },
     ],
@@ -375,12 +378,13 @@ $(document).ready(function() {
 
     
         var epsdno = $(this).data('episodeno');
+        var adrid = $(this).data('adrid');
         var baseUrl = config.routes.ireporting.adr.reportconfirm;
     
         // console.log(epsdno);
 
         // Append parameters to the URL
-        var reportUrl = baseUrl + '&epsdno=' + encodeURIComponent(epsdno);
+        var reportUrl = baseUrl + '&epsdno=' + encodeURIComponent(epsdno) + '&adrid=' + encodeURIComponent(adrid);
     
         // // Load the report in the iframe
         $('#report-iframe').attr('src', reportUrl);
@@ -411,12 +415,13 @@ $(document).ready(function() {
 
     
         var epsdno = $(this).data('episodeno');
+        var adrid = $(this).data('adrid');
         var baseUrl = config.routes.ireporting.adr.reportconfirm;
     
         // console.log(epsdno);
 
         // Append parameters to the URL
-        var reportUrl = baseUrl + '&epsdno=' + encodeURIComponent(epsdno);
+        var reportUrl = baseUrl + '&epsdno=' + encodeURIComponent(epsdno) + '&adrid=' + encodeURIComponent(adrid);
     
         // // Load the report in the iframe
         $('#report-iframe').attr('src', reportUrl);
