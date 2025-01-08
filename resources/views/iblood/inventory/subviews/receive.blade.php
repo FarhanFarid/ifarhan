@@ -99,6 +99,7 @@
                                                     <option value="System Down/Code White">System Down/Code White</option>
                                                     <option value="Misconduct/Malpractice">Misconduct/Malpractice</option>
                                                     <option value="Hardware Malfunction">Hardware Malfunction</option>
+                                                    <option value="Late Entry">Late Entry</option>
                                                 </select>
                                             </div>
                                         </div>
