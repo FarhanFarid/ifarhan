@@ -553,8 +553,8 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td>- {{ $report->descriptions->relevantinvest ?? '' }}</td>
-                                                <td>- {{ $report->descriptions->medicalhistory ?? '' }}</td>
+                                                <td>{!! $report->descriptions->relevantinvest ?? '' !!}</td>
+                                                <td>{!! $report->descriptions->medicalhistory ?? '' !!}</td>
                                             </tr>
                                         </tbody>
                                     </table>

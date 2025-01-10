@@ -68,7 +68,48 @@ class AdrController extends Controller
             }
         }
 
-        return view('adr.index', compact('url', 'report', 'details', 'medhistory', 'latestDrug'));
+        //lab data
+        $uri = env('LAB_RESULT_LAT'). $request->epsdno;
+        $client = new \GuzzleHttp\Client(['defaults' => ['verify' => false]]);
+
+        $response = $client->request('GET', $uri);
+
+        $statusCode = $response->getStatusCode();
+        $content = json_decode($response->getBody(), true);
+
+        $labdata = $content['LabResult'];
+
+        $renal  = [];
+        $fbc    = [];
+        $inr    = [];
+        $lft    = [];
+
+        foreach ($labdata as $lab) {
+            if ($lab['TestSetDesc'] === 'Renal Profile') {
+                foreach ($lab['TestItem'] as $item) {
+                    $renal[$item['TestItemDesc']] = $item['Result'];
+                }
+            }
+            if ($lab['TestSetDesc'] === 'Full Blood Count') {
+                foreach ($lab['TestItem'] as $item) {
+                    $fbc[$item['TestItemDesc']] = $item['Result'];
+                }
+            }
+            if ($lab['TestSetDesc'] === 'Liver Function Test(LFT)') {
+                foreach ($lab['TestItem'] as $item) {
+                    $lft[$item['TestItemDesc']] = $item['Result'];
+                }
+            }
+            if ($lab['TestSetDesc'] === 'I. N. R.') {
+                foreach ($lab['TestItem'] as $item) {
+                    $inr[$item['TestItemDesc']] = $item['Result'];
+                }
+            }
+        }
+
+        // dd(['Renal Profile' => $renal, 'Full Blood Count' => $fbc, 'INR' => $inr, 'LFT' => $lft]);
+
+        return view('adr.index', compact('url', 'report', 'details', 'medhistory', 'latestDrug', 'renal', 'fbc', 'inr', 'lft'));
     }
 
     public function genReport(Request $request)
@@ -154,8 +195,8 @@ class AdrController extends Controller
                 $adrdesc->outcome         = $formValues['outcome'] ?? null;
                 $adrdesc->fatal_date      = $formValues['fataldate'] ?? null;
                 $adrdesc->fatal_cause     = $formValues['causeofdeath'] ?? null;
-                $adrdesc->relevantinvest  = $formValues['relevantinvestigation'] ?? null;
-                $adrdesc->medicalhistory  = $formValues['relevantmh'] ?? null;
+                $adrdesc->relevantinvest  = $request->relevantinv ?? null;
+                $adrdesc->medicalhistory  = $request->relevantmh ?? null;
                 $adrdesc->created_at      = Carbon::now();
                 $adrdesc->save();
 
@@ -227,8 +268,8 @@ class AdrController extends Controller
                 $storedesc->outcome         = $formValues['outcome'] ?? null;
                 $storedesc->fatal_date      = $formValues['fataldate'] ?? null;
                 $storedesc->fatal_cause     = $formValues['causeofdeath'] ?? null;
-                $storedesc->relevantinvest  = $formValues['relevantinvestigation'] ?? null;
-                $storedesc->medicalhistory  = $formValues['relevantmh'] ?? null;
+                $storedesc->relevantinvest  = $request->relevantinv ?? null;
+                $storedesc->medicalhistory  = $request->relevantmh ?? null;
                 $storedesc->created_at      = Carbon::now();
                 $storedesc->save();
 

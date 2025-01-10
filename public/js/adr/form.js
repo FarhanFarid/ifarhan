@@ -1,4 +1,26 @@
 $(document).ready(function () {
+
+    let editorInstances = {};
+
+    ClassicEditor
+    .create(document.querySelector('#relevantmh'))
+    .then(editor => {
+        editorInstances.relevantmh = editor;
+    })
+    .catch(error => {
+        console.error(error);
+    });
+
+    ClassicEditor
+    .create(document.querySelector('#relevantinvestigation'))
+    .then(editor => {
+        editorInstances.relevantinv = editor;
+    })
+    .catch(error => {
+        console.error(error);
+    });
+
+
     // Initialize DataTables
     var tablesuspect = $('#suspecteddrug-table').DataTable({
         lengthMenu: [5, 10, 20, 50],
@@ -127,17 +149,22 @@ $(document).ready(function () {
         var formData = form.serializeArray(); 
         var url      = config.routes.adr.report.save;
 
-    
+        var relevantmhContent = editorInstances.relevantmh.getData();
+        var relevantinvContent = editorInstances.relevantinv.getData();          
         var concomitantDrugs = selectedRows;
     
         formData.concomitantDrugs = concomitantDrugs;
 
         var data  = {
             formData: formData,
-            concomitantDrugs: concomitantDrugs
+            concomitantDrugs: concomitantDrugs,
+            relevantmh : relevantmhContent,
+            relevantinv : relevantinvContent,
+
         };
     
-        console.log(data);
+        // console.log(relevantinvContent);
+        // console.log(data);
     
         $.ajax({
             url: url,

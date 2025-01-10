@@ -359,11 +359,184 @@
                         <div class="row mb-5">
                             <div class="col-md-4">
                                 <label for="treatment" class="form-check-label mb-1" style="color: black;">Relevant Investigation / Lab Data :</label>
-                                <textarea class="form-control" name="relevantinvestigation" id="relevantinvestigation" style="min-height: 100px;">{{ $report->descriptions->relevantinvest  ?? ''}}</textarea>
+                                {{-- <textarea class="form-control" name="relevantinvestigation" id="relevantinvestigation" style="min-height: 100px;">{{ $report->descriptions->relevantinvest  ?? ''}}</textarea> --}}
+                                <textarea name="relevantinvestigation" id="relevantinvestigation">
+                                    @if ($report == null)
+
+                                        @if(!empty($renal))
+                                            <p>
+                                                <strong>Renal profile</strong><br>
+                                                
+                                                @if(isset($renal["Hemolytic Index (Hi)"])) 
+                                                    Hi - {{$renal["Hemolytic Index (Hi)"]}} 
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($renal["Icteric Index (I)"])) 
+                                                    I - {{$renal["Icteric Index (I)"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($renal["Creatinine"])) 
+                                                    Creatinine - {{$renal["Creatinine"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($renal["eGFR MDRD"])) 
+                                                    eGFR MDRD - {{$renal["eGFR MDRD"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($renal["Potassium"])) 
+                                                    Potassium - {{$renal["Potassium"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($renal["Sodium"])) 
+                                                    Sodium - {{$renal["Sodium"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($renal["Urates ( Uric acid )"])) 
+                                                    Urates - {{$renal["Urates ( Uric acid )"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($renal["Urea"])) 
+                                                    Urea - {{$renal["Urea"]}}
+                                                @endif
+                                            </p>
+                                        @endif
+                                        @if(!empty($fbc))
+                                            <p>
+                                                <strong>Full Blood Count</strong><br>
+
+                                                @if(isset($fbc["White Blood Count"])) 
+                                                    WBC - {{$fbc["White Blood Count"]}} 
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($fbc["Red Blood Cell Count"])) 
+                                                    RBC - {{$fbc["Red Blood Cell Count"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($fbc["Haemoglobin"])) 
+                                                    Haemoglobin - {{$fbc["Haemoglobin"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($fbc["P.C. V. ( Haematocrit)"])) 
+                                                    Haematocrit - {{$fbc["P.C. V. ( Haematocrit)"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($fbc["M. C.H."])) 
+                                                    M. C.H - {{$fbc["M. C.H."]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($fbc["Mean Cell Volume"])) 
+                                                    Mean Cell - {{$fbc["Mean Cell Volume"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($fbc["M.C. H. C"])) 
+                                                    M.C.H.C  - {{$fbc["M.C. H. C"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($fbc["Neutrophil  count"])) 
+                                                    Neutrophil - {{$fbc["Neutrophil  count"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($fbc["Neutrophil absolute count"])) 
+                                                    Neutrophil absolute - {{$fbc["Neutrophil absolute count"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($fbc["Lymphocyte count"])) 
+                                                    Lymphocyte - {{$fbc["Lymphocyte count"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($fbc["Lymphocyte absolute count"])) 
+                                                    Lymphocyte absolute - {{$fbc["Lymphocyte absolute count"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($fbc["Monocyte count"])) 
+                                                    Monocyte - {{$fbc["Monocyte count"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($fbc["Eosinophil Count"])) 
+                                                    Eosinophil - {{$fbc["Eosinophil Count"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($fbc["Basophil count"])) 
+                                                    Basophil - {{$fbc["Basophil count"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($fbc["Platelet Count"])) 
+                                                    Platelet - {{$fbc["Platelet Count"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($fbc["Nucleated RBC"])) 
+                                                    Nucleated RBC - {{$fbc["Nucleated RBC"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($fbc["Neutrophil-lymphocyte ratio"])) 
+                                                    Neutrophil-lymphocyte ratio - {{$fbc["Neutrophil-lymphocyte ratio"]}}
+                                                @endif
+                                            </p>
+                                        @endif
+                                        @if(!empty($lft))
+                                            <p>
+                                                <strong>Liver Function</strong><br>
+
+                                                @if(isset($lft["Lipemic Index (L)"])) 
+                                                    L - {{$lft["Lipemic Index (L)"]}} 
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($lft["Hemolytic Index (Hi)"])) 
+                                                    Hi - {{$lft["Hemolytic Index (Hi)"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($lft["Albumin"])) 
+                                                    Albumin - {{$lft["Albumin"]}}
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($lft["Alkaline Phosphatase ( ALP )"])) 
+                                                    ALP - {{$lft["Alkaline Phosphatase ( ALP )"]}}
+                                                @endif
+                                                @if(isset($lft["Alanine Aminotransferase ( ALT )"])) 
+                                                    ALT - {{$lft["Alanine Aminotransferase ( ALT )"]}}
+                                                @endif
+                                                @if(isset($lft["A/G Ratio"])) 
+                                                    A/G Ratio - {{$lft["A/G Ratio"]}}
+                                                @endif
+                                                @if(isset($lft["Bilirubin, total"])) 
+                                                    Bilirubin - {{$lft["Bilirubin, total"]}}
+                                                @endif
+                                                @if(isset($lft["Protein"])) 
+                                                    Protein - {{$lft["Protein"]}}
+                                                @endif
+                                                @if(isset($lft["Globulin"])) 
+                                                    Globulin - {{$lft["Globulin"]}}
+                                                @endif
+                                            </p>
+                                        @endif
+                                        @if(!empty($inr))
+                                            <p>
+                                                <strong>INR</strong><br>
+
+                                                @if(isset($inr["I. N. R. "])) 
+                                                    I.N.R - {{$inr["I. N. R. "]}} 
+                                                @endif
+                                                , &nbsp;
+                                                @if(isset($inr["Prothrombin Time "])) 
+                                                    Prothrombin Time - {{$inr["Prothrombin Time "]}}
+                                                @endif
+                                            </p>
+                                        @endif
+
+                                    @else
+                                        {{ $report->descriptions->relevantinvest }}
+                                    @endif
+                                </textarea>
                             </div>
-                            <div class="col-md-4">
+                            {{-- <div class="col-md-4">
                                 <label for="treatment" class="form-check-label mb-1" style="color: black;">Relevant Medical History :</label>
                                 <textarea class="form-control" name="relevantmh" id="relevantmh" style="min-height: 100px;">{{ $report->descriptions->medicalhistory  ?? ''}}</textarea>
+                            </div> --}}
+                            <div class="col-md-4">
+                                <label for="treatment" class="form-check-label mb-1" style="color: black;">Relevant Medical History :</label>
+                                <textarea name="relevantmh" id="relevantmh">
+                                    {{ $report->descriptions->medicalhistory  ?? ''}}
+                                </textarea>
                             </div>
                         </div>
                     </div>
@@ -416,7 +589,7 @@
                                     <input class="form-control form-control-sm" type="date" name="susstopdate" id="susstopdate" value="{{ isset($report->susdrugs) && $report->susdrugs->stop_date ? \Carbon\Carbon::parse($report->susdrugs->stop_date)->format('Y-m-d') : '' }}">
                                 </td>
                                 <td>
-                                    <textarea class="form-control" name="susindication" id="susindication">{{ $report->susdrugs->indication ?? $latestDrug['instruction'] ?? '' }}</textarea>
+                                    <textarea class="form-control" name="susindication" id="susindication">{{ $report->susdrugs->indication ?? '' }}</textarea>
                                 </td>
                             </tr>
                         </tbody>
@@ -461,7 +634,7 @@
                                     <td>{{$drug['prescNum']}}</td>
                                     <td>{{$drug['startdate']}}</td>
                                     <td>{{$drug['startdate']}}</td>
-                                    <td>{{$drug['instruction']}}</td>
+                                    <td>N/A</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -478,6 +651,7 @@
 
 @push('script')
     <script src="{{asset('theme/assets/plugins/custom/datatables/datatables.bundle.js')}}"></script>
+    <script src="{{asset('theme/assets/plugins/custom/ckeditor/ckeditor-classic.bundle.js')}}"></script>
     <script type="text/javascript">
         var urlParams 	= new URLSearchParams(window.location.search);
         var paramEpsdNo = 'epsdno';
