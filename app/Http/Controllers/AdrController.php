@@ -55,6 +55,9 @@ class AdrController extends Controller
         $statusCode = $response->getStatusCode();
         $content = json_decode($response->getBody(), true);
 
+        // dd($content['data']['allergyList']);
+        $allergy = $content['data']['allergyList'];
+
         $medhistory = $content['data']['medHistory'];
 
         $latestDrug = null;
@@ -109,7 +112,7 @@ class AdrController extends Controller
 
         // dd(['Renal Profile' => $renal, 'Full Blood Count' => $fbc, 'INR' => $inr, 'LFT' => $lft]);
 
-        return view('adr.index', compact('url', 'report', 'details', 'medhistory', 'latestDrug', 'renal', 'fbc', 'inr', 'lft'));
+        return view('adr.index', compact('url', 'report', 'details', 'medhistory', 'latestDrug', 'renal', 'fbc', 'inr', 'lft', 'allergy'));
     }
 
     public function genReport(Request $request)

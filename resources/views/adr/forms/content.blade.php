@@ -535,7 +535,21 @@
                             <div class="col-md-4">
                                 <label for="treatment" class="form-check-label mb-1" style="color: black;">Relevant Medical History :</label>
                                 <textarea name="relevantmh" id="relevantmh">
-                                    {{ $report->descriptions->medicalhistory  ?? ''}}
+                                    @if ($report == null)
+                                        <p>
+                                            <strong>Allergy</strong><br>
+                                            @foreach ($allergy as $all )
+                                                @if ($all["substance"] == "")
+                                                    -&nbsp;{{$all["freetxtall"]}} @if ($all["commment"] != "") ({{$all["commment"]}}) @endif               
+                                                @else
+                                                    -&nbsp;{{$all["substance"]}} @if ($all["commment"] != "") ({{$all["commment"]}}) @endif               
+                                                @endif
+                                            @endforeach
+                                            <br>
+                                        </p>
+                                    @else
+                                        {{ $report->descriptions->medicalhistory}}
+                                    @endif
                                 </textarea>
                             </div>
                         </div>
