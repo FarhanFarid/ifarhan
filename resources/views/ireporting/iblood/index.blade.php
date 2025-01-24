@@ -217,6 +217,7 @@
         </div>
     </div>
 </div>
+@include('ireporting.iblood.subviews.edit')
 @endsection
 @push('script')
 <script src="{{asset('theme/assets/plugins/custom/datatables/datatables.bundle.js')}}"></script>

@@ -580,7 +580,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-4">
-                                                Designation : {{ $report->createdBy->usergrp  ?? ''}}
+                                                Designation : {{ $detail->position  ?? ''}}
                                             </div>
                                             {{-- <div class="col-md-3">
                                                 
@@ -594,7 +594,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-4">
-                                                Email Address : heart@ijn.com.my
+                                                Email Address : {{ $detail->mail  ?? ''}}
                                             </div>
                                             {{-- <div class="col-md-2">
                                                 

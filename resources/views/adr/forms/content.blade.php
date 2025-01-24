@@ -36,7 +36,7 @@
                             </div>
                             <div class="col-md-9">
                                 <label for="desc" class="form-check-label" style="color: black;">Description</label>
-                                <textarea class="form-control" name="desc" id="desc" readonly>{{ $details->description  ?? ''}}</textarea>
+                                <textarea class="form-control" name="desc" id="desc">{{ $details->description  ?? ''}}</textarea>
                             </div>
                         </div>
                         <div class="row mb-5">

@@ -12,6 +12,7 @@ use App\Models\AdrDescription;
 use App\Models\AdrSuspectedDrug;
 use App\Models\AdrList;
 use App\Models\AdrBridge;
+use App\Models\Sso;
 
 use Auth;
 
@@ -146,10 +147,14 @@ class AdrController extends Controller
 
         $patdemo = $content['data'];
 
+        //SSO
+        $detail = Sso::where('email', $report->createdBy->username."@ijn.com.my")->select('mail', 'position')->first();
+
         return view('adr.report.subviews.report', compact(
             'url', 
             'report',
             'patdemo',
+            'detail'
         ));
     }
 

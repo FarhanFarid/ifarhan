@@ -128,10 +128,30 @@ var table = $('#reportiblood-table').DataTable({
         {
             "data": 'location',
             "render": function (data, type, row) {
-                return '<button type="button" class="btn btn-sm btn-icon btn-light btn-active-light-primary toggle h-25px w-25px" data-kt-docs-datatable-subtable="expand_row" data-toggle="collapse" data-target="#locations-' + row.id + '" aria-expanded="false" aria-controls="locations-' + row.id + '" style="display: block; margin-left: auto; margin-right: auto;">' +
-                    '<span class="svg-icon fs-3 m-0 toggle-off">+</span>' +
-                    '<span class="svg-icon fs-3 m-0 toggle-on"> - </span>' +
-                '</button>';
+
+                var html = '';
+
+                html += '<div class="row justify-content-center align-items-center">'; // Centering row contents
+                // html += '<div class="col-auto">'; // Auto width for flexible alignment
+                // html += '<button type="button" class="badge btn-sm badge-light-warning edit-record h-25px w-25px d-flex align-items-center justify-content-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Record" data-bagno="' + row.bagno + '" data-episodeno="' + row.episodeno + '" data-labno="' + row.labno + '">' +
+                //             '<i class="fa-regular fa-pen-to-square" style="color: #0a0a0a;"></i>' +
+                //         '</button>';
+                // html += '</div>';
+                html += '<div class="col-auto">'; // Auto width for flexible alignment
+                html += '<button type="button" class="badge btn-sm btn-icon btn-light btn-active-light-primary toggle h-25px w-25px d-flex align-items-center justify-content-center" data-kt-docs-datatable-subtable="expand_row" data-toggle="collapse" data-target="#locations-' + row.id + '" aria-expanded="false" aria-controls="locations-' + row.id + '">' +
+                            '<span class="svg-icon fs-3 m-0 toggle-off">+</span>' +
+                            '<span class="svg-icon fs-3 m-0 toggle-on">-</span>' +
+                        '</button>';
+                html += '</div>';
+                html += '</div>';
+
+
+                // return '<button type="button" class="btn btn-sm btn-icon btn-light btn-active-light-primary toggle h-25px w-25px" data-kt-docs-datatable-subtable="expand_row" data-toggle="collapse" data-target="#locations-' + row.id + '" aria-expanded="false" aria-controls="locations-' + row.id + '" style="display: block; margin-left: auto; margin-right: auto;">' +
+                //     '<span class="svg-icon fs-3 m-0 toggle-off">+</span>' +
+                //     '<span class="svg-icon fs-3 m-0 toggle-on"> - </span>' +
+                // '</button>';
+
+                return html;
             }
         },
     ],
@@ -154,6 +174,12 @@ $.ajaxSetup({
          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
  });
+
+ $('#reportiblood-table tbody').on('click', 'button.edit-record', function () {
+
+    $('#edit-record').modal('show');
+
+});
 
 $('#reportiblood-table tbody').on('click', 'button.toggle', function () {
     var tr = $(this).closest('tr');

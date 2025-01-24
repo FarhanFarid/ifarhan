@@ -27,6 +27,16 @@ var tablesuspect = $('#reportadr-table').DataTable({
             }
         },
         {
+            "data": 'name',
+            "render": function (data, type, row)  {
+                if(row.adrlist.patientinfo != null){
+                    return '<span>'+row.adrlist.patientinfo.patient.name+'</span>';
+                }else{
+                    return '<span>-</span>';
+                }     
+            }
+        },
+        {
             "data": 'episodeno',
             "render": function (data, type, row)  {
                 return '<span>'+row.adrlist.episodeno+'</span>';
@@ -127,6 +137,16 @@ var tableconfirm = $('#reportadrconfirm-table').DataTable({
             }
         },
         {
+            "data": 'name',
+            "render": function (data, type, row)  {
+                if(row.adrlist.patientinfo != null){
+                    return '<span>'+row.adrlist.patientinfo.patient.name+'</span>';
+                }else{
+                    return '<span>-</span>';
+                }     
+            }
+        },
+        {
             "data": 'episodeno',
             "render": function (data, type, row)  {
                 return '<span>'+row.episodeno+'</span>';
@@ -204,6 +224,16 @@ var tablefalse = $('#reportadrfalse-table').DataTable({
             "data": 'mrn',
             "render": function (data, type, row)  {
                 return '<span>'+row.patientinfo.patient.mrn+'</span>';
+            }
+        },
+        {
+            "data": 'name',
+            "render": function (data, type, row)  {
+                if(row.adrlist.patientinfo != null){
+                    return '<span>'+row.adrlist.patientinfo.patient.name+'</span>';
+                }else{
+                    return '<span>-</span>';
+                }     
             }
         },
         {

@@ -37,6 +37,7 @@
                                 <tr class="fw-semibold fs-6">
                                     <th style="max-width: 50px; color: #14787c; background-color:#ecfefe">No.</th>
                                     <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">MRN</th>
+                                    <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Name</th>
                                     <th style="min-width: 30px; color: #14787c; background-color:#ecfefe">Episode No.</th>
                                     <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">Onset Date/Time</th>
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Reported By</th>
@@ -90,6 +91,7 @@
                             <tr class="fw-semibold fs-6">
                                 <th style="max-width: 50px; color: #14787c; background-color:#ecfefe">No.</th>
                                     <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">MRN</th>
+                                    <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Name</th>
                                     <th style="min-width: 30px; color: #14787c; background-color:#ecfefe">Episode No.</th>
                                     <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">Onset Date/Time</th>
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Reported By</th>
@@ -143,6 +145,7 @@
                                 <tr class="fw-semibold fs-6">
                                     <th style="max-width: 50px; color: #14787c; background-color:#ecfefe">No.</th>
                                     <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">MRN</th>
+                                    <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Name</th>
                                     <th style="min-width: 30px; color: #14787c; background-color:#ecfefe">Episode No.</th>
                                     <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">Onset Date/Time</th>
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Reported By</th>

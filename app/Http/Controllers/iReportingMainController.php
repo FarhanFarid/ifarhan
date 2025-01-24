@@ -25,6 +25,7 @@ use App\Models\AdrBridge;
 use App\Models\MedShelf;
 use App\Models\MedShelfUser;
 use App\Models\MedShelfUserSSO;
+use App\Models\Sso;
 
 use DB;
 use Auth;
@@ -807,10 +808,13 @@ class iReportingMainController extends Controller
 
         $patdemo = $content['data'];
 
+        $detail = Sso::where('email', $report->createdBy->username."@ijn.com.my")->select('mail', 'position')->first();
+
         return view('adr.report.subviews.report', compact(
             'url', 
             'report',
             'patdemo',
+            'detail'
         ));
     }
 
@@ -844,10 +848,13 @@ class iReportingMainController extends Controller
 
         $patdemo = $content['data'];
 
+        $detail = Sso::where('email', $report->createdBy->username."@ijn.com.my")->select('mail', 'position')->first();
+
         return view('adr.report.subviews.report', compact(
             'url', 
             'report',
             'patdemo',
+            'detail'
         ));
     }
 
