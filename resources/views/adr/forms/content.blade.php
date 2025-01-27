@@ -635,6 +635,16 @@
                         </thead>
                         <tbody>
                             @foreach ( $medhistory as $drug)
+                                @php
+                                    $savedConcoDrug = null;
+                                    if (isset($report) && isset($report->concodrugs)) {
+                                        $savedConcoDrug = $report->concodrugs->filter(function ($concoDrug) use ($drug) {
+                                            return $concoDrug->product === $drug['Itemdesc'] &&
+                                                $concoDrug->dose === $drug['dosageqty'] . " (" . $drug['freqcode'] . ")" &&
+                                                $concoDrug->batchno === $drug['prescNum'];
+                                        })->first();
+                                    }
+                                @endphp
                                 <tr>
                                     <td style="min-width: 50px; text-align: center; vertical-align: middle;">
                                         <div class="row align-items-center justify-content-center">
@@ -648,7 +658,9 @@
                                     <td>{{$drug['prescNum']}}</td>
                                     <td>{{$drug['startdate']}}</td>
                                     <td>{{$drug['startdate']}}</td>
-                                    <td>N/A</td>
+                                    <td>                                    
+                                        <input class="form-control form-control-sm" type="text" name="concoindication" id="concoindication" value="{{ $savedConcoDrug->indication ?? '' }}">
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

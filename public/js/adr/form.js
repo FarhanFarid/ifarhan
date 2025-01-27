@@ -99,14 +99,15 @@ $(document).ready(function () {
         selectedRows = []; // Clear the array
         $('#concodrug-table tbody tr').each(function () {
             const row = $(this);
-            if (row.find('input[type="checkbox"]').is(':checked')) {
+            const checkbox = row.find('input[type="checkbox"]');
+            if (checkbox.is(':checked')) {
                 const rowData = {
                     productName: row.find('td:eq(1)').text().trim(),
                     doseFrequency: row.find('td:eq(2)').text().trim(),
                     malBatchNo: row.find('td:eq(3)').text().trim(),
                     therapyStart: row.find('td:eq(4)').text().trim(),
                     therapyStop: row.find('td:eq(5)').text().trim(),
-                    indication: row.find('td:eq(6)').text().trim()
+                    indication: row.find('td:eq(6) input[type="text"]').val()?.trim() || ''
                 };
                 selectedRows.push(rowData);
             }
@@ -125,26 +126,13 @@ $(document).ready(function () {
     });
 
     $('#concodrug-table').on('change', 'input[type="checkbox"]', function() {
-        const row = $(this).closest('tr');
-        const rowData = {
-            productName: row.find('td:eq(1)').text().trim(),
-            doseFrequency: row.find('td:eq(2)').text().trim(),
-            malBatchNo: row.find('td:eq(3)').text().trim(),
-            therapyStart: row.find('td:eq(4)').text().trim(),
-            therapyStop: row.find('td:eq(5)').text().trim(),
-            indication: row.find('td:eq(6)').text().trim()
-        };
-    
-        if ($(this).is(':checked')) {
-            if (!selectedRows.some(r => JSON.stringify(r) === JSON.stringify(rowData))) {
-                selectedRows.push(rowData);
-            }
-        } else {
-            selectedRows = selectedRows.filter(r => JSON.stringify(r) !== JSON.stringify(rowData));
-        }
+        syncSelectedRows(); // Ensure all checked rows are synced
     });
     
     $('.save-adr').on('click', async function() {
+
+        syncSelectedRows();
+
         var form     = $(this).parent().parent().find('form#adrform');
         var formData = form.serializeArray(); 
         var url      = config.routes.adr.report.save;
@@ -164,7 +152,7 @@ $(document).ready(function () {
         };
     
         // console.log(relevantinvContent);
-        // console.log(data);
+        console.log(data);
     
         $.ajax({
             url: url,
@@ -208,7 +196,7 @@ $(document).ready(function () {
                 malBatchNo: row.find('td:eq(3)').text().trim(),
                 therapyStart: row.find('td:eq(4)').text().trim(),
                 therapyStop: row.find('td:eq(5)').text().trim(),
-                indication: row.find('td:eq(6)').text().trim()
+                indication: row.find('td:eq(6) input[type="text"]').val()?.trim() || ''
             };
     
             if (selectedRows.some(r => JSON.stringify(r) === JSON.stringify(rowData))) {
@@ -228,7 +216,7 @@ $(document).ready(function () {
                 malBatchNo: row.find('td:eq(3)').text().trim(),
                 therapyStart: row.find('td:eq(4)').text().trim(),
                 therapyStop: row.find('td:eq(5)').text().trim(),
-                indication: row.find('td:eq(6)').text().trim()
+                indication: row.find('td:eq(6) input[type="text"]').val()?.trim() || ''
             };
     
             if (concodrugs.some(drug => 
@@ -244,6 +232,15 @@ $(document).ready(function () {
     });
     
     $('#concodrug-table').trigger('draw.dt');
+
+    $('#concodrug-table').on('input', 'td:eq(6) input[type="text"]', function() {
+        const row = $(this).closest('tr');
+        const checkbox = row.find('input[type="checkbox"]');
+    
+        if (checkbox.is(':checked')) {
+            syncSelectedRows(); // Update the selected rows with the latest input value
+        }
+    });
     
 
 });
