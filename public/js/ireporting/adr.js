@@ -139,8 +139,8 @@ var tableconfirm = $('#reportadrconfirm-table').DataTable({
         {
             "data": 'name',
             "render": function (data, type, row)  {
-                if(row.adrlist.patientinfo != null){
-                    return '<span>'+row.adrlist.patientinfo.patient.name+'</span>';
+                if(row.patientinfo != null){
+                    return '<span>'+row.patientinfo.patient.name+'</span>';
                 }else{
                     return '<span>-</span>';
                 }     
@@ -229,8 +229,8 @@ var tablefalse = $('#reportadrfalse-table').DataTable({
         {
             "data": 'name',
             "render": function (data, type, row)  {
-                if(row.adrlist.patientinfo != null){
-                    return '<span>'+row.adrlist.patientinfo.patient.name+'</span>';
+                if(row.patientinfo != null){
+                    return '<span>'+row.patientinfo.patient.name+'</span>';
                 }else{
                     return '<span>-</span>';
                 }     
