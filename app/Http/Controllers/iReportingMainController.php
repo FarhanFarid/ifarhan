@@ -808,7 +808,12 @@ class iReportingMainController extends Controller
 
         $patdemo = $content['data'];
 
-        $detail = Sso::where('email', $report->createdBy->username."@ijn.com.my")->select('mail', 'position')->first();
+        if (isset($report) && isset($report->createdBy)) {
+            $email = $report->createdBy->username . "@ijn.com.my";
+            $detail = Sso::where('email', $email)->select('mail', 'position')->first();
+        } else {
+            $detail = null;
+        }
 
         return view('adr.report.subviews.report', compact(
             'url', 
@@ -848,7 +853,12 @@ class iReportingMainController extends Controller
 
         $patdemo = $content['data'];
 
-        $detail = Sso::where('email', $report->createdBy->username."@ijn.com.my")->select('mail', 'position')->first();
+        if (isset($report) && isset($report->createdBy)) {
+            $email = $report->createdBy->username . "@ijn.com.my";
+            $detail = Sso::where('email', $email)->select('mail', 'position')->first();
+        } else {
+            $detail = null;
+        }
 
         return view('adr.report.subviews.report', compact(
             'url', 

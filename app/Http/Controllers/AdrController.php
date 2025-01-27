@@ -148,7 +148,12 @@ class AdrController extends Controller
         $patdemo = $content['data'];
 
         //SSO
-        $detail = Sso::where('email', $report->createdBy->username."@ijn.com.my")->select('mail', 'position')->first();
+        if (isset($report) && isset($report->createdBy)) {
+            $email = $report->createdBy->username . "@ijn.com.my";
+            $detail = Sso::where('email', $email)->select('mail', 'position')->first();
+        } else {
+            $detail = null;
+        }
 
         return view('adr.report.subviews.report', compact(
             'url', 
