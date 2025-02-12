@@ -228,3 +228,9 @@ Route::get('/testprint', [HmilkMainController::class, 'testprint'])->name('hmilk
 Route::get('/testpdfreport', function () {
     return view('iblood.reaction.report.subviews.report');
 })->name('iblood.test.pdfreport');
+
+Route::group(['prefix' => 'api'], function () {
+    Route::group(['prefix' => 'iblood'], function () {
+        Route::get('/supended-transfusion-list', [BloodInventoryController::class, 'apiGetSuspendedTransfusionList'])->name('api.iblood.apiGetSuspendedTransfusionList');              
+    });                           
+});

@@ -882,5 +882,44 @@ class BloodInventoryController extends Controller
         }
     }
 
+    public function apiGetSuspendedTransfusionList (Request $request){
+
+        try
+        {  
+
+            $inventory = BloodInventory::where('episodeno', $request->input('epsdno'))->where('transfuse_completion_id', 2)->select('product', 'labno', 'bagno', 'volume')->get();
+
+            $response = response()->json(
+                [
+                  'status'      => 'success',
+                  'data'        => $inventory,
+
+                ], 200
+            );
+
+            return $response;
+
+        }
+        catch (\Exception $e)
+        {
+            Log::error($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
+
+            $response = response()->json(
+                [
+                    'status'  => 'failed',
+                    'message' => 'Internal error happened. Try again'
+                ], 200
+            );
+
+            return $response;
+        }
+    }
+
+
+
 
 }
