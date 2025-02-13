@@ -40,7 +40,7 @@
                                                     <input class="form-control form-control-solid" type="text" name="updatebag" id="updatebag" readonly>
                                                 </div>
                                             </div>
-                                            <div class="row m-1 mb-3" id="reaction-details">
+                                            <div class="row m-1 mb-3">
                                                 <div class="col-md-4 pt-4">
                                                     <b>Product</b>
                                                 </div>
@@ -79,7 +79,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="row m-1 mb-3" id="reaction-details">
+                                            <div class="row m-1 mb-3">
                                                 <div class="col-md-4 pt-4">
                                                     <b>Expiry Date</b>
                                                 </div>

@@ -205,7 +205,12 @@ $.ajaxSetup({
                 $("#updatelab").val(data.data.labno);
                 $("#updateproduct").val(data.data.product).trigger("change");  
                 $("#updatetransferloc").val(data.data.transfer_to).trigger("change");  
-                $("#updateexpiry").val(data.data.expiry_date);
+                if (data.data.expiry_date) {
+                    var expiryDate = moment(data.data.expiry_date, ["YYYY-MM-DD", "YYYY/MM/DD", "DD-MM-YYYY", "MM/DD/YYYY"]).format("YYYY-MM-DD");
+                    $("#updateexpiry").val(expiryDate);
+                } else {
+                    $("#updateexpiry").val(""); // Clear the field if no date
+                }
 
                 if (data.data.expiry_date === null) {
                     $("#updateexpiry").prop("readonly", true);
