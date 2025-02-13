@@ -122,7 +122,7 @@
 	</div>
 @endif
 
-@if(in_array($usrGrp, ["Administrator", "Pharmacist", "PharmacyAssistant"]))
+{{-- @if(in_array($usrGrp, ["Administrator", "Pharmacist", "PharmacyAssistant"]))
 	<div class="row {{ request()->routeIs('report.adr.index') ? 'bg-teal text-white' : '' }}" 
 		style="padding: 0.5rem; margin: auto; border-bottom: solid 1px #918f8f;">
 		<div class="col-2 mt-2">
@@ -136,4 +136,4 @@
 				href="{{ route('report.adr.index') }}?{{$url}}" style="margin-bottom: 10px;">ADR Worklist</a>
 		</div>
 	</div>
-@endif
+@endif --}}
