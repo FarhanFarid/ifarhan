@@ -443,6 +443,8 @@ class Authsystem
                 'ireporting/iblood', 
                 'ireporting/iblood/getibloodinventory',
                 'ireporting/iblood/getlocationdetails',
+                'ireporting/iblood/getsingleinventory',
+                'ireporting/iblood/updateibloodinv',
                 'ireporting/iblood/atr', 
                 'ireporting/iblood/atr/getworklist',
                 'ireporting/iblood/atr/getworklistconfirm',

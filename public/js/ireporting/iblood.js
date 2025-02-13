@@ -1,3 +1,11 @@
+function getUrlParameter(name) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(name);
+}
+
+// Get usrGrp from the URL
+const usrGrp = getUrlParameter('usrGrp');
+
 var currentDate = moment();
 var table = $('#reportiblood-table').DataTable({
     lengthMenu: [10, 20, 50, 100],
@@ -132,11 +140,13 @@ var table = $('#reportiblood-table').DataTable({
                 var html = '';
 
                 html += '<div class="row justify-content-center align-items-center">'; // Centering row contents
-                // html += '<div class="col-auto">'; // Auto width for flexible alignment
-                // html += '<button type="button" class="badge btn-sm badge-light-warning edit-record h-25px w-25px d-flex align-items-center justify-content-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Record" data-bagno="' + row.bagno + '" data-episodeno="' + row.episodeno + '" data-labno="' + row.labno + '">' +
-                //             '<i class="fa-regular fa-pen-to-square" style="color: #0a0a0a;"></i>' +
-                //         '</button>';
-                // html += '</div>';
+                if (usrGrp === "Administrator"){
+                    html += '<div class="col-auto">'; // Auto width for flexible alignment
+                    html += '<button type="button" class="badge btn-sm badge-light-warning edit-record h-25px w-25px d-flex align-items-center justify-content-center" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Record" data-bagno="' + row.bagno + '" data-episodeno="' + row.episodeno + '" data-labno="' + row.labno + '">' +
+                                '<i class="fa-regular fa-pen-to-square" style="color: #0a0a0a;"></i>' +
+                            '</button>';
+                    html += '</div>';
+                }
                 html += '<div class="col-auto">'; // Auto width for flexible alignment
                 html += '<button type="button" class="badge btn-sm btn-icon btn-light btn-active-light-primary toggle h-25px w-25px d-flex align-items-center justify-content-center" data-kt-docs-datatable-subtable="expand_row" data-toggle="collapse" data-target="#locations-' + row.id + '" aria-expanded="false" aria-controls="locations-' + row.id + '">' +
                             '<span class="svg-icon fs-3 m-0 toggle-off">+</span>' +
@@ -177,7 +187,47 @@ $.ajaxSetup({
 
  $('#reportiblood-table tbody').on('click', 'button.edit-record', function () {
 
-    $('#edit-record').modal('show');
+    var episodeno = $(this).data('episodeno');
+    var bagno = $(this).data('bagno');
+    var labno = $(this).data('labno');
+    var url = config.routes.ireporting.iblood.getsingleinventory;
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        dataType: 'json',
+        data: { bagno: bagno, labno: labno, episodeno: episodeno },
+        success: function(data) {
+            if (data.status === 'success') {
+
+                $("#updateep").val(data.data.episodeno);
+                $("#updatebag").val(data.data.bagno);
+                $("#updatelab").val(data.data.labno);
+                $("#updateproduct").val(data.data.product).trigger("change");  
+                $("#updatetransferloc").val(data.data.transfer_to).trigger("change");  
+                $("#updateexpiry").val(data.data.expiry_date);
+
+                if (data.data.expiry_date === null) {
+                    $("#updateexpiry").prop("readonly", true);
+                } else {
+                    $("#updateexpiry").prop("readonly", false);
+                }
+
+                if (data.data.transfer_to === null) {
+                    $("#updatetransferloc").prop("disabled", true);
+                } else {
+                    $("#updatetransferloc").prop("disabled", false);
+                }
+
+                $('#edit-record').modal('show');
+
+            }
+        },
+        error: function(xhr, status, error) {
+            toastr.error('Error: ' + error, {timeOut: 5000});
+        },
+
+    });
 
 });
 
@@ -330,5 +380,42 @@ $('#filterdate').daterangepicker({
             return false;
         }
     );
+
+    $('.update-blood').on('click', async function() {
+
+        var form        = $(this).parent().parent().find('form#updateibloodinvform');
+        var formData    = await getAllInput(form);
+        var data        = processSerialize(formData);
+        var url         = config.routes.ireporting.iblood.updateibloodinv;
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            dataType: "json",
+            data: data,
+            // beforeSend: function(){
+            //     $("#loading-overlay").show();
+            // },
+            success: function(data) {
+
+                Swal.fire({
+                    title: "Success!",
+                    text: "Successfully Updated!",
+                    icon: "success",
+                    buttonsStyling: false,
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+
+                setTimeout(function() {
+                    location.reload();
+                }, 3000);
+            },
+            error: function(xhr, status, error) {
+                toastr.error('Error saving reaction: ' + error, {timeOut: 5000});
+            }
+        });
+
+    });
 
 });

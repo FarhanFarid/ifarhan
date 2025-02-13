@@ -8,7 +8,7 @@
                 <div class="row">
                     <div class="col-md-12 mb-2">
                         <div class="card-body">
-                            <form id="#">
+                            <form id="updateibloodinvform">
                                 @csrf
                                 <div class="row m-3">
                                     <div class="col-md-12" style="box-shadow: 0px 2px 6px 2px #dcdcdc !important;">
@@ -21,7 +21,15 @@
                                                     <b>Episode No.</b>
                                                 </div>
                                                 <div class="col-md-8">
-                                                    <input class="form-control" type="text" name="episodeNumber" id="episodeNumber" readonly>
+                                                    <input class="form-control form-control-solid" type="text" name="updateep" id="updateep" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="row m-1 mb-3">
+                                                <div class="col-md-4 pt-4">
+                                                    <b>Lab No.</b>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input class="form-control form-control-solid" type="text" name="updatelab" id="updatelab" readonly>
                                                 </div>
                                             </div>
                                             <div class="row m-1 mb-3">
@@ -29,7 +37,7 @@
                                                     <b>Bag No.</b>
                                                 </div>
                                                 <div class="col-md-8">
-                                                    <input class="form-control" type="text" name="bagNumber" id="bagNumber" readonly>
+                                                    <input class="form-control form-control-solid" type="text" name="updatebag" id="updatebag" readonly>
                                                 </div>
                                             </div>
                                             <div class="row m-1 mb-3" id="reaction-details">
@@ -37,7 +45,7 @@
                                                     <b>Product</b>
                                                 </div>
                                                 <div class="col-md-8">
-                                                    <select class="form-select form-select-solid" name="product" id="product" data-dropdown-parent="#edit-record" data-control="select2" data-placeholder="Select Product">
+                                                    <select class="form-select" name="updateproduct" id="updateproduct" data-dropdown-parent="#edit-record" data-control="select2" data-placeholder="Select Product">
                                                         <option value="">Please select the product</option>
                                                         <option value="AUTOLOGOUS PACKED CELL">AUTOLOGOUS PACKED CELL</option>
                                                         <option value="CRYOPPT">CRYOPPT</option>
@@ -56,25 +64,31 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="row m-1 mb-3" id="reaction-details">
-                                                <div class="col-md-4 pt-4">
-                                                    <b>Expiry Date</b>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <input class="form-control" type="date" name="matchdate" id="matchdate">
-                                                </div>
-                                            </div>
                                             <div class="row m-1 mb-3">
                                                 <div class="col-md-4 pt-4">
                                                     <b>Transfer To:</b>
                                                 </div>
                                                 <div class="col-md-8">
-                                                    <input class="form-control" type="text" name="bagNumber" id="bagNumber" readonly>
+                                                    <select class="form-select" data-control="select2" data-dropdown-parent="#edit-record" data-dropdown-parent="body" data-placeholder="Select Location" id="updatetransferloc" name="updatetransferloc">
+                                                        <option></option>
+                                                        @foreach ($wardlist as $loc)
+                                                            <option value="{{ $loc->location_name }}">
+                                                                {{ $loc->location_name }} ({{ $loc->location_code }})
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row m-1 mb-3" id="reaction-details">
+                                                <div class="col-md-4 pt-4">
+                                                    <b>Expiry Date</b>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input class="form-control" type="date" name="updateexpiry" id="updateexpiry">
                                                 </div>
                                             </div>
                                         </div>
-                                        <button type="button" id="store-blood2" class="align-self-end btn btn-danger btn-sm font-weight-bold btn-block mt-3 mb-3" style="margin-top: auto;">{{__('SUBMIT')}}</button>
-
+                                        {{-- <button type="button" id="delete-blood" class="align-self-end btn btn-danger btn-sm font-weight-bold btn-block mt-3 mb-3" style="margin-top: auto;">{{__('DELETE')}}</button> --}}
                                     </div>
                                 </div>
                             </form>
@@ -83,6 +97,7 @@
                 </div>
             </div>
             <div class="modal-footer" style="border-radius: 0px !important; background-color: #e9f2ff;">
+                <button type="button" class="btn btn-success btn-sm font-weight-bold update-blood mt-2">{{__('UPDATE')}}</button>
                 <button type="button" class="btn btn-light btn-sm font-weight-bold btn-block" data-bs-dismiss="modal">CLOSE</button>
             </div>
         </div>

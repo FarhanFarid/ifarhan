@@ -229,6 +229,8 @@
                 iblood : {
                     getdata : "{{ route('report.iblood.getinventory') }}?{!! $url !!}",
                     locationdetails : "{{ route('report.iblood.getlocationdetails') }}?{!! $url !!}",
+                    getsingleinventory : "{{ route('report.iblood.getsingleinventory') }}?{!! $url !!}",
+                    updateibloodinv : "{{ route('report.iblood.updateibloodinv') }}?{!! $url !!}",
                 },
             },
         },

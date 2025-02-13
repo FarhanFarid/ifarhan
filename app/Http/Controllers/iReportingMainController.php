@@ -26,6 +26,8 @@ use App\Models\MedShelf;
 use App\Models\MedShelfUser;
 use App\Models\MedShelfUserSSO;
 use App\Models\Sso;
+use App\Models\BloodWardLocation;
+
 
 use DB;
 use Auth;
@@ -37,6 +39,8 @@ class iReportingMainController extends Controller
         $explode = explode('?', $request->getRequestUri());
 
         $url = $explode[1];
+
+        $wardlist = BloodWardLocation::all();
 
         if($request->usrGrp == "EMY" || $request->usrGrp == "EMYDoctors" || $request->usrGrp == "ICLNurse" || $request->usrGrp == "OTNurse"){
 
@@ -81,6 +85,7 @@ class iReportingMainController extends Controller
                 'notexpired',
                 'totalstored',
                 'totalatr',
+                'wardlist'
              ));
                          
         }elseif($request->usrGrp == "LABManager" || $request->usrGrp == "LABMLT" || $request->usrGrp == "LABTemp" || $request->usrGrp == "LABClerk" || $request->usrGrp == "QualityManagement" || $request->usrGrp == "Doctors" || $request->usrGrp == "WardNurse" || $request->usrGrp == "WardNursePrivate" || $request->usrGrp == "WardClerk" || $request->usrGrp == "WardManagerOrMentor" || $request->usrGrp == "OPDNurse"){
@@ -107,7 +112,7 @@ class iReportingMainController extends Controller
             //Administered
             $administered = Inventory::where('status', 3)->count();
 
-            return view('ireporting.imilk.index', compact('url', 'totalebm', 'totalebmChiller','totalebmFreezer', 'expiredebm', 'expiredebmChiller','expiredebmFreezer', 'pending', 'handover','prepare', 'administered'));
+            return view('ireporting.imilk.index', compact('url', 'totalebm', 'totalebmChiller','totalebmFreezer', 'expiredebm', 'expiredebmChiller','expiredebmFreezer', 'pending', 'handover','prepare', 'administered', 'wardlist'));
 
         }elseif($request->usrGrp == "MROffice"){
 
@@ -152,6 +157,8 @@ class iReportingMainController extends Controller
 
         $url = $explode[1];
 
+        $wardlist = BloodWardLocation::all();
+
         //Issued
         $totalissuedactive            = BloodInventory::where('transfuse_status_id', '!=' , 7)->count();
         $totalissuedreturnedused      = BloodInventory::where('transfuse_status_id', 7)->where('transfuse_completion_id' , 2)->count();
@@ -193,6 +200,7 @@ class iReportingMainController extends Controller
             'notexpired',
             'totalstored',
             'totalatr',
+            'wardlist'
          ));
 
     }
@@ -977,4 +985,63 @@ class iReportingMainController extends Controller
     }
     //end medshelf
 
+    public function getSingleIbloodInventory(Request $request)
+    {
+        $info = BloodInventory::where('episodeno', $request->episodeno)->where('bagno', $request->bagno)->where('labno', $request->labno)->first();
+
+        $response = response()->json(
+            [
+              'status'  => 'success',
+              'data'    => $info
+            ], 200
+        );
+
+        return $response;
+
+    }
+
+    public function updateIbloodInv(Request $request)
+    {
+        try
+        {
+
+            $updateinv = BloodInventory::where('episodeno', $request->updateep)->where('bagno', $request->updatebag)->where('labno', $request->updatelab)->first();
+            $updateinv->product         = $request->updateproduct;
+            $updateinv->expiry_date     = $request->updateexpiry;
+            $updateinv->transfer_to     = $request->updatetransferloc;
+            $updateinv->save();
+
+            $response = response()->json(
+                [
+                  'status'  => 'success',
+                  'message'    => "Successfully Update!"
+                ], 200
+            );
+    
+            return $response;
+
+        }
+        catch(\Exception $e)
+        {
+            Log::error($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
+
+            $response = response()->json(
+                [
+                    'status'  => 'failed',
+                    'message' => 'Internal error happened. Try again'
+                ], 200
+            );
+
+            return $response;
+        }
+
+            
+
+        
+
+    }
 }
