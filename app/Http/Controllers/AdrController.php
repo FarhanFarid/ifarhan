@@ -56,8 +56,13 @@ class AdrController extends Controller
         $statusCode = $response->getStatusCode();
         $content = json_decode($response->getBody(), true);
 
-        // dd($content['data']['allergyList']);
-        $allergy = $content['data']['allergyList'];
+        $weight = isset($content['data']['weight']) ? $content['data']['weight'] : '';
+
+        // dd($content['data']['weight']);
+        $allergy = isset($content['data']['allergyList']) ? $content['data']['allergyList'] : [];
+
+        $medhistory = isset($content['data']['medHistory']) ? $content['data']['medHistory'] : [];
+
 
         $medhistory = $content['data']['medHistory'];
 
@@ -113,7 +118,7 @@ class AdrController extends Controller
 
         // dd(['Renal Profile' => $renal, 'Full Blood Count' => $fbc, 'INR' => $inr, 'LFT' => $lft]);
 
-        return view('adr.index', compact('url', 'report', 'details', 'medhistory', 'latestDrug', 'renal', 'fbc', 'inr', 'lft', 'allergy'));
+        return view('adr.index', compact('url', 'report', 'details', 'medhistory', 'latestDrug', 'renal', 'fbc', 'inr', 'lft', 'allergy', 'weight'));
     }
 
     public function genReport(Request $request)
@@ -196,7 +201,9 @@ class AdrController extends Controller
 
                 $adrdesc = AdrDescription::where('adrreport_id', $report->id)->orderBy('id', 'desc')->first();
                 $adrdesc->description     = $formValues['desc'] ?? null;
-                $adrdesc->onsettime       = $formValues['onsettime'] ?? null;
+                $adrdesc->weight          = $formValues['weight'] ?? null;
+                $adrdesc->datevalue       = $formValues['datevalue'] ?? null;
+                $adrdesc->datetype        = $formValues['datetype'] ?? null;
                 $adrdesc->date_start      = $formValues['reactstart'] ?? null;
                 $adrdesc->date_end        = $formValues['reactstop'] ?? null;
                 $adrdesc->react_subside   = $formValues['reducedose'] ?? null;
@@ -269,7 +276,9 @@ class AdrController extends Controller
                 $storedesc                  = new AdrDescription();
                 $storedesc->adrreport_id    = $storereport->id;
                 $storedesc->description     = $formValues['desc'] ?? null;
-                $storedesc->onsettime       = $formValues['onsettime'] ?? null;
+                $storedesc->weight          = $formValues['weight'] ?? null;
+                $storedesc->datevalue       = $formValues['datevalue'] ?? null;
+                $storedesc->datetype        = $formValues['datetype'] ?? null;
                 $storedesc->date_start      = $formValues['reactstart'] ?? null;
                 $storedesc->date_end        = $formValues['reactstop'] ?? null;
                 $storedesc->react_subside   = $formValues['reducedose'] ?? null;

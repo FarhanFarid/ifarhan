@@ -889,7 +889,32 @@ class BloodInventoryController extends Controller
         try
         {  
 
-            $inventory = BloodInventory::where('episodeno', $request->input('epsdno'))->where('transfuse_completion_id', 2)->select('product', 'labno', 'bagno', 'volume')->get();
+            // $inventory = BloodInventory::with('patinfo.patient')->where('episodeno', $request->input('epsdno'))->where('transfuse_completion_id', 2)->select(
+            //     'patinfo.patient.mrn',
+            //     'patinfo.episodenumber',
+            //     'patinfo.patient.name',
+            //     'product',
+            //     'labno',
+            //     'bagno',
+            //     'volume',
+            //      )->get();
+
+            $inventory = BloodInventory::join('patient_information', 'iblood_inventories.episodeno', '=', 'patient_information.episodenumber')
+            ->join('patients', 'patient_information.patient_id', '=', 'patients.id')
+            ->where('iblood_inventories.episodeno', $request->input('epsdno'))
+            ->where('iblood_inventories.transfuse_completion_id', 2)
+            ->select(
+                'patients.mrn',
+                'patient_information.episodenumber',
+                'patients.name',
+                'iblood_inventories.product',
+                'iblood_inventories.labno',
+                'iblood_inventories.bagno',
+                'iblood_inventories.volume',
+                'iblood_inventories.transfuse_start_at',
+                'iblood_inventories.transfuse_stop_at',
+            )
+            ->get();
 
             $response = response()->json(
                 [

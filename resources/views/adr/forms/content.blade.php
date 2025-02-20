@@ -40,15 +40,35 @@
                             </div>
                         </div>
                         <div class="row mb-5">
-                            <div class="col-md-4">
-                                <label for="indication" class="form-check-label" style="color: black;">Time to onset of reaction</label>
-                                <input class="form-control" type="time" name="onsettime" id="onsettime" value="{{ isset($details) && $details->onset_at ? \Carbon\Carbon::parse($details->onset_at)->format('H:i') : '' }}">
+                            <div class="col-md-3">
+                                <label for="indication" class="form-check-label" style="color: black;">Weight (Kg)</label>
+                                <input class="form-control" type="text" name="weight" id="weight" value="{{ isset($report->descriptions) && $report->descriptions->weight ? $report->descriptions->weight : $weight }}">
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
+                                <label for="indication" class="form-check-label" style="color: black;">Time to onset of reaction</label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input class="form-control" type="text" name="datevalue" id="datevalue" value="{{ isset($report->descriptions) && $report->descriptions->datevalue ? $report->descriptions->datevalue : '' }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <select class="form-select" aria-label="Select example" name="datetype" id="datetype">
+                                            @php
+                                                $selectedType = isset($report->descriptions) && $report->descriptions->datetype ? $report->descriptions->datetype : '';
+                                            @endphp
+                                            <option value="minutes" {{ $selectedType == 'minutes' ? 'selected' : '' }}>minutes</option>
+                                            <option value="hours" {{ $selectedType == 'hours' ? 'selected' : '' }}>hours</option>
+                                            <option value="days" {{ $selectedType == 'days' ? 'selected' : '' }}>days</option>
+                                            <option value="months" {{ $selectedType == 'months' ? 'selected' : '' }}>months</option>
+                                            <option value="years" {{ $selectedType == 'years' ? 'selected' : '' }}>years</option>
+                                        </select>
+                                    </div>
+                                </div> 
+                            </div>
+                            <div class="col-md-3">
                                 <label for="indication" class="form-check-label" style="color: black;">Date start of reaction</label>
                                 <input class="form-control" type="date" name="reactstart" id="reactstart" value="{{ isset($details) && $details->onset_at ? \Carbon\Carbon::parse($details->onset_at)->format('Y-m-d') : '' }}">
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label for="indication" class="form-check-label" style="color: black;">Date end of reaction</label>
                                 <input class="form-control" type="date" name="reactstop" id="reactstop" value="{{ isset($report->descriptions) && $report->descriptions->date_end ? \Carbon\Carbon::parse($report->descriptions->date_end)->format('Y-m-d') : '' }}">
                             </div>
@@ -134,7 +154,7 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" value="na" id="reintroduce" name="reintroduce" {{ isset($report) && $report->descriptions->react_reappear == 'na' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
-                                                N/A (drug continued)
+                                                N/A (not reintroduced)
                                             </label>
                                         </div>
                                     </div>
@@ -536,17 +556,19 @@
                                 <label for="treatment" class="form-check-label mb-1" style="color: black;">Relevant Medical History :</label>
                                 <textarea name="relevantmh" id="relevantmh">
                                     @if ($report == null)
-                                        <p>
-                                            <strong>Allergy</strong><br>
-                                            @foreach ($allergy as $all )
-                                                @if ($all["substance"] == "")
-                                                    -&nbsp;{{$all["freetxtall"]}} @if ($all["commment"] != "") ({{$all["commment"]}}) @endif               
-                                                @else
-                                                    -&nbsp;{{$all["substance"]}} @if ($all["commment"] != "") ({{$all["commment"]}}) @endif               
-                                                @endif
-                                            @endforeach
-                                            <br>
-                                        </p>
+                                        @if (!empty($allergy))
+                                            <p>
+                                                <strong>Allergy</strong><br>
+                                                @foreach ($allergy as $all )
+                                                    @if ($all["substance"] == "")
+                                                        -&nbsp;{{$all["freetxtall"]}} @if ($all["commment"] != "") ({{$all["commment"]}}) @endif               
+                                                    @else
+                                                        -&nbsp;{{$all["substance"]}} @if ($all["commment"] != "") ({{$all["commment"]}}) @endif               
+                                                    @endif
+                                                @endforeach
+                                                <br>
+                                            </p>
+                                        @endif
                                     @else
                                         {{ $report->descriptions->medicalhistory}}
                                     @endif

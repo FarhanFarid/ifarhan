@@ -138,7 +138,7 @@
                                 </div>                            
                             </div>
                             <div class="col-md-2">
-                                <input type="text" class="form-control form-control-sm" type="checkbox" id="weight" name="weight" value="{{ $patdemo['weight'] ?? '' }}">
+                                <input type="text" class="form-control form-control-sm" type="checkbox" id="weight" name="weight" value="{{ isset($report) && $report->descriptions->weight ? $report->descriptions->weight : '' }}">
                             </div>
                             <div class="col-md-2">
                                 <input type="text" class="form-control form-control-sm" type="checkbox" id="ethnic" name="ethnic" value="{{ $patdemo['prace']  ?? '' }}">
@@ -184,8 +184,8 @@
                             <div class="col-md-2" style="font-size: 15px">
                                 Time to onset of reaction :
                             </div>
-                            <div class="col-md-2">
-                                <input type="text" class="form-control form-control-sm" type="checkbox" id="icnumber" name="icnumber" value="{{ isset($report->descriptions) && $report->descriptions->onsettime ? \Carbon\Carbon::parse($report->descriptions->onsettime)->format('H:i') : '' }}">
+                            <div class="col-md-2" style="font-size: 15px">
+                                <b>{{ isset($report) && $report->descriptions->datevalue ? $report->descriptions->datevalue : '' }} &nbsp; {{ isset($report) && $report->descriptions->datetype ? $report->descriptions->datetype : '' }} </b>
                             </div>
                             <div class="col-md-2" style="font-size: 15px">
                                 Date start of reaction :
@@ -226,7 +226,7 @@
                             </div>
                             <div class="col-md-2">
                                 <label class="form-check-label" for="followup" style="font-size: 15px">
-                                    N/A (not reintroduced)
+                                    N/A (drug continued)
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="react_subside" name="react_subside"  {{ isset($report) && $report->descriptions->react_subside == 'na' ? 'checked' : '' }}/>
                             </div>
