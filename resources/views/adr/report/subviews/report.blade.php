@@ -72,7 +72,7 @@
     <body>
         <div class="contain">
             <div class="header" style="text-align: center; background-color: black; color: white; padding: 20px;">        
-                <b style="font-weight: 900; font-size: 35px">REPORT ON SUSPECTED ADVERSE DRUG REACTIONS</b><br>
+                <b style="font-weight: 900; font-size: 28px; letter-spacing: -2px;">REPORT ON SUSPECTED ADVERSE DRUG REACTIONS</b><br>
                 <b style="font-size: 21px">NATIONAL CENTRE FOR ADVERSE DRUG REACTIONS MONITORING</b><br>
                 <i>Email: fv@bpfk.gov.my &nbsp&nbsp&nbspWebsite: fv@bpfk.gov.my &nbsp&nbsp&nbspTel: 03-7883 5550 &nbsp&nbsp&nbspFax: 03-7956 7151</i>
             </div>
@@ -91,23 +91,23 @@
                             <b>PATIENT INFORMATION</b>
                         </div>
                         <div class="row" style="padding: 5px">
-                            <div class="col-md-2" style="font-size: 15px">
+                            <div class="col-md-2" style="font-size: 11px">
                                 I.C. No. / R/N / Initials
                             </div>
-                            <div class="col-md-2" style="font-size: 15px">
+                            <div class="col-md-2" style="font-size: 11px">
                                 Age
                             </div>
-                            <div class="col-md-2" style="font-size: 15px">
+                            <div class="col-md-2" style="font-size: 11px">
                                 Gender <i>(please tick)</i>
                             </div>
-                            <div class="col-md-2" style="font-size: 15px">
+                            <div class="col-md-2" style="font-size: 11px">
                                 Wt (kg)
                             </div>
-                            <div class="col-md-2" style="font-size: 15px">
+                            <div class="col-md-2" style="font-size: 11px">
                                 Ethnic Group
                             </div>
                             <div class="col-md-2">
-                                <i style="font-size: 15px">Please tick (if applicable):</i>
+                                <i style="font-size: 11px">Please tick (if applicable):</i>
                             </div>
                         </div>
                         <div class="row" style="padding: 0px 5px 5px 5px">
@@ -122,7 +122,7 @@
                                     <div class="col-md-4">
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" value="male" id="gender" name="gender" {{ isset($patdemo) && $patdemo['pgender'] == 'Male' ? 'checked' : '' }}/>
-                                            <label class="form-check-label" for="male" style="font-size: 15px">
+                                            <label class="form-check-label" for="male" style="font-size: 11px">
                                                 Male
                                             </label>
                                         </div>
@@ -130,7 +130,7 @@
                                     <div class="col-md-8">
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" value="female" id="gender" name="gender" {{ isset($patdemo) && $patdemo['pgender'] == 'Female' ? 'checked' : '' }}/>
-                                            <label class="form-check-label" for="female" style="font-size: 15px">
+                                            <label class="form-check-label" for="female" style="font-size: 11px">
                                                 Female
                                             </label>
                                         </div>
@@ -148,7 +148,7 @@
                                     <div class="col-md-12">
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" value="initial" id="report" name="report" {{ isset($report) && $report->report == 'initial' ? 'checked' : '' }}/>
-                                            <label class="form-check-label" for="initial" style="font-size: 15px">
+                                            <label class="form-check-label" for="initial" style="font-size: 11px">
                                                 Initial Report
                                             </label>
                                         </div>
@@ -158,7 +158,7 @@
                                     <div class="col-md-12">
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" value="followup" id="report" name="report" {{ isset($report) && $report->report == 'followup' ? 'checked' : '' }}/>
-                                            <label class="form-check-label" for="followup" style="font-size: 15px">
+                                            <label class="form-check-label" for="followup" style="font-size: 11px">
                                                 Follow-up Report
                                             </label>
                                         </div>
@@ -181,19 +181,19 @@
                     </div>
                     <div class="reactiontime" style="border: 1px solid black; padding: 0;">
                         <div class="row" style="padding: 8px">
-                            <div class="col-md-2" style="font-size: 15px">
+                            <div class="col-md-2" style="font-size: 11px">
                                 Time to onset of reaction :
                             </div>
-                            <div class="col-md-2" style="font-size: 15px">
+                            <div class="col-md-2" style="font-size: 11px">
                                 <b>{{ isset($report) && $report->descriptions->datevalue ? $report->descriptions->datevalue : '' }} &nbsp; {{ isset($report) && $report->descriptions->datetype ? $report->descriptions->datetype : '' }} </b>
                             </div>
-                            <div class="col-md-2" style="font-size: 15px">
+                            <div class="col-md-2" style="font-size: 11px">
                                 Date start of reaction :
                             </div>
                             <div class="col-md-2">
                                 <input type="text" class="form-control form-control-sm" type="checkbox" id="icnumber" name="icnumber" value="{{ isset($report->descriptions) && $report->descriptions->date_start ? \Carbon\Carbon::parse($report->descriptions->date_start)->format('d/m/Y') : '' }}">
                             </div>
-                            <div class="col-md-2" style="font-size: 15px">
+                            <div class="col-md-2" style="font-size: 11px">
                                 Date end of reaction :
                             </div>
                             <div class="col-md-2">
@@ -203,29 +203,29 @@
                     </div>
                     <div class="reducedose" style="border: 1px solid black; padding: 0;">
                         <div class="row" style="padding: 8px">
-                            <div class="col-md-5 style="font-size: 15px">
+                            <div class="col-md-3" style="font-size: 11px">
                                 Reaction subsided after stopping drug / reducing dose :
                             </div>
                             <div class="col-md-1">
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Yes
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="react_subside" name="react_subside"  {{ isset($report) && $report->descriptions->react_subside == 'yes' ? 'checked' : '' }}/>
                             </div>
                             <div class="col-md-1">
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     No
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="react_subside" name="react_subside"  {{ isset($report) && $report->descriptions->react_subside == 'no' ? 'checked' : '' }}/>
                             </div>
                             <div class="col-md-2" >
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Unknown
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="react_subside" name="react_subside"  {{ isset($report) && $report->descriptions->react_subside == 'unknown' ? 'checked' : '' }}/>
                             </div>
-                            <div class="col-md-2">
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                            <div class="col-md-5">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     N/A (drug continued)
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="react_subside" name="react_subside"  {{ isset($report) && $report->descriptions->react_subside == 'na' ? 'checked' : '' }}/>
@@ -234,29 +234,29 @@
                     </div>
                     <div class="reintroducing" style="border: 1px solid black; padding: 0;">
                         <div class="row" style="padding: 8px">
-                            <div class="col-md-5 style="font-size: 15px">
+                            <div class="col-md-3" style="font-size: 11px">
                                 Reaction reappeared after reintroducing drug :
                             </div>
                             <div class="col-md-1">
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Yes
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="react_reappear" name="react_reappear" {{ isset($report) && $report->descriptions->react_reappear == 'yes' ? 'checked' : '' }}/>
                             </div>
                             <div class="col-md-1">
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     No
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="react_reappear" name="react_reappear" {{ isset($report) && $report->descriptions->react_reappear == 'no' ? 'checked' : '' }}/>
                             </div>
                             <div class="col-md-2" >
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Unknown
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="react_reappear" name="react_reappear" {{ isset($report) && $report->descriptions->react_reappear == 'unknown' ? 'checked' : '' }}/>
                             </div>
-                            <div class="col-md-2">
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                            <div class="col-md-5">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     N/A (not reintroduced)
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="react_reappear" name="react_reappear" {{ isset($report) && $report->descriptions->react_reappear == 'na' ? 'checked' : '' }}/>
@@ -265,23 +265,23 @@
                     </div>
                     <div class="extent" style="border: 1px solid black; padding: 0;">
                         <div class="row" style="padding: 8px">
-                            <div class="col-md-3 style="font-size: 15px">
+                            <div class="col-md-3" style="font-size: 11px">
                                 Extent of reaction :
                             </div>
                             <div class="col-md-2">
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Mild
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="extent" name="extent" {{ isset($report) && $report->descriptions->extent == 'mild' ? 'checked' : '' }}/>
                             </div>
                             <div class="col-md-2">
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Moderate
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="extent" name="extent" {{ isset($report) && $report->descriptions->extent == 'moderate' ? 'checked' : '' }}/>
                             </div>
                             <div class="col-md-2" >
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Severe
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="extent" name="extent" {{ isset($report) && $report->descriptions->extent == 'severe' ? 'checked' : '' }}/>
@@ -290,54 +290,45 @@
                     </div>
                     <div class="seriousness" style="border: 1px solid black; padding: 0;">
                         <div class="row" style="padding: 8px">
-                            <div class="col-md-2 style="font-size: 15px">
+                            <div class="col-md-2" style="font-size: 11px">
                                 Seriousness of reaction :
                             </div>
-                            <div class="col-md-1">
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                            <div class="col-md-2">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Life threatening
                                 </label>
-                            </div>
-                            <div class="col-md-1">
                                 <input class="form-check-input" type="radio" value="followup" id="seriousness" name="seriousness" {{ isset($report) && $report->descriptions->seriousness == 'threatening' ? 'checked' : '' }}/>
                             </div>
-                            <div class="col-md-1">
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+
+                            <div class="col-md-2">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Caused or prolonged hospitalisation
                                 </label>
-                            </div>
-                            <div class="col-md-1">
                                 <input class="form-check-input" type="radio" value="followup" id="seriousness" name="seriousness" {{ isset($report) && $report->descriptions->seriousness == 'hospitalisation' ? 'checked' : '' }}/>
                             </div>
-                            <div class="col-md-1" >
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                            <div class="col-md-2" >
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Caused disability or incapacity
                                 </label>
-                            </div>
-                            <div class="col-md-1" >
                                 <input class="form-check-input" type="radio" value="followup" id="seriousness" name="seriousness" {{ isset($report) && $report->descriptions->seriousness == 'disability' ? 'checked' : '' }}/>
                             </div>
-                            <div class="col-md-1" >
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                            <div class="col-md-2" >
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Caused birth defect
                                 </label>
-                            </div>
-                            <div class="col-md-1" >
                                 <input class="form-check-input" type="radio" value="followup" id="seriousness" name="seriousness" {{ isset($report) && $report->descriptions->seriousness == 'defect' ? 'checked' : '' }}/>
                             </div>
-                            <div class="col-md-1" >
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                            <div class="col-md-2" >
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     N/A(not serious)
                                 </label>
-                            </div>
-                            <div class="col-md-1" >
                                 <input class="form-check-input" type="radio" value="followup" id="seriousness" name="seriousness" {{ isset($report) && $report->descriptions->seriousness == 'na' ? 'checked' : '' }}/>
                             </div>
                         </div>
                     </div>
                     <div class="actiontaken" style="border: 1px solid black; padding: 0;">
                         <div class="row" style="padding: 8px">
-                            <div class="col-md-4 style="font-size: 15px">
+                            <div class="col-md-4" style="font-size: 11px">
                                 Treatment of adverse reaction & action taken :
                             </div>
                             <div class="col-md-8">
@@ -345,79 +336,79 @@
                             </div>
                         </div>
                     </div>
-                    <div class="extent" style="border: 1px solid black; padding: 0;">
+                    <div class="outcome" style="border: 1px solid black; padding: 0;">
                         <div class="row" style="padding: 8px">
-                            <div class="col-md-1 style="font-size: 15px">
-                                Outcome :
+                            <div class="col-md-1" style="font-size: 11px">
+                                Outcome:
                             </div>
                             <div class="col-md-2">
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Recovered fully
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="outcome" name="outcome" {{ isset($report) && $report->descriptions->outcome == 'fullyrecovered' ? 'checked' : '' }}/>
                             </div>
                             <div class="col-md-2">
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Recovering
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="outcome" name="outcome" {{ isset($report) && $report->descriptions->outcome == 'notrecovered' ? 'checked' : '' }}/>
                             </div>
                             <div class="col-md-2" >
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Not recovered
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="outcome" name="outcome" {{ isset($report) && $report->descriptions->outcome == 'recovering' ? 'checked' : '' }}/>
                             </div>
                             <div class="col-md-2" >
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Unknown
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="outcome" name="outcome" {{ isset($report) && $report->descriptions->outcome == 'unknown' ? 'checked' : '' }}/>
                             </div>
                             <div class="col-md-1" >
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Fatal:
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="outcome" name="outcome" {{ isset($report) && $report->descriptions->outcome == 'fatal' ? 'checked' : '' }}/>
                             </div>
                             <div class="col-md-2" >
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Date & Cause of death : {{ $report->descriptions->fatal_cause  ?? ''}} ({{ isset($report->descriptions) && $report->descriptions->fatal_date ? \Carbon\Carbon::parse($report->descriptions->fatal_date)->format('d/m/Y') : '' }})
                                 </label>
                             </div>
                         </div>
                     </div>
-                    <div class="extent" style="border: 1px solid black; padding: 0;">
+                    <div class="relationship" style="border: 1px solid black; padding: 0;">
                         <div class="row" style="padding: 8px">
-                            <div class="col-md-3 style="font-size: 15px">
+                            <div class="col-md-2" style="font-size: 11px">
                                 Drug-Reaction Relationship :
                             </div>
-                            <div class="col-md-1">
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                            <div class="col-md-2">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Certain
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="relationship" name="relationship" {{ isset($report) && $report->descriptions->relationship == 'certain' ? 'checked' : '' }}/>
                             </div>
                             <div class="col-md-2">
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Probable
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="relationship" name="relationship" {{ isset($report) && $report->descriptions->relationship == 'probable' ? 'checked' : '' }}/>
                             </div>
                             <div class="col-md-2" >
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Possible
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="relationship" name="relationship" {{ isset($report) && $report->descriptions->relationship == 'possible' ? 'checked' : '' }}/>
                             </div>
                             <div class="col-md-2" >
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Unlikely
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="relationship" name="relationship" {{ isset($report) && $report->descriptions->relationship == 'unlikely' ? 'checked' : '' }}/>
                             </div>
                             <div class="col-md-2" >
-                                <label class="form-check-label" for="followup" style="font-size: 15px">
+                                <label class="form-check-label" for="followup" style="font-size: 11px">
                                     Unclassifiable:
                                 </label>
                                 <input class="form-check-input" type="radio" value="followup" id="relationship" name="relationship" {{ isset($report) && $report->descriptions->relationship == 'unclassifiable' ? 'checked' : '' }}/>
@@ -425,7 +416,7 @@
                         </div>
                     </div>
                     <br/>
-                    <div class="suspecteddrug">
+                    <div class="suspecteddrug" style="page-break-before: always;">
                         <div class="row mb-1">
                             <div class="col-md-12">
                                 <b>Suspected Drug :</b>
