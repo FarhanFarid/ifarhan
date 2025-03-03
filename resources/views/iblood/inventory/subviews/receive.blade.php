@@ -8,18 +8,7 @@
 
             <div class="modal-body">
 
-                <div class="row labno-section">
-                    <div class="col-md-12 d-flex justify-content-center">
-                        <div class="row p-1">
-                            <input type="text" class="form-control" id="labno" name="labno" placeholder="LAB NUMBER" required/>
-                        </div>
-                        <div class="row p-1">
-                            <button type="button" id="verify-labno" class="btn btn-primary btn-lg font-weight-bold mx-5 px-20">{{__('VERIFY')}}</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row bloodbag-section" style="display: none;">
+                <div class="row bloodbag-section">
                     <div class="col-md-12 mb-2">
                         <div class="card card-custom gutter-b" style="border-radius: 0px !important; background-color: #e9f2ff;">
                         </div>
@@ -40,11 +29,21 @@
                                             <div class="row p-1">
                                                 <b>Receiving Location</b>
                                             </div>
+                                            @php
+                                                // Parse the query string to extract usrLocDesc
+                                                parse_str($url, $queryParams);
+                                                $usrLocDesc = $queryParams['usrLocDesc'] ?? null;
+                                            @endphp
+
                                             <div class="row p-1">
-                                                <select class="form-select form-select-solid" name="location" id="location" data-control="select2" data-placeholder="Select Location">
+                                                <select class="form-select form-select-solid" name="location" id="location" data-dropdown-parent="#receive-blood" data-control="select2" data-placeholder="Select Location">
                                                     <option></option>
-                                                    <option value="1">Option 1</option>
-                                                    <option value="2">Option 2</option>
+                                                    @foreach ($ward as $loc)
+                                                        <option value="{{ $loc->location_name }}" 
+                                                            @if(isset($usrLocDesc) && trim($usrLocDesc) === trim($loc->location_name)) selected @endif>
+                                                            {{ $loc->location_name }} ({{ $loc->location_code }})
+                                                        </option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                         </div>
@@ -53,7 +52,7 @@
                                                 <b>Product</b>
                                             </div>
                                             <div class="row p-1">
-                                                <select class="form-select form-select-solid" name="product" id="product" data-control="select2" data-placeholder="Select Product">
+                                                <select class="form-select form-select-solid" name="product" id="product" data-dropdown-parent="#receive-blood" data-control="select2" data-placeholder="Select Product">
                                                     <option value="">Please select the product</option>
                                                     <option value="AUTOLOGOUS PACKED CELL">AUTOLOGOUS PACKED CELL</option>
                                                     <option value="CRYOPPT">CRYOPPT</option>
@@ -77,7 +76,7 @@
                                                 <b>Lab No.</b>
                                             </div>
                                             <div class="row p-1">
-                                                <input type="text" class="form-control" id="labnumber" name="labnumber" readonly/>
+                                                <input type="text" class="form-control" id="labnumber" name="labnumber" required/>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
@@ -106,7 +105,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 d-flex justify-content-center">
-                                            <button type="button" id="add-blood" class="btn btn-primary btn-md font-weight-bold mx-5 mb-3 px-20">{{__('ADD')}}</button>
+                                            <button type="button" id="verify-bloodbag" class="btn btn-primary btn-md font-weight-bold mx-5 mb-3 px-20">{{__('ADD')}}</button>
                                         </div>
                                     </div>
                                 </form>

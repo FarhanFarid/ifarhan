@@ -33,7 +33,9 @@ class BloodInventoryController extends Controller
         $patdemo     = new UpdatePatient();
         $datapatdemo = $patdemo->updatepatient($epno, $epid, $patid);
 
-        return view('iblood.inventory.index', compact('url'));
+        $ward = BloodWardLocation::all();
+
+        return view('iblood.inventory.index', compact('url', 'ward'));
 
     }
 
@@ -114,12 +116,19 @@ class BloodInventoryController extends Controller
 
             if ($labExists) {
                 if ($containsBloodPack) {
+
+                    // dd($request->all());
+                    
+                    $inventory = BloodInventory::where('bagno', $request->input('bagno'))->where('labno', $request->input('labno'))->where('episodeno', $request->input('epsdno'))->first();
+
                     $response = response()->json(
                         [
-                            'status' => 'success',
-                            'location' => $request->usrLocDesc,
+                        'status'      => 'success',
+                        'data'        => $inventory,
+
                         ], 200
                     );
+
                 } else{
                     $response = response()->json(
                         [

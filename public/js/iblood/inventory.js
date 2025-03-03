@@ -149,43 +149,27 @@ $(document).ready(function () {
                 "data": 'receivedby',
                 "render": function (data, type, row) {
                     var html = '';
-            
-                    // if (row.transfuse_status_id === 7) {
-
-                    //     var latestLocation = row.locations.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
-                        
-                    //     html += '<span class="badge badge-light mb-3 py-2">' + 
-                    //         latestLocation.user.username + ' (' + moment(latestLocation.received_at).format('DD/MM/YYYY HH:mm') + ')<br/>' + 
-                    //         'Location: ' + latestLocation.location  
-                    //         if(latestLocation.reasonreturn == null){
-                    //             + '</span>';
-                    //         }else{
-                    //             + 'Reason: ' + latestLocation.reasonreturn + '</span>';
-                    //         }
-                            
-                    // } else {
-
-                        html += row.locations.map(loc => {
-                            var badgeClass;
-                            if (loc.location === "Laboratory and Blood Services"){
-                                if(loc.status_id == 3){
-                                    badgeClass = 'badge-danger';
-                                }else{
-                                    badgeClass = 'badge-light';
-                                }
-                            }else if (loc.status_id === 3) {
+        
+                    html += row.locations.map(loc => {
+                        var badgeClass;
+                        if (loc.location === "Laboratory and Blood Services"){
+                            if(loc.status_id == 3){
                                 badgeClass = 'badge-danger';
-                            } else if (loc.status_id === 2) {
-                                badgeClass = 'badge-warning';
-                            } else {
-                                badgeClass = 'badge-success';
+                            }else{
+                                badgeClass = 'badge-light';
                             }
-                            return '<span class="badge ' + badgeClass + ' mb-3 py-2">' + 
-                                loc.user.username + ' (' + moment(loc.received_at).format('DD/MM/YYYY HH:mm') + ')<br/>' + 
-                                'Location: ' + loc.location +
-                                '</span>';  
-                        }).join('');
-                    // }
+                        }else if (loc.status_id === 3) {
+                            badgeClass = 'badge-danger';
+                        } else if (loc.status_id === 2) {
+                            badgeClass = 'badge-warning';
+                        } else {
+                            badgeClass = 'badge-success';
+                        }
+                        return '<span class="badge ' + badgeClass + ' mb-3 py-2">' + 
+                            loc.user.username + ' (' + moment(loc.received_at).format('DD/MM/YYYY HH:mm') + ')<br/>' + 
+                            'Location: ' + loc.location +
+                            '</span>';  
+                    }).join('');
             
                     return html;
                 },
@@ -373,40 +357,39 @@ $(document).ready(function () {
     //5 - Transfer to Other Location
     //7 - return to lab
 
-     $('.receive-blood').on('click', function() {
-
+    $('.receive-blood').on('click', function() {
         $('#receive-blood').modal('show');
-
+    });
+    
+    $('#receive-blood').on('shown.bs.modal', function () {
+        $('#labnumber').val('').focus();
     });
 
     var isSubmitting = false;
 
-    // function submitbagno() {
-    //     var bagno = $('#bagno').val();
-        
-    //     if (bagno !== '' ) {
-    //         $('#add-blood').click();
-    //     }
-    // }
-
-    $('#bagno').on('change', function() {
-        let scannedData = $(this).val();
-
-        processbagno(scannedData);
-        if (bagno !== '' ) {
-            $('#add-blood').click();
+    $('#labnumber, #bagno').on('change', function() {
+        let scannedData = $(this).val().trim();
+    
+        if (scannedData !== '') {
+            processbagno(scannedData);
+            
+            if ($('#bagno').val().trim() !== '' || $('#labnumber').val().trim() !== '') {
+                $('#verify-bloodbag').click();
+            }
         }
     });
 
     function processbagno(scannedData) {
+        
         const lines = scannedData.split(':');
 
         bagNumber = lines[11].trim();
-        product   = lines[6].trim();  
+        product   = lines[6].trim();
+        labNumber = lines[4].trim();  
 
+        $('#labnumber').val(labNumber);
         $('#bagno').val(bagNumber);
         $('#product').val(product).trigger('change.select2');    
-        // $('#product').val(product);    
     }
 
     $('#add-blood').on('click', function() {
@@ -620,23 +603,96 @@ $(document).ready(function () {
         checkAndSubmit();
     });
 
-    
+    $('#actualreceivedate').on('change', function() {
+        const selectedDate = new Date($('#actualreceivedate').val());
+        const currentDate = new Date();
+        
+                currentDate.setSeconds(0, 0);
+        selectedDate.setSeconds(0, 0);
 
-    $('#verify-labno').on('click', function() {
-        var labno = $('#labno').val().toUpperCase();
+        if (selectedDate.getTime() !== currentDate.getTime()) {
+            $('#receivereason').show();
+        } else {
+            $('#receivereason').hide();
+        }
+    });
+
+
+    $('#verify-bloodbag').on('click', function() {
+
+        var bagno = $('#bagno').val(); 
+        var location = $('#location').val();
+        var labno = $('#labnumber').val().toUpperCase();
+        var product = $('#product').val();
+        var receivedate = $('#actualreceivedate').val();
+        var receivecdreason = $('#receivecdreason').val();
         var url = config.routes.blood.inventory.verifylab;
-        var url2 = config.routes.blood.inventory.wardList;
-    
-        if (!labno) {
-            toastr.error('Please scan or enter the lab number.', { timeOut: 5000 });
+
+        const formattedDate = moment(receivedate).format("YYYY-MM-DD H:mm");
+
+
+        if (!location) {
+            toastr.error('Please select location to received', {timeOut: 5000});
             return;
         }
     
+        if (!bagno) {
+            toastr.error('Please scan or fill the bag number.', {timeOut: 5000});
+            return;
+        }
+
+        if (!product) {
+            toastr.error('Please select product to be received', {timeOut: 5000});
+            return;
+        }
+        if (!receivedate) {
+            toastr.error('Received date cannot be empty.', {timeOut: 5000});
+            return;
+        }
+
+        if ($('#receivereason').is(':visible') && receivecdreason == '') {
+            toastr.error('Please select reason to change date', { timeOut: 5000 });
+            return;
+        }
+
+        var bagNumbers = bagno.split('/').filter(function(bag) {
+            return bag.trim() !== '';
+        });
+
+        var bagnoExists = false;
+
+        $('#blood-batch tr').each(function() {
+            var existingBagno = $(this).find('td:nth-child(2)').text();
+
+            console.log(existingBagno);
+            bagNumbers.forEach(function(bag) {
+                if (existingBagno === bag.trim()) {
+                    bagnoExists = true;
+                }
+            });
+            if (bagnoExists) {
+                return false; 
+            }
+        });
+
+        console.log(bagnoExists);
+    
+        if (bagnoExists) {
+            toastr.error('This bag number is already added.', {timeOut: 5000});
+            $('#product').val("").trigger('change.select2');
+            $('#labnumber').val('').focus();       
+            $('#bagno').val('');
+            return;
+        }
+    
+        isSubmitting = true;
+        $('#verify-bloodbag').prop('disabled', true);
+
         $.ajax({
             url: url,
             type: 'POST',
             dataType: 'json',
-            data: { labno: labno },
+            data: { labno: labno, bagno: bagno, },
             beforeSend: function(){
                 // $("#loading-overlay").show();
             },
@@ -644,76 +700,107 @@ $(document).ready(function () {
                 // $("#loading-overlay").hide();
                 if (data.status === 'success') {
 
-                    $.ajax({
-                        url: url2,
-                        method: 'GET',
-                        dataType: 'json',
-                        success: function(response) {
+                    console.log(data);
 
-                            $('#labnumber').val(labno);
-                            $('.bloodbag-section').show();
-                            $('.labno-section').hide();
-                            $('#location').empty();
-                            $('#location').append('<option></option>');
-    
-                            $.each(response.data, function(index, location) {
-                                $('#location').append(
-                                    $('<option>', {
-                                        value: location.location_name,
-                                        text: location.location_name + ' (' + location.location_code + ')',
-                                    })
+                    if(product === "PLATELET CONC."){
+                        bagNumbers.forEach(function(bag) {
+                            var trimmedBag = bag.trim(); 
+        
+                            if (data.data == null) {
+                                $('#gen-batch').show();
+                                $('#blood-batch').append(
+                                    '<tr>' +
+                                        '<td>' + product + '</td>' +
+                                        '<td>' + trimmedBag + '</td>' + 
+                                        '<td>' + labno + '</td>' +
+                                        '<td>' + location + '</td>' +
+                                        '<td>' + formattedDate + '</td>' +
+                                        '<td style="text-align: center;"><button class="btn btn-danger btn-sm remove-row"><i class="fa fa-trash"></i></button></td>' +
+                                    '</tr>'
                                 );
-                            });
-    
-                            $('#location').select2({
-                                dropdownParent: $('#receive-blood')
-                            });
-    
-                            if (data.location) {
-                                var locationFound = false;
-
-                                $('#location option').each(function() {
-                                    var optionText = $(this).text();
-                                    
-                                    var locationName = optionText.split(' (')[0];
-                                    
-                                    if (locationName === data.location) {
-                                        $(this).prop('selected', true).trigger('change');
-                                        locationFound = true;
-                                        return false; 
+                            } else {
+                                if(data.data.transfuse_status_id == 7 && data.data.transfuse_completion_id == null){
+                                    $('#gen-batch').show();
+                                    $('#blood-batch').append(
+                                        '<tr>' +
+                                            '<td>' + product + '</td>' +
+                                            '<td>' + trimmedBag + '</td>' + 
+                                            '<td>' + labno + '</td>' +
+                                            '<td>' + location + '</td>' +
+                                            '<td>' + formattedDate + '</td>' +
+                                            '<td style="text-align: center;"><button class="btn btn-danger btn-sm remove-row"><i class="fa fa-trash"></i></button></td>' +
+                                        '</tr>'
+                                    );
+                                }else{
+                                    if (data.data.transfer_to == location) {
+                                        $('#gen-batch').show();
+                                        $('#blood-batch').append(
+                                            '<tr>' +
+                                                '<td>' + product + '</td>' +
+                                                '<td>' + trimmedBag + '</td>' + 
+                                                '<td>' + labno + '</td>' +
+                                                '<td>' + location + '</td>' +
+                                                '<td>' + formattedDate + '</td>' +
+                                                '<td style="text-align: center;"><button class="btn btn-danger btn-sm remove-row"><i class="fa fa-trash"></i></button></td>' +
+                                            '</tr>'
+                                        );
+                                    } else {
+                                        toastr.error('This bag should not be received by this location!', {timeOut: 5000});
+                                        return;
                                     }
-                                });
-                            
-                                if (!locationFound) {
-                                    $('#location').val('').trigger('change');
+                                }   
+                            }
+                        });
+                    }else{
+                        if (data.data == null) {
+                            $('#gen-batch').show();
+                            $('#blood-batch').append(
+                                '<tr>' +
+                                    '<td>' + product + '</td>' +
+                                    '<td>' + bagno + '</td>' +
+                                    '<td>' + labno + '</td>' +
+                                    '<td>' + location + '</td>' +
+                                    '<td>' + formattedDate + '</td>' +
+                                    '<td style="text-align: center;"><button class="btn btn-danger btn-sm remove-row"><i class="fa fa-trash"></i></button></td>' +
+                                '</tr>'
+                            );
+                        }else {
+                            if(data.data.transfuse_status_id == 7 && data.data.transfuse_completion_id == null){
+                                $('#gen-batch').show();
+                                $('#blood-batch').append(
+                                    '<tr>' +
+                                        '<td>' + product + '</td>' +
+                                        '<td>' + bagno + '</td>' +
+                                        '<td>' + labno + '</td>' +
+                                        '<td>' + location + '</td>' +
+                                        '<td>' + formattedDate + '</td>' +
+                                        '<td style="text-align: center;"><button class="btn btn-danger btn-sm remove-row"><i class="fa fa-trash"></i></button></td>' +
+                                    '</tr>'
+                                );
+                            }else{
+                                if (data.data.transfer_to == location) {
+                                    $('#gen-batch').show();
+                                    $('#blood-batch').append(
+                                        '<tr>' +
+                                            '<td>' + product + '</td>' +
+                                            '<td>' + bagno + '</td>' +
+                                            '<td>' + labno + '</td>' +
+                                            '<td>' + location + '</td>' +
+                                            '<td>' + formattedDate + '</td>' +
+                                            '<td style="text-align: center;"><button class="btn btn-danger btn-sm remove-row"><i class="fa fa-trash"></i></button></td>' +
+                                        '</tr>'
+                                    );
+                                } else {
+                                    toastr.error('This bag should not be received by this location!', {timeOut: 5000});
+                                    return;
                                 }
                             }
-
-                            $('#actualreceivedate').on('change', function() {
-                                const selectedDate = new Date($(this).val());
-                                const currentDate = new Date();
-                                
-                                
-                                // Normalize dates for comparison (ignore seconds and milliseconds)
-                                currentDate.setSeconds(0, 0);
-                                selectedDate.setSeconds(0, 0);
-                        
-                                // Show or hide the reason div
-                                if (selectedDate.getTime() !== currentDate.getTime()) {
-                                    $('#receivereason').show();
-                                } else {
-                                    $('#receivereason').hide();
-                                }
-                            });
-                        },
-                        error: function(xhr, status, error) {
-                            Swal.fire(
-                                'Error!',
-                                'Error occurred while fetching locations: ' + error,
-                                'error'
-                            );
                         }
-                    });
+                    } 
+                    $('#product').val("").trigger('change.select2');
+                    $('#labnumber').val('').focus();       
+                    $('#bagno').val('');
+
                 } else {
                     Swal.fire({
                         title: "Alert!",
@@ -736,9 +823,131 @@ $(document).ready(function () {
                     timer: 3000
                 });
                 return;
+            },
+            complete: function() {
+                isSubmitting = false;
+                $('#verify-bloodbag').prop('disabled', false);
             }
         });
     });
+
+    // $('#verify-labno').on('click', function() {
+    //     var labno = $('#labno').val().toUpperCase();
+    //     var url = config.routes.blood.inventory.verifylab;
+    //     var url2 = config.routes.blood.inventory.wardList;
+    
+    //     if (!labno) {
+    //         toastr.error('Please scan or enter the lab number.', { timeOut: 5000 });
+    //         return;
+    //     }
+    
+    //     $.ajax({
+    //         url: url,
+    //         type: 'POST',
+    //         dataType: 'json',
+    //         data: { labno: labno },
+    //         beforeSend: function(){
+    //             // $("#loading-overlay").show();
+    //         },
+    //         success: function(data) {
+    //             // $("#loading-overlay").hide();
+    //             if (data.status === 'success') {
+
+    //                 $.ajax({
+    //                     url: url2,
+    //                     method: 'GET',
+    //                     dataType: 'json',
+    //                     success: function(response) {
+
+    //                         $('#labnumber').val(labno);
+    //                         $('.bloodbag-section').show();
+    //                         $('.labno-section').hide();
+    //                         $('#location').empty();
+    //                         $('#location').append('<option></option>');
+    
+    //                         $.each(response.data, function(index, location) {
+    //                             $('#location').append(
+    //                                 $('<option>', {
+    //                                     value: location.location_name,
+    //                                     text: location.location_name + ' (' + location.location_code + ')',
+    //                                 })
+    //                             );
+    //                         });
+    
+    //                         $('#location').select2({
+    //                             dropdownParent: $('#receive-blood')
+    //                         });
+    
+    //                         if (data.location) {
+    //                             var locationFound = false;
+
+    //                             $('#location option').each(function() {
+    //                                 var optionText = $(this).text();
+                                    
+    //                                 var locationName = optionText.split(' (')[0];
+                                    
+    //                                 if (locationName === data.location) {
+    //                                     $(this).prop('selected', true).trigger('change');
+    //                                     locationFound = true;
+    //                                     return false; 
+    //                                 }
+    //                             });
+                            
+    //                             if (!locationFound) {
+    //                                 $('#location').val('').trigger('change');
+    //                             }
+    //                         }
+
+    //                         $('#actualreceivedate').on('change', function() {
+    //                             const selectedDate = new Date($(this).val());
+    //                             const currentDate = new Date();
+                                
+                                
+    //                             // Normalize dates for comparison (ignore seconds and milliseconds)
+    //                             currentDate.setSeconds(0, 0);
+    //                             selectedDate.setSeconds(0, 0);
+                        
+    //                             // Show or hide the reason div
+    //                             if (selectedDate.getTime() !== currentDate.getTime()) {
+    //                                 $('#receivereason').show();
+    //                             } else {
+    //                                 $('#receivereason').hide();
+    //                             }
+    //                         });
+    //                     },
+    //                     error: function(xhr, status, error) {
+    //                         Swal.fire(
+    //                             'Error!',
+    //                             'Error occurred while fetching locations: ' + error,
+    //                             'error'
+    //                         );
+    //                     }
+    //                 });
+    //             } else {
+    //                 Swal.fire({
+    //                     title: "Alert!",
+    //                     text: data.response,
+    //                     icon: "error",
+    //                     buttonsStyling: false,
+    //                     showConfirmButton: false,
+    //                     timer: 3000
+    //                 });
+    //                 return;
+    //             }
+    //         },
+    //         error: function(xhr, status, error) {
+    //             Swal.fire({
+    //                 title: "Alert!",
+    //                 text: "Lab number not found!",
+    //                 icon: "error",
+    //                 buttonsStyling: false,
+    //                 showConfirmButton: false,
+    //                 timer: 3000
+    //             });
+    //             return;
+    //         }
+    //     });
+    // });
 
     function checkAndSubmit() {
         var labno = $('#labno').val();
@@ -747,11 +956,6 @@ $(document).ready(function () {
             $('#verify-labno').click();
         }
     }
-
-    // $('#labno').on('change', function() {
-    //     checkAndSubmit();
-    // });
-    
     
     $('#save-blood').on('click', function() {
 
@@ -905,7 +1109,6 @@ $(document).ready(function () {
         var expirydate = $(this).data('expirydate');
         var url = config.routes.blood.inventory.wardList;
     
-        // Check if expiry date is missing (indicating expired)
         if (!expirydate) {
             Swal.fire({
                 title: 'Expired Date!',
@@ -967,11 +1170,9 @@ $(document).ready(function () {
                                 const selectedDate = new Date($(this).val());
                                 const currentDate = new Date();
                                 
-                                // Normalize dates for comparison (ignore seconds and milliseconds)
                                 currentDate.setSeconds(0, 0);
                                 selectedDate.setSeconds(0, 0);
                         
-                                // Show or hide the reason div
                                 if (selectedDate.getTime() !== currentDate.getTime()) {
                                     $('#transferreason').show();
                                 } else {
@@ -1043,11 +1244,9 @@ $(document).ready(function () {
                         const selectedDate = new Date($(this).val());
                         const currentDate = new Date();
                         
-                        // Normalize dates for comparison (ignore seconds and milliseconds)
                         currentDate.setSeconds(0, 0);
                         selectedDate.setSeconds(0, 0);
                 
-                        // Show or hide the reason div
                         if (selectedDate.getTime() !== currentDate.getTime()) {
                             $('#transferreason').show();
                         } else {
@@ -1488,18 +1687,14 @@ $(document).ready(function () {
     
         $('#bagNo').val(bagno);
     
-        // Parse the URL and its query parameters
         var urlObj = new URL(url, window.location.origin);
         var params = new URLSearchParams(urlObj.search);
     
-        // Add or update the bagno parameter
         params.set('bagno', bagno);
     
-        // Construct the new URL
         urlObj.search = params.toString();
         var newurl = urlObj.toString();
     
-        // Navigate to the new URL
         window.location.href = newurl;
     });
 
@@ -1520,22 +1715,6 @@ $(document).ready(function () {
     
         window.location.href = newurl;
     });
-
-
-
-
-    // //ADD REACTION (Transfusion in progress) 
-    // $('#bloodinventory-table tbody').on('click', '.add-reaction', function(e) {
-    //     e.preventDefault();
-    //     var bagNumber = $(this).data('bagno');
-    //     var episodeNumber = $(this).data('episodeno');
-
-    //     $('#episodeNumber').val(episodeNumber);
-    //     $('#bagNumber').val(bagNumber);
-        
-    //     $('#add-reaction').modal('show');
-
-    // });
 
     // ADD REACTION
     $('#addReaction').on('click', function() {
