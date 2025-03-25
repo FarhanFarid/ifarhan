@@ -79,7 +79,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="yes" id="reducedose" name="reducedose" {{ isset($report) && $report->descriptions->react_subside == 'yes' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="yes" id="reducedose" name="reducedose" {{ isset($report) && isset($report->descriptions) && $report->descriptions->react_subside == 'yes' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 Yes
                                             </label>
@@ -89,7 +89,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="no" id="reducedose" name="reducedose" {{ isset($report) && $report->descriptions->react_subside == 'no' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="no" id="reducedose" name="reducedose" {{ isset($report) && isset($report->descriptions) && $report->descriptions->react_subside == 'no' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 No
                                             </label>
@@ -99,7 +99,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="unknown" id="reducedose" name="reducedose" {{ isset($report) && $report->descriptions->react_subside == 'unknown' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="unknown" id="reducedose" name="reducedose" {{ isset($report) && isset($report->descriptions) && $report->descriptions->react_subside == 'unknown' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 Unknown
                                             </label>
@@ -109,7 +109,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="na" id="reducedose" name="reducedose" {{ isset($report) && $report->descriptions->react_subside == 'na' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="na" id="reducedose" name="reducedose" {{ isset($report) && isset($report->descriptions) && $report->descriptions->react_subside == 'na' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 N/A (drug continued)
                                             </label>
@@ -122,7 +122,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="yes" id="reintroduce" name="reintroduce" {{ isset($report) && $report->descriptions->react_reappear == 'yes' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="yes" id="reintroduce" name="reintroduce" {{ isset($report) && isset($report->descriptions) && $report->descriptions->react_reappear == 'yes' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 Yes
                                             </label>
@@ -132,7 +132,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="no" id="reintroduce" name="reintroduce" {{ isset($report) && $report->descriptions->react_reappear == 'no' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="no" id="reintroduce" name="reintroduce" {{ isset($report) && isset($report->descriptions) && $report->descriptions->react_reappear == 'no' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 No
                                             </label>
@@ -142,7 +142,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="unknown" id="reintroduce" name="reintroduce" {{ isset($report) && $report->descriptions->react_reappear == 'unknown' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="unknown" id="reintroduce" name="reintroduce" {{ isset($report) && isset($report->descriptions) && $report->descriptions->react_reappear == 'unknown' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 Unknown
                                             </label>
@@ -152,7 +152,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="na" id="reintroduce" name="reintroduce" {{ isset($report) && $report->descriptions->react_reappear == 'na' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="na" id="reintroduce" name="reintroduce" {{ isset($report) && isset($report->descriptions) && $report->descriptions->react_reappear == 'na' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 N/A (not reintroduced)
                                             </label>
@@ -165,7 +165,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="threatening" id="seriousness" name="seriousness" {{ isset($report) && $report->descriptions->seriousness == 'threatening' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="threatening" id="seriousness" name="seriousness" {{ isset($report) && isset($report->descriptions) && $report->descriptions->seriousness == 'threatening' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 Life threatening
                                             </label>
@@ -175,7 +175,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="hospitalisation" id="seriousness" name="seriousness" {{ isset($report) && $report->descriptions->seriousness == 'hospitalisation' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="hospitalisation" id="seriousness" name="seriousness" {{ isset($report) && isset($report->descriptions) && $report->descriptions->seriousness == 'hospitalisation' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 Caused or prolonged hospitalisation
                                             </label>
@@ -185,7 +185,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="disability" id="seriousness" name="seriousness" {{ isset($report) && $report->descriptions->seriousness == 'disability' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="disability" id="seriousness" name="seriousness" {{ isset($report) && isset($report->descriptions) && $report->descriptions->seriousness == 'disability' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 Caused disability or incapacity
                                             </label>
@@ -195,7 +195,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="defect" id="seriousness" name="seriousness" {{ isset($report) && $report->descriptions->seriousness == 'defect' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="defect" id="seriousness" name="seriousness" {{ isset($report) && isset($report->descriptions) && $report->descriptions->seriousness == 'defect' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 Caused birth defect
                                             </label>
@@ -205,7 +205,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="na" id="seriousness" name="seriousness" {{ isset($report) && $report->descriptions->seriousness == 'na' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="na" id="seriousness" name="seriousness" {{ isset($report) && isset($report->descriptions) && $report->descriptions->seriousness == 'na' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 N/A (not serious)
                                             </label>
@@ -218,7 +218,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="mild" id="extent" name="extent" {{ isset($report) && $report->descriptions->extent == 'mild' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="mild" id="extent" name="extent" {{ isset($report) && isset($report->descriptions) && $report->descriptions->extent == 'mild' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 Mild
                                             </label>
@@ -228,7 +228,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="moderate" id="extent" name="extent" {{ isset($report) && $report->descriptions->extent == 'moderate' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="moderate" id="extent" name="extent" {{ isset($report) && isset($report->descriptions) && $report->descriptions->extent == 'moderate' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 Moderate
                                             </label>
@@ -238,7 +238,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="severe" id="extent" name="extent" {{ isset($report) && $report->descriptions->extent == 'severe' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="severe" id="extent" name="extent" {{ isset($report) && isset($report->descriptions) && $report->descriptions->extent == 'severe' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 Severe
                                             </label>
@@ -257,7 +257,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="certain" id="relationship" name="relationship" {{ isset($report) && $report->descriptions->relationship == 'certain' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="certain" id="relationship" name="relationship" {{ isset($report) && isset($report->descriptions) && $report->descriptions->relationship == 'certain' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 Certain
                                             </label>
@@ -267,7 +267,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="probable" id="relationship" name="relationship" {{ isset($report) && $report->descriptions->relationship == 'probable' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="probable" id="relationship" name="relationship" {{ isset($report) && isset($report->descriptions) && $report->descriptions->relationship == 'probable' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 Probable
                                             </label>
@@ -277,7 +277,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="possible" id="relationship" name="relationship" {{ isset($report) && $report->descriptions->relationship == 'possible' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="possible" id="relationship" name="relationship" {{ isset($report) && isset($report->descriptions) && $report->descriptions->relationship == 'possible' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 Possible 
                                             </label>
@@ -287,7 +287,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="unlikely" id="relationship" name="relationship" {{ isset($report) && $report->descriptions->relationship == 'unlikely' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="unlikely" id="relationship" name="relationship" {{ isset($report) && isset($report->descriptions) && $report->descriptions->relationship == 'unlikely' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 Unlikely
                                             </label>
@@ -297,7 +297,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="unclassifiable" id="relationship" name="relationship" {{ isset($report) && $report->descriptions->relationship == 'unclassifiable' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="unclassifiable" id="relationship" name="relationship" {{ isset($report) && isset($report->descriptions) && $report->descriptions->relationship == 'unclassifiable' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 Unclassifiable
                                             </label>
@@ -310,7 +310,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="fullyrecovered" id="outcome" name="outcome" {{ isset($report) && $report->descriptions->outcome == 'fullyrecovered' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="fullyrecovered" id="outcome" name="outcome" {{ isset($report) && isset($report->descriptions) && $report->descriptions->outcome == 'fullyrecovered' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 Recovered fully
                                             </label>
@@ -320,7 +320,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="notrecovered" id="outcome" name="outcome" {{ isset($report) && $report->descriptions->outcome == 'notrecovered' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="notrecovered" id="outcome" name="outcome" {{ isset($report) && isset($report->descriptions) && $report->descriptions->outcome == 'notrecovered' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 Not recovered
                                             </label>
@@ -330,7 +330,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="recovering" id="outcome" name="outcome" {{ isset($report) && $report->descriptions->outcome == 'recovering' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="recovering" id="outcome" name="outcome" {{ isset($report) && isset($report->descriptions) && $report->descriptions->outcome == 'recovering' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 Recovering 
                                             </label>
@@ -340,7 +340,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="unknown" id="outcome" name="outcome" {{ isset($report) && $report->descriptions->outcome == 'unknown' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="unknown" id="outcome" name="outcome" {{ isset($report) && isset($report->descriptions) && $report->descriptions->outcome == 'unknown' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 Unknown
                                             </label>
@@ -350,7 +350,7 @@
                                 <div class="row mb-1">
                                     <div class="col-md-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="fatal" id="outcome" name="outcome" {{ isset($report) && $report->descriptions->outcome == 'fatal' ? 'checked' : '' }}/>
+                                            <input class="form-check-input" type="radio" value="fatal" id="outcome" name="outcome" {{ isset($report) && isset($report->descriptions) && $report->descriptions->outcome == 'fatal' ? 'checked' : '' }}/>
                                             <label class="form-check-label" for="bloodpatient">
                                                 Fatal
                                             </label>
@@ -359,7 +359,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mb-5" id="fataldetails" style="{{ isset($report) && $report->descriptions->outcome == 'fatal'  ? '' : 'display: none;' }}">
+                        <div class="row mb-5" id="fataldetails" style="{{ isset($report) && isset($report->descriptions) && $report->descriptions->outcome == 'fatal'  ? '' : 'display: none;' }}">
                             <div class="col-md-7">
                                 
                             </div>
@@ -367,7 +367,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label for="indication" class="form-check-label" style="color: black;">Date :</label>
-                                        <input class="form-control form-control-sm" type="date" name="fataldate" id="fataldate" value="{{ isset($report->descriptions) && $report->descriptions->fatal_date ? \Carbon\Carbon::parse($report->descriptions->fatal_date)->format('Y-m-d') : '' }}">
+                                        <input class="form-control form-control-sm" type="date" name="fataldate" id="fataldate" value="{{ isset($report->descriptions) && isset($report->descriptions) && $report->descriptions->fatal_date ? \Carbon\Carbon::parse($report->descriptions->fatal_date)->format('Y-m-d') : '' }}">
                                     </div>
                                     <div class="col-md-6">
                                         <label for="indication" class="form-check-label" style="color: black;">Cause of death :</label>

@@ -464,6 +464,9 @@ class Authsystem
                 'ireporting/adr/getpatientinfo',
                 'ireporting/medshelf',
                 'ireporting/medshelf/list',
+                'bed-management',
+                'bed-management/getwardlist',
+
             ];
             if(in_array($request->path(), $ipharmacyArr)){
                 try

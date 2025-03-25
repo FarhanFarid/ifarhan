@@ -26,6 +26,9 @@ use App\Http\Controllers\AdrController;
 //CLR
 use App\Http\Controllers\ClrController;
 
+//bedmanagement
+use App\Http\Controllers\BedManagementController;
+
 //user access controller
 use App\Http\Controllers\UserAccessRoleController;
 
@@ -220,6 +223,12 @@ Route::group(['middleware' => ['authsystem']], function() {
         Route::get('/', [ClrController::class, 'index'])->name('clr.index');  
         Route::post('/save-eventone', [ClrController::class, 'saveEventOne'])->name('clr.save.eventone');                             
         Route::post('/save-eventtwo', [ClrController::class, 'saveEventTwo'])->name('clr.save.eventtwo');                             
+    });
+
+    //Critical Lab Result
+    Route::group(['prefix' => 'bed-management'], function () {
+        Route::get('/', [BedManagementController::class, 'index'])->name('bm.index');
+        Route::get('/getwardlist', [BedManagementController::class, 'wardList'])->name('bm.getwardlist');                          
     });
 });
 
