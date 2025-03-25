@@ -544,7 +544,9 @@
                                         @endif
 
                                     @else
-                                        {{ $report->descriptions->relevantinvest }}
+                                        @if(isset($report->descriptions))
+                                            {{ $report->descriptions->relevantinvest }}
+                                        @endif
                                     @endif
                                 </textarea>
                             </div>
@@ -570,7 +572,9 @@
                                             </p>
                                         @endif
                                     @else
-                                        {{ $report->descriptions->medicalhistory}}
+                                        @if(isset($report->descriptions))
+                                            {{ $report->descriptions->medicalhistory}}
+                                        @endif
                                     @endif
                                 </textarea>
                             </div>
