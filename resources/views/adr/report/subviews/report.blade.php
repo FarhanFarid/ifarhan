@@ -138,7 +138,7 @@
                                 </div>                            
                             </div>
                             <div class="col-md-2">
-                                <input type="text" class="form-control form-control-sm" type="checkbox" id="weight" name="weight" value="{{ isset($report) && $report->descriptions->weight ? $report->descriptions->weight : '' }}">
+                                <input type="text" class="form-control form-control-sm" type="checkbox" id="weight" name="weight" value="{{ isset($report) ? optional($report->descriptions)->weight : '' }}">
                             </div>
                             <div class="col-md-2">
                                 <input type="text" class="form-control form-control-sm" type="checkbox" id="ethnic" name="ethnic" value="{{ $patdemo['prace']  ?? '' }}">
