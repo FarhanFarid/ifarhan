@@ -145,5 +145,15 @@ $(document).ready(function() {
         tablebed.column(2).search(selectedRoom).draw();
     });
 
+    $('#bedmanagement-table').on('click', '.patient-details', function() {
+
+        var episodeno = $(this).data('episodeno');
+
+        console.log(episodeno);
+
+        $('#patient-details').modal('show');
+
+    });
+
 
 });

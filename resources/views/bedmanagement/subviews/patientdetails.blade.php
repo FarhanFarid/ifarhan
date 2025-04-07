@@ -1,4 +1,4 @@
-<div class="modal fade modal-lg" tabindex="-1" id="patient-details" style="">
+<div class="modal fade modal-xl" tabindex="-1" id="patient-details" style="">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header" style="border-radius: 0px !important; background-color: #e9f2ff;">
