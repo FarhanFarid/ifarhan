@@ -207,6 +207,9 @@
             </div>
         </div>
     </div>
+
+@include('bedmanagement.subviews.patientdetails')
+
 @endsection
 
 @push('script')

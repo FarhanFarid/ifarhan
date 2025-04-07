@@ -22,8 +22,7 @@ var tablebed = $('#bedmanagement-table').DataTable({
                                 bedstatus: bed.bedstatus || "-",
                                 mrn: bed.mrn || "-",
                                 patientName: bed.name || "-",
-                                episodeno: bed.episodeno || "-"
-                            });
+                                episodeno: bed.episodeno ? '<button class="badge btn-sm badge-light-primary patient-details" style="border: none;" data-bs-toggle="tooltip" data-bs-placement="top" title="Open patient details" data-episodeno="' + bed.episodeno + '">' + bed.episodeno + '</button>' : "-"                            });
                         });
                     }
                 });
