@@ -175,7 +175,7 @@ class AdrController extends Controller
             $formData = $request->formData;
             $concoData = $request->concomitantDrugs;
 
-            // dd($request->all());
+            dd($request->all());
             $formValues = [];
 
             foreach ($formData as $field) {
