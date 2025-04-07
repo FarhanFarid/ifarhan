@@ -34,7 +34,7 @@
                         <div class="form-group">
                             <label class="form-label fw-semibold fs-6 mt-2">Ward&nbsp;:</label>
                             <div class="fv-row">
-                                <select class="form-select" name="ward" id="ward" data-control="select2" data-placeholder="Filter Ward">
+                                <select class="form-select" name="ward" id="ward" data-control="select2" data-placeholder="Filter Ward" data-allow-clear="true">
                                     <option value="">Please select the ward</option>
                                     <option value="A2ZONE1">A2ZONE1</option>
                                     <option value="A3ZONE1">A3ZONE1</option>
@@ -68,7 +68,7 @@
                         <div class="form-group">
                             <label class="form-label fw-semibold fs-6 mt-2">Room Type&nbsp;:</label>
                             <div class="fv-row">
-                                <select class="form-select" name="room" id="room" data-control="select2" data-placeholder="Filter Room Type">
+                                <select class="form-select" name="room" id="room" data-control="select2" data-placeholder="Filter Room Type" data-allow-clear="true">
                                     <option value="">Please select the ward</option>
                                     <option value="1 Bedded CCU">1 Bedded CCU</option>
                                     <option value="1 Bedded HDU Cardiology">1 Bedded HDU Cardiology</option>
@@ -168,7 +168,7 @@
                                     <option value="Unavailable">Unavailable</option>
                                     <option value="Booked">Booked</option>
                                     <option value="Downgrade Bed">Downgrade Bed</option>
-                                    <option value="Fored Upgrade Bed">Fored Upgrade Bed</option>
+                                    <option value="Fored Upgrade Bed">Forced Upgrade Bed</option>
                                 </select>                            
                             </div>
                         </div>

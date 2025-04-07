@@ -14,12 +14,22 @@ var tablebed = $('#bedmanagement-table').DataTable({
                 Object.values(json.data).forEach(ward => {
                     if (ward.BedList && Object.keys(ward.BedList).length > 0) {
                         Object.values(ward.BedList).forEach(bed => {
+                            let bedstatus = bed.bedstatus;
+
+                            if (!bedstatus) {
+                                if (bed.name) {
+                                    bedstatus = 'Occupied';
+                                } else {
+                                    bedstatus = 'Unoccupied';
+                                }
+                            }
+                            
                             formattedData.push({
                                 ward: ward.wardcode,
                                 bed: bed.bedno || "-",
                                 roomtype: bed.roomtype || "-",
                                 room: bed.room || "-",
-                                bedstatus: bed.bedstatus || "-",
+                                bedstatus: bedstatus,
                                 mrn: bed.mrn || "-",
                                 patientName: bed.name || "-",
                                 episodeno: bed.episodeno || "-"
