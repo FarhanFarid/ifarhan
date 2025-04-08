@@ -50,6 +50,9 @@ table.dataTable>thead .sorting:after, table.dataTable>thead .sorting_asc:after, 
 .bg-teal{
     background-color: #14787c !important;
 }
+.bg-greenish{
+    background-color: #277828 !important;
+}
 .bg-tealless{
     background-color: #79e2ad !important;
 }
@@ -61,6 +64,9 @@ table.dataTable>thead .sorting:after, table.dataTable>thead .sorting_asc:after, 
 }
 .color-teal{
     color: #14787c !important;
+}
+.color-greenish{
+    color: #277828 !important;
 }
 .color-tealless{
     color: #000000 !important;

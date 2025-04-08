@@ -228,7 +228,8 @@ Route::group(['middleware' => ['authsystem']], function() {
     //Critical Lab Result
     Route::group(['prefix' => 'bed-management'], function () {
         Route::get('/', [BedManagementController::class, 'index'])->name('bm.index');
-        Route::get('/getwardlist', [BedManagementController::class, 'wardList'])->name('bm.getwardlist');                          
+        Route::get('/getwardlist', [BedManagementController::class, 'wardList'])->name('bm.getwardlist'); 
+        Route::get('/getpatientinfo', [BedManagementController::class, 'patientInfo'])->name('bm.getpatientinfo');                          
     });
 });
 

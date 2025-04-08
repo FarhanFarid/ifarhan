@@ -14,14 +14,30 @@ var tablebed = $('#bedmanagement-table').DataTable({
                 Object.values(json.data).forEach(ward => {
                     if (ward.BedList && Object.keys(ward.BedList).length > 0) {
                         Object.values(ward.BedList).forEach(bed => {
-                            let bedstatus = bed.bedstatus;
+                            let bedstatus = bed.bedstatus  + " (" + bed.bedstatuscmt + ")";
+                            let bedtype = bed.bedtype1;
+                            let downgrade = bed.beddowngrade === 'Y' ? 'Downgrade: Yes' : '';
+                            let upgrade = bed.forceupgrade === 'Y' ? 'Forced Upgrade: Yes' : '';
 
-                            if (!bedstatus) {
+                            let upgradeText = '-';
+                            if (downgrade && upgrade) {
+                                upgradeText = `${downgrade}<br>${upgrade}`;
+                            } else if (downgrade) {
+                                upgradeText = downgrade;
+                            } else if (upgrade) {
+                                upgradeText = upgrade;
+                            }
+
+                            if (!bed.bedstatus) {
                                 if (bed.name) {
                                     bedstatus = 'Occupied';
                                 } else {
                                     bedstatus = 'Unoccupied';
                                 }
+                            }
+
+                            if (!bedtype) {
+                                bedtype = 'General';
                             }
                             
                             formattedData.push({
@@ -30,10 +46,10 @@ var tablebed = $('#bedmanagement-table').DataTable({
                                 roomtype: bed.roomtype || "-",
                                 room: bed.room || "-",
                                 bedstatus: bedstatus,
+                                bedtype: bedtype,
                                 mrn: bed.mrn || "-",
-                                patientName: bed.name || "-",
-                                episodeno: bed.episodeno || "-"
-                            });
+                                upgrade: upgradeText,
+                                episodeno: bed.episodeno ? '<button class="badge btn-sm badge-light-primary patient-details" style="border: none;" data-bs-toggle="tooltip" data-bs-placement="top" title="Open patient details" data-episodeno="' + bed.episodeno + '">' + bed.episodeno + '</button>' : "-"                            });
                         });
                     }
                 });
@@ -49,8 +65,9 @@ var tablebed = $('#bedmanagement-table').DataTable({
         { data: "roomtype", className: "text-center" },
         { data: "room", className: "text-center" },
         { data: "bedstatus", className: "text-center" },
+        { data: "bedtype", className: "text-center" },
+        { data: "upgrade", className: "text-center" },
         { data: "mrn", className: "text-center" },
-        { data: "patientName", className: "text-center" },
         { data: "episodeno", className: "text-center" }
     ],
 
@@ -144,6 +161,81 @@ $(document).ready(function() {
     $('#room').on('change', function() {
         let selectedRoom = $(this).val();
         tablebed.column(2).search(selectedRoom).draw();
+    });
+
+    $('#bedupgrade').on('change', function() {
+        let selectedBed = $(this).val();
+        tablebed.column(6).search(selectedBed).draw();
+    });
+
+    $('#status').on('change', function () {
+        let selectedStat = $(this).val();
+    
+        if (selectedStat && selectedStat.length > 0) {
+            let regex = selectedStat.map(status => `^${status}`).join('|');
+            tablebed.column(4).search(regex, true, false).draw();
+        } else {
+            tablebed.column(4).search('').draw();
+        }
+    });
+
+    $('#bedtype').on('change', function () {
+        let selectedtype = $(this).val(); 
+    
+        if (selectedtype && selectedtype.length > 0) {
+            let regex = selectedtype.map(type => `^${type}$`).join('|');
+            tablebed.column(5).search(regex, true, false).draw();
+        } else {
+            tablebed.column(5).search('').draw();
+        }
+    });
+
+    $('#bedmanagement-table').on('click', '.patient-details', function() {
+
+        var episodeno   = $(this).data('episodeno');
+        var url         = config.routes.bed.getPatientInfo;
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "json",
+            data: { epsdno: episodeno },
+            // beforeSend: function(){
+            //     $("#loading-overlay").show();
+            // },
+            success: function(data) {
+
+                var payors = Object.values(data.data.payorList || {}) 
+                .map(p => p.payorDesc)           
+                .join(', ');                     
+
+                $('#patient-name').text(data.data.pName || "-");
+                $('#patient-mrn').text(data.data.prn || "-");
+                $('#patient-epi').text(episodeno || "-");
+                $('#patient-dob').text(data.data.pdob || "-");
+                $('#patient-bloodtype').text(data.data.bgDesc || "-");
+                $('#patient-epidate').text(data.data.epiDate || "-");
+                $('#patient-age').text(data.data.ageY + " Years " + data.data.ageM + " Months " + data.data.ageD + " Days " || "-");
+                $('#patient-sex').text(data.data.pgender || "-");
+                $('#patient-weight').text(data.data.weight || "-");
+                $('#patient-height').text(data.data.height || "-");
+                $('#patient-bmi').text(data.data.bmi || "-");
+                $('#patient-bsa').text(data.data.BSA || "-");
+                $('#patient-payor').text( payors || "-");
+                $('#patient-gltype').text(data.data.gltype || "-");
+                $('#patient-epidoc').text(data.data.epiDoc || "-");
+                $('#patient-epidept').text(data.data.epiDeptDesc || "-");
+                $('#patient-name').text(data.data.pName || "-");
+                $('#patient-name').text(data.data.pName || "-");
+                $('#patient-name').text(data.data.pName || "-");
+
+                $('#patient-details').modal('show');
+
+            },
+            error: function(xhr, status, error) {
+                toastr.error('Error saving reaction: ' + error, {timeOut: 5000});
+            }
+        });
     });
 
 

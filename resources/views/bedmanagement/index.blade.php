@@ -69,7 +69,7 @@
                             <label class="form-label fw-semibold fs-6 mt-2">Room Type&nbsp;:</label>
                             <div class="fv-row">
                                 <select class="form-select" name="room" id="room" data-control="select2" data-placeholder="Filter Room Type" data-allow-clear="true">
-                                    <option value="">Please select the ward</option>
+                                    <option value="">Please select the room</option>
                                     <option value="1 Bedded CCU">1 Bedded CCU</option>
                                     <option value="1 Bedded HDU Cardiology">1 Bedded HDU Cardiology</option>
                                     <option value="1 Bedded ICU">1 Bedded ICU</option>
@@ -162,13 +162,9 @@
                             <label class="form-label fw-semibold fs-6 mt-2">Bed Status&nbsp;:</label>
                             <div class="fv-row">
                                 <select class="form-select" name="status" id="status" data-control="select2"  data-close-on-select="false" data-placeholder="Filter Status" data-allow-clear="true" multiple="multiple">
-                                    <option value="">Please select the ward</option>
                                     <option value="Occupied">Occupied</option>
                                     <option value="Unoccupied">Unoccupied</option>
                                     <option value="Unavailable">Unavailable</option>
-                                    <option value="Booked">Booked</option>
-                                    <option value="Downgrade Bed">Downgrade Bed</option>
-                                    <option value="Fored Upgrade Bed">Forced Upgrade Bed</option>
                                 </select>                            
                             </div>
                         </div>
@@ -178,10 +174,21 @@
                             <label class="form-label fw-semibold fs-6 mt-2">Bed Type&nbsp;:</label>
                             <div class="fv-row">
                                 <select class="form-select" name="bedtype" id="bedtype" data-control="select2"  data-close-on-select="false" data-placeholder="Filter Type" data-allow-clear="true" multiple="multiple">
-                                    <option value="">Please select the ward</option>
                                     <option value="Monitor">Monitor</option>
                                     <option value="Nearby">Nearby</option>
                                     <option value="General">General</option>
+                                </select>                            
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <div class="form-group">
+                            <label class="form-label fw-semibold fs-6 mt-2">Bed Upgrade&nbsp;:</label>
+                            <div class="fv-row">
+                                <select class="form-select" name="bedupgrade" id="bedupgrade" data-control="select2" data-placeholder="Filter Bed" data-allow-clear="true">
+                                    <option value="">Please select the bed</option>
+                                    <option value="Downgrade">Downgrade Bed</option>
+                                    <option value="Forced Upgrade">Forced Upgrade Bed</option>
                                 </select>                            
                             </div>
                         </div>
@@ -194,10 +201,11 @@
                             <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Bed')}}</th>
                             <th style="color: #14787c; min-width: 200px; text-align: center;  vertical-align: middle;">{{__('Room Type')}}</th>
                             <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Room')}}</th>
-                            <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Bed Status')}}</th>
+                            <th style="color: #14787c; min-width: 200px; text-align: center;  vertical-align: middle;">{{__('Bed Status')}}</th>
+                            <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Bed Type')}}</th>
+                            <th style="color: #14787c; min-width: 150px; text-align: center;  vertical-align: middle;">{{__('Upgrade')}}</th>
                             <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('MRN')}}</th>
-                            <th style="color: #14787c; min-width: 200px; text-align: center;  vertical-align: middle;">{{__('Patient Name')}}</th>
-                            <th style="color: #14787c; min-width: 150px; text-align: center;  vertical-align: middle;">{{__('Episode No.')}}</th>
+                            <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Episode No.')}}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -207,6 +215,9 @@
             </div>
         </div>
     </div>
+
+@include('bedmanagement.subviews.patientdetails')
+
 @endsection
 
 @push('script')
@@ -216,6 +227,7 @@
                 routes: {
                     bed : {
                             getWardList: "{{ route('bm.getwardlist') }}?{!! $url !!}",
+                            getPatientInfo: "{{ route('bm.getpatientinfo') }}?{!! $url !!}",
                         },
                     },         
                 };
