@@ -74,4 +74,47 @@ class BedManagementController extends Controller
             return $response;
         }
     }
+
+    public function patientInfo(Request $request)
+    {
+        try{
+            //PatDemo
+            $uri = env('PAT_DEMO'). $request->epsdno;
+            $client = new \GuzzleHttp\Client(['defaults' => ['verify' => false]]);
+
+            $response = $client->request('GET', $uri);
+
+            $statusCode = $response->getStatusCode();
+            $content = json_decode($response->getBody(), true);
+
+            $patdemo = $content['data'];
+
+            $response = response()->json(
+                [
+                'status'      => 'success',
+                'data'        => $patdemo,
+                ], 200
+            );
+
+            return $response;
+        }
+        catch (\Exception $e){
+
+            Log::error($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
+
+            $response = response()->json(
+                [
+                    'status'  => 'failed',
+                    'message' => 'Internal error happened. Try again'
+                ], 200
+            );
+
+            return $response;
+        }
+    }
+
 }
