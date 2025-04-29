@@ -37,7 +37,7 @@
 					</div>
 					<!--end::Content-->
 					<!--begin::Footer-->
-					@include('layouts.iblood.footer')
+					@include('layouts.bedmanagement.footer')
 					<!--end::Footer-->
 				</div>
 				<!--end::Wrapper-->

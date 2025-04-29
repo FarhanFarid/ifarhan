@@ -4,7 +4,7 @@
 
     <div class="row">
         <div class="col-md-12 mb-5">
-            <div class="card card-custom gutter-b" style="border-radius: 0px !important; background-color: #228B22;">
+            <div class="card card-custom gutter-b" style="border-radius: 0px !important; background-color: #DB7093;">
                 <img src="{{ asset('media/logo/bedmanage.png') }}" class="w-50px" style="position: absolute; top: -20px; left: -15px; transform: rotate(10deg);">
                 <div class="d-flex justify-content-between align-items-center px-4" style="padding: 0.5rem 1rem;">
                     <h4 style="color: #fff; margin-left: 35px; margin-bottom: 0;">BED MANAGEMENT</h4>
@@ -17,16 +17,16 @@
     </div>
     <div class="row">
         <div class="col-md-12 mb-2">
-            <div class="card card-custom gutter-b" style="border-radius: 0px !important; background-color: #F0FFF0;">
+            <div class="card card-custom gutter-b" style="border-radius: 0px !important; background-color: #fff0f8;">
                 <div class="row m-3">
                     <div class="col-md-12">
-                        <h4 style="padding: 0.5rem !important; margin-bottom: 0px !important; color: #25cd25;">BED DETAILS</h4>
+                        <h4 style="padding: 0.5rem !important; margin-bottom: 0px !important; color: #FF69B4;">BED DETAILS</h4>
                     </div>
                 </div>
             </div>
             <br/>
             <div class="card-body">
-                <div class="row mb-3">
+                <div class="row mb-1">
                     <div class="col-md-2 mb-3">
                         <div class="form-group">
                             <label class="form-label fw-semibold fs-6 mt-2">Search&nbsp;:</label>
@@ -200,29 +200,41 @@
                         </div>
                     </div>
                 </div>
-                <div class="row mb-1">
-                    <div class="col-md-3">
-                        <div class="form-check form-check-custom form-check-success form-check-solid">
-                            <input class="form-check-input" type="checkbox" value="Yes" name="booked" id="booked"/>
-                            <label class="form-check-label" for="booked">
-                                Booked
-                            </label>
+                <div class="row">
+                    <div class="col-md-2 mb-2">
+                        <div class="form-group">
+                            <label class="form-label fw-semibold fs-6 mt-2">Bed Request&nbsp;:</label>
+                            <div class="fv-row mt-3">
+                                <input class="form-check-input" type="checkbox" value="Yes" name="booked" id="booked"/>
+                                <label class="form-check-label" for="booked">
+                                    Booked
+                                </label>                           
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-2">
+                        <div class="form-group">
+                            <label class="form-label fw-semibold fs-6 mt-2">Est. Discharge Date&nbsp;:</label>
+                            <div class="fv-row">
+                                <input type="date" class="form-control" name="estdisc" id="estdisc"/>                           
+                            </div>
                         </div>
                     </div>
                 </div>
                 <table class="table table-bordered" id="bedmanagement-table" style="width: 100% !important;">
                     <thead class="thead-light">
                         <tr>
-                            <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Ward')}}</th>
-                            <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Bed')}}</th>
-                            <th style="color: #14787c; min-width: 200px; text-align: center;  vertical-align: middle;">{{__('Room Type')}}</th>
-                            <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Room')}}</th>
-                            <th style="color: #14787c; min-width: 200px; text-align: center;  vertical-align: middle;">{{__('Bed Status')}}</th>
-                            <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Bed Type')}}</th>
-                            <th style="color: #14787c; min-width: 150px; text-align: center;  vertical-align: middle;">{{__('Upgrade')}}</th>
-                            <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Booked')}}</th>
-                            <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('MRN')}}</th>
-                            <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Episode No.')}}</th>
+                            <th style="color: #DB7093; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Ward')}}</th>
+                            <th style="color: #DB7093; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Bed')}}</th>
+                            <th style="color: #DB7093; min-width: 200px; text-align: center;  vertical-align: middle;">{{__('Room Type')}}</th>
+                            <th style="color: #DB7093; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Room')}}</th>
+                            <th style="color: #DB7093; min-width: 200px; text-align: center;  vertical-align: middle;">{{__('Bed Status')}}</th>
+                            <th style="color: #DB7093; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Bed Type')}}</th>
+                            <th style="color: #DB7093; min-width: 150px; text-align: center;  vertical-align: middle;">{{__('Upgrade')}}</th>
+                            <th style="color: #DB7093; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Booked')}}</th>
+                            <th style="color: #DB7093; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Est. Discharge')}}</th>
+                            <th style="color: #DB7093; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('MRN')}}</th>
+                            <th style="color: #DB7093; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Episode No.')}}</th>
                         </tr>
                     </thead>
                     <tbody>

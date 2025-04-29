@@ -65,6 +65,7 @@ var tablebed = $('#bedmanagement-table').DataTable({
                                 `<span data-bs-toggle="tooltip" data-bs-placement="top" title="${tooltipContent.replace(/\n/g, '&#10;')}">Yes</span>` 
                                 : "-",
                                 mrn: bed.mrn || "-",
+                                estdisc: bed.estdisdate || "-",
                                 upgrade: upgradeText,
                                 episodeno: bed.episodeno ? '<button class="badge btn-sm badge-light-primary patient-details" style="border: none;" data-bs-toggle="tooltip" data-bs-placement="top" title="Open patient details" data-episodeno="' + bed.episodeno + '">' + bed.episodeno + '</button>' : "-"                            });
                         });
@@ -98,6 +99,7 @@ var tablebed = $('#bedmanagement-table').DataTable({
                                 `<span data-bs-toggle="tooltip" data-bs-placement="top" title="${tooltipContent.replace(/\n/g, '&#10;')}">Yes</span>` 
                                 : "-",
                                 mrn: nurse.mrn || "-",
+                                estdisc: nurse.estdisdate || "-",
                                 upgrade: nurse.forceupgrade === 'Y' ? 'Forced Upgrade: Yes' : (nurse.beddowngrade === 'Y' ? 'Downgrade: Yes' : '-'),
                                 episodeno: nurse.episodeno
                                     ? '<button class="badge btn-sm badge-light-primary patient-details" style="border: none;" data-bs-toggle="tooltip" data-bs-placement="top" title="Open patient details" data-episodeno="' + nurse.episodeno + '">' + nurse.episodeno + '</button>'
@@ -121,6 +123,7 @@ var tablebed = $('#bedmanagement-table').DataTable({
         { data: "bedtype", className: "text-center" },
         { data: "upgrade", className: "text-center" },
         { data: "booked", className: "text-center" },
+        { data: "estdisc", className: "text-center" },
         { data: "mrn", className: "text-center" },
         { data: "episodeno", className: "text-center" }
     ],
@@ -238,6 +241,16 @@ $(document).ready(function() {
             tablebed.column(7).search('^Yes$', true, false).draw();
         } else {
             tablebed.column(7).search('').draw();
+        }
+    });
+
+    $('#estdisc').on('change', function () {
+        let selectedDate = $(this).val(); 
+        if (selectedDate) {
+            let formattedDate = moment(selectedDate, 'YYYY-MM-DD').format('DD/MM/YYYY');
+            tablebed.column(8).search('^' + formattedDate + '$', true, false).draw();
+        } else {
+            tablebed.column(8).search('').draw();
         }
     });
 
