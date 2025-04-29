@@ -233,6 +233,14 @@ $(document).ready(function() {
         }
     });
 
+    $('#booked').on('change', function() {
+        if (this.checked) {
+            tablebed.column(7).search('^Yes$', true, false).draw();
+        } else {
+            tablebed.column(7).search('').draw();
+        }
+    });
+
     $('#bedtype').on('change', function () {
         let selectedtype = $(this).val(); 
     

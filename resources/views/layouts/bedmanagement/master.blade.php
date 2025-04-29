@@ -21,10 +21,10 @@
 							<!--begin::Container-->
 							<div id="kt_content_container" class="container-xxl" style="margin-bottom: 10px;">
 								<div class="row">
-									<div class="col-4 col-xl-2 col-xs-3 col-sm-3" style="background-color: #fff; border-radius: 5px; box-shadow: 0px 2px 6px 2px #dcdcdc !important; padding: 0 !important;">
+									{{-- <div class="col-4 col-xl-2 col-xs-3 col-sm-3" style="background-color: #fff; border-radius: 5px; box-shadow: 0px 2px 6px 2px #dcdcdc !important; padding: 0 !important;">
 										@include('layouts.bedmanagement.sidebar')
-									</div>
-									<div class="col-8 col-xl-10 col-xs-9 col-sm-9">
+									</div> --}}
+									<div class="col-12 col-xl-12 col-xs-12 col-sm-12">
 										<div style="padding: 20px; border-radius: 5px; background-color: #fff; box-shadow: 0px 2px 6px 2px #dcdcdc !important;">
 											@yield('content')
 										</div>

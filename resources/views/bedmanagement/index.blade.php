@@ -26,7 +26,7 @@
             </div>
             <br/>
             <div class="card-body">
-                <div class="row mb-5">
+                <div class="row mb-3">
                     <div class="col-md-2 mb-3">
                         <div class="form-group">
                             <label class="form-label fw-semibold fs-6 mt-2">Search&nbsp;:</label>
@@ -197,6 +197,16 @@
                                     <option value="Forced Upgrade">Forced Upgrade Bed</option>
                                 </select>                            
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-1">
+                    <div class="col-md-3">
+                        <div class="form-check form-check-custom form-check-success form-check-solid">
+                            <input class="form-check-input" type="checkbox" value="Yes" name="booked" id="booked"/>
+                            <label class="form-check-label" for="booked">
+                                Booked
+                            </label>
                         </div>
                     </div>
                 </div>
