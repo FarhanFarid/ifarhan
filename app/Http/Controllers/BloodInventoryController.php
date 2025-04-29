@@ -955,6 +955,58 @@ class BloodInventoryController extends Controller
         }
     }
 
+    public function testgetpatientcitizen(Request $request)
+    {
+        try {
+            $uniqueEpisodes = BloodInventory::select('episodeno')->distinct()->get();
+
+            $client = new \GuzzleHttp\Client(['verify' => false]);
+            $results = [];
+
+            foreach ($uniqueEpisodes as $episode) {
+                $episodeno = $episode->episodeno;
+                $uri = env('PAT_DEMO') . $episodeno;
+
+                try {
+                    $response = $client->request('GET', $uri);
+                    $content = json_decode($response->getBody(), true);
+
+                    $pcitizen = $content['data']['pcitizen'] ?? null;
+
+                    // Only include if citizenship is not "Malaysia"
+                    if ($pcitizen !== 'Malaysia') {
+                        $results[] = [
+                            'episodeno' => $episodeno,
+                            'pcitizen'  => $pcitizen
+                        ];
+                    }
+
+                } catch (\Exception $e) {
+                    // Optional: log or skip errors for individual API calls
+                    Log::warning("API error for episodeno {$episodeno}: " . $e->getMessage());
+                }
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'data'   => $results,
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error($e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+
+            return response()->json([
+                'status'  => 'failed',
+                'message' => 'Internal error happened. Try again'
+            ], 200);
+        }
+    }
+
+
+
 
 
 

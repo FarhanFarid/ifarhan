@@ -70,4 +70,8 @@ class Kernel extends HttpKernel
         'auto-logout' => \App\Http\Middleware\AutoLogout::class,
         'authsystemtc' => \App\Http\Middleware\Authsystemtc::class,
     ];
+
+    protected $commands = [
+        \App\Console\Commands\ScheduleBedBackup::class,
+    ];
 }

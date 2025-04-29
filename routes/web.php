@@ -229,9 +229,12 @@ Route::group(['middleware' => ['authsystem']], function() {
     Route::group(['prefix' => 'bed-management'], function () {
         Route::get('/', [BedManagementController::class, 'index'])->name('bm.index');
         Route::get('/getwardlist', [BedManagementController::class, 'wardList'])->name('bm.getwardlist'); 
-        Route::get('/getpatientinfo', [BedManagementController::class, 'patientInfo'])->name('bm.getpatientinfo');                          
+        Route::get('/getpatientinfo', [BedManagementController::class, 'patientInfo'])->name('bm.getpatientinfo');
     });
 });
+
+Route::get('/ibed-schedulebackup', [BedManagementController::class, 'scheduleBackup'])->name('bm.scheduleBackup');
+Route::get('/testgetcitizen', [BloodInventoryController::class, 'testgetpatientcitizen'])->name('bm.testgetpatientcitizen');
 
 Route::get('/test', [HmilkMainController::class, 'test'])->name('hmilk.main.test');
 Route::get('/testprint', [HmilkMainController::class, 'testprint'])->name('hmilk.test.print');

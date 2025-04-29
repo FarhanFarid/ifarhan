@@ -39,6 +39,20 @@ var tablebed = $('#bedmanagement-table').DataTable({
                             if (!bedtype) {
                                 bedtype = 'General';
                             }
+
+                            let tooltipContent = "-";
+        
+                            if (bed.BedRequestList && Object.keys(bed.BedRequestList).length > 0) {
+                                // Take the first BedRequestList entry (assuming only one)
+                                const bedRequest = Object.values(bed.BedRequestList)[0];
+                                tooltipContent = 
+                                    "Requested By: " + (bedRequest.bruser || '-') + "\n" +
+                                    "Ward: " + (bedRequest.brward || '-') + "\n" +
+                                    "Bed: " + (bedRequest.brbed || '-') + "\n" +
+                                    "Status: " + (bedRequest.brstatus || '-') + "\n" +
+                                    "Date: " + (bedRequest.brdate || '-') + "\n" +
+                                    "Time: " + (bedRequest.brtime || '-');
+                            }
                             
                             formattedData.push({
                                 ward: ward.wardcode,
@@ -47,9 +61,48 @@ var tablebed = $('#bedmanagement-table').DataTable({
                                 room: bed.room || "-",
                                 bedstatus: bedstatus,
                                 bedtype: bedtype,
+                                booked: bed.BedRequestList && Object.keys(bed.BedRequestList).length > 0 ? 
+                                `<span data-bs-toggle="tooltip" data-bs-placement="top" title="${tooltipContent.replace(/\n/g, '&#10;')}">Yes</span>` 
+                                : "-",
                                 mrn: bed.mrn || "-",
                                 upgrade: upgradeText,
                                 episodeno: bed.episodeno ? '<button class="badge btn-sm badge-light-primary patient-details" style="border: none;" data-bs-toggle="tooltip" data-bs-placement="top" title="Open patient details" data-episodeno="' + bed.episodeno + '">' + bed.episodeno + '</button>' : "-"                            });
+                        });
+                    }
+
+                    if (ward.NurseStation && Object.keys(ward.NurseStation).length > 0) {
+                        Object.values(ward.NurseStation).forEach(nurse => {
+
+                            let tooltipContent = "-";
+        
+                            if (nurse.BedRequestList && Object.keys(nurse.BedRequestList).length > 0) {
+                                // Take the first BedRequestList entry (assuming only one)
+                                const bedRequest = Object.values(nurse.BedRequestList)[0];
+                                tooltipContent = 
+                                    "Requested By: " + (bedRequest.bruser || '-') + "\n" +
+                                    "Ward: " + (bedRequest.brward || '-') + "\n" +
+                                    "Bed: " + (bedRequest.brbed || '-') + "\n" +
+                                    "Status: " + (bedRequest.brstatus || '-') + "\n" +
+                                    "Date: " + (bedRequest.brdate || '-') + "\n" +
+                                    "Time: " + (bedRequest.brtime || '-');
+                            }
+
+                            formattedData.push({
+                                ward: ward.wardcode,
+                                bed: "-",
+                                roomtype: "-",
+                                room: "NurseStation",
+                                bedstatus: "-",
+                                bedtype: "NurseStation",
+                                booked: nurse.BedRequestList && Object.keys(nurse.BedRequestList).length > 0 ? 
+                                `<span data-bs-toggle="tooltip" data-bs-placement="top" title="${tooltipContent.replace(/\n/g, '&#10;')}">Yes</span>` 
+                                : "-",
+                                mrn: nurse.mrn || "-",
+                                upgrade: nurse.forceupgrade === 'Y' ? 'Forced Upgrade: Yes' : (nurse.beddowngrade === 'Y' ? 'Downgrade: Yes' : '-'),
+                                episodeno: nurse.episodeno
+                                    ? '<button class="badge btn-sm badge-light-primary patient-details" style="border: none;" data-bs-toggle="tooltip" data-bs-placement="top" title="Open patient details" data-episodeno="' + nurse.episodeno + '">' + nurse.episodeno + '</button>'
+                                    : "-"
+                            });
                         });
                     }
                 });
@@ -67,6 +120,7 @@ var tablebed = $('#bedmanagement-table').DataTable({
         { data: "bedstatus", className: "text-center" },
         { data: "bedtype", className: "text-center" },
         { data: "upgrade", className: "text-center" },
+        { data: "booked", className: "text-center" },
         { data: "mrn", className: "text-center" },
         { data: "episodeno", className: "text-center" }
     ],

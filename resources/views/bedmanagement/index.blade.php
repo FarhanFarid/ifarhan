@@ -6,7 +6,12 @@
         <div class="col-md-12 mb-5">
             <div class="card card-custom gutter-b" style="border-radius: 0px !important; background-color: #228B22;">
                 <img src="{{ asset('media/logo/bedmanage.png') }}" class="w-50px" style="position: absolute; top: -20px; left: -15px; transform: rotate(10deg);">
-                <h4 style="padding: 0.5rem !important; margin-bottom: 0px !important; color: #fff; margin-left: 35px;">BED MANAGEMENT</h4>
+                <div class="d-flex justify-content-between align-items-center px-4" style="padding: 0.5rem 1rem;">
+                    <h4 style="color: #fff; margin-left: 35px; margin-bottom: 0;">BED MANAGEMENT</h4>
+                    <span style="color: #fff; font-size: 0.9rem;">
+                        {{ $message }}
+                    </span>
+                </div>
             </div>
         </div>
     </div>
@@ -177,6 +182,7 @@
                                     <option value="Monitor">Monitor</option>
                                     <option value="Nearby">Nearby</option>
                                     <option value="General">General</option>
+                                    <option value="NurseStation">Nurse Station</option>
                                 </select>                            
                             </div>
                         </div>
@@ -204,6 +210,7 @@
                             <th style="color: #14787c; min-width: 200px; text-align: center;  vertical-align: middle;">{{__('Bed Status')}}</th>
                             <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Bed Type')}}</th>
                             <th style="color: #14787c; min-width: 150px; text-align: center;  vertical-align: middle;">{{__('Upgrade')}}</th>
+                            <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Booked')}}</th>
                             <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('MRN')}}</th>
                             <th style="color: #14787c; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Episode No.')}}</th>
                         </tr>
