@@ -3,16 +3,16 @@
 <div class="modal fade modal-xl" tabindex="-1" id="patient-details" style="">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header" style="border-radius: 0px !important; background-color: #e9ffeb;">
-                <h4 style="padding: 0.5rem !important; margin-bottom: 0px !important; color: #228B22; ">PATIENT DETAILS</h4>
+            <div class="modal-header" style="border-radius: 0px !important; background-color: #fff0f8;">
+                <h4 style="padding: 0.5rem !important; margin-bottom: 0px !important; color: #FF69B4; ">PATIENT DETAILS</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12 mb-5">
                         <div class="row mb-5">
                             <div class="col-md-12 mb-2">
-                                <div class="card card-custom gutter-b" style="border-radius: 0px !important; background-color: #e9ffeb;">
-                                    <h4 style="padding: 0.5rem !important; margin-bottom: 0px !important; color: #228B22;">INFORMATIONS</h4>
+                                <div class="card card-custom gutter-b" style="border-radius: 0px !important; background-color: #fff0f8;">
+                                    <h4 style="padding: 0.5rem !important; margin-bottom: 0px !important; color: #FF69B4;">INFORMATIONS</h4>
                                 </div>
                                 <div class="card-body">
                                     <div class="card card-custom gutter-b" style="box-shadow: 0px 2px 6px 2px #dcdcdc !important; border-radius: 0px !important; border-top: solid 5px228B22#1d69e3 !important;">
@@ -64,7 +64,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer" style="border-radius: 0px !important; background-color: #e9ffeb;">
+            <div class="modal-footer" style="border-radius: 0px !important; background-color: #fff0f8;">
                 <button type="button" class="btn btn-light btn-sm font-weight-bold btn-block" data-bs-dismiss="modal">CLOSE</button>
             </div>
         </div>
