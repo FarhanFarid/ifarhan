@@ -119,10 +119,56 @@ class BedManagementController extends Controller
         $summary = collect($summary)->sortBy('ward')->values()->toArray();
         // dd($summary);
 
+        $totalOccupied = 0;
+        $totalBeds = 0;
+        $disciplineOccupied = [];
+        $groupedDisciplineOccupied = [];
+
+        foreach ($content["WardList"] as $ward) {
+            $bedList = $ward['BedList'] ?? [];
+
+            foreach ($bedList as $bed) {
+                $totalBeds++;
+
+                if (!empty($bed['episodeno'])) {
+                    $totalOccupied++;
+
+                    $discipline = $bed['discipline'] ?? 'Unknown';
+                    $disciplineOccupied[$discipline] = ($disciplineOccupied[$discipline] ?? 0) + 1;
+
+                    // Grouping
+                    if (str_contains($discipline, 'Cardiology')) {
+                        $groupedDisciplineOccupied['Cardiology'] = ($groupedDisciplineOccupied['Cardiology'] ?? 0) + 1;
+                    } elseif (str_contains($discipline, 'C/Thoracic')) {
+                        $groupedDisciplineOccupied['Cardiothoracic'] = ($groupedDisciplineOccupied['Cardiothoracic'] ?? 0) + 1;
+                    }
+                }
+            }
+        }
+
+        // 1. Hospital occupancy (total occupied / total beds)
+        $results = [];
+        $results['Hospital'] = number_format(($totalOccupied / $totalBeds) * 100, 2) . '%';
+
+        // 2. Each discipline as % of total beds
+        foreach ($disciplineOccupied as $name => $count) {
+            $percentage = ($count / $totalBeds) * 100;
+            $results[$name] = number_format($percentage, 2) . '%';
+        }
+
+        // 3. Grouped (Cardiology / Cardiothoracic) as % of total beds
+        foreach ($groupedDisciplineOccupied as $group => $count) {
+            $percentage = ($count / $totalBeds) * 100;
+            $results[$group] = number_format($percentage, 2) . '%';
+        }
+
+        // dd($results);
+
         return view('bedmanagement.index', compact(
             'url',
             'message',
-            'summary'
+            'summary',
+            'results',
          ));
 
     }
