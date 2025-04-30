@@ -19,8 +19,11 @@
         <div class="col-md-12 mb-2">
             <div class="card card-custom gutter-b" style="border-radius: 0px !important; background-color: #fff0f8;">
                 <div class="row m-3">
-                    <div class="col-md-12">
+                    <div class="col-md-10">
                         <h4 style="padding: 0.5rem !important; margin-bottom: 0px !important; color: #FF69B4;">BED DETAILS</h4>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary btn-sm btn-block ward-summary" type="button" style="width: 80% !important; background-color: #FF69B4 !important;">Ward Summary</button>
                     </div>
                 </div>
             </div>
@@ -246,6 +249,7 @@
     </div>
 
 @include('bedmanagement.subviews.patientdetails')
+@include('bedmanagement.subviews.summary')
 
 @endsection
 

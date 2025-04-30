@@ -37,12 +37,92 @@ class BedManagementController extends Controller
 
         }
 
+        $today = Carbon::today();
+        $tomorrow = $today->copy()->addDay();
+        $inThreeDays = $today->copy()->addDays(3);
+        $inSevenDays = $today->copy()->addDays(7);
 
-        // dd($content["WardList"]);
+        $summary = [];
+
+        foreach ($content["WardList"] as $ward) {
+            $wardName = $ward['warddesc'] ?? $ward['wardcode'];
+            $bedList = $ward['BedList'] ?? [];
+            $nurseStation = $ward['NurseStation'] ?? [];
+
+            if (empty($bedList) && empty($nurseStation)) {
+                continue;
+            }
+
+            $todayCount = 0;
+            $tomorrowCount = 0;
+            $next3to7Count = 0;
+            $totalBeds = count($bedList);
+            $occupied = 0;
+            $booked = 0;
+            $unavailable = 0;
+
+            foreach ($bedList as $bed) {
+                if (!empty($bed['episodeno'])) {
+                    $occupied++;
+                }
+
+                if (!empty($bed['bedstatus']) && strtolower($bed['bedstatus']) === 'unavailable') {
+                    $unavailable++;
+                }
+
+                if (!empty($bed['estdisdate'])) {
+                    try {
+                        $estDate = Carbon::createFromFormat('d/m/Y', trim($bed['estdisdate']));
+                        if ($estDate->isToday()) {
+                            $todayCount++;
+                        } elseif ($estDate->isTomorrow()) {
+                            $tomorrowCount++;
+                        } elseif ($estDate->between($inThreeDays, $inSevenDays)) {
+                            $next3to7Count++;
+                        }
+                    } catch (\Exception $e) {
+                        Log::error("Invalid estdisdate format: " . $bed['estdisdate'], [
+                            'ward' => $wardName,
+                            'bedno' => $bed['bedno'] ?? null,
+                            'error' => $e->getMessage(),
+                        ]);
+                        continue;
+                    }
+                }
+
+                if (!empty($bed['BedRequestList']) && is_array($bed['BedRequestList'])) {
+                    $booked++;
+                }
+            }
+
+            foreach ($nurseStation as $nurse) {
+                if (!empty($nurse['BedRequestList']) && is_array($nurse['BedRequestList'])) {
+                    $booked++;
+                }
+            }
+
+            $currentPatients = $occupied + count($nurseStation);
+
+            $summary[] = [
+                'ward' => $wardName,
+                'today' => $todayCount,
+                'tomorrow' => $tomorrowCount,
+                'next3to7' => $next3to7Count,
+                'total' => $totalBeds,
+                'occupied' => $occupied,
+                'booked' => $booked,
+                'unavailable' => $unavailable,
+                'currentpatients' => $currentPatients,
+            ];
+        }
+
+        $summary = collect($summary)->sortBy('ward')->values()->toArray();
+        // dd($summary);
 
         return view('bedmanagement.index', compact(
             'url',
-            'message' 
+            'message',
+            'summary'
          ));
 
     }

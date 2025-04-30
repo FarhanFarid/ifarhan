@@ -313,5 +313,9 @@ $(document).ready(function() {
         });
     });
 
+    $('.ward-summary').on('click', function() {
+        $('#ward-summary').modal('show');
+    });
+
 
 });
