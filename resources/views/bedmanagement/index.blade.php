@@ -223,6 +223,14 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-2 mb-2">
+                        <div class="form-group">
+                            <label class="form-label fw-semibold fs-6 mt-2">Med. Discharge Date&nbsp;:</label>
+                            <div class="fv-row">
+                                <input type="date" class="form-control" name="meddisc" id="meddisc"/>                           
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <table class="table table-bordered" id="bedmanagement-table" style="width: 100% !important;">
                     <thead class="thead-light">
@@ -236,6 +244,7 @@
                             <th style="color: #DB7093; min-width: 150px; text-align: center;  vertical-align: middle;">{{__('Upgrade')}}</th>
                             <th style="color: #DB7093; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Booked')}}</th>
                             <th style="color: #DB7093; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Est. Discharge')}}</th>
+                            <th style="color: #DB7093; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Med. Discharge')}}</th>
                             <th style="color: #DB7093; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('MRN')}}</th>
                             <th style="color: #DB7093; min-width: 100px; text-align: center;  vertical-align: middle;">{{__('Episode No.')}}</th>
                         </tr>

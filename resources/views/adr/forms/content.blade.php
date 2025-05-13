@@ -388,11 +388,11 @@
                                                 <strong>Renal profile</strong><br>
                                                 
                                                 @if(isset($renal["Hemolytic Index (Hi)"])) 
-                                                    Hi - {{$renal["Hemolytic Index (Hi)"]}} 
+                                                    Hemolytic Index - {{$renal["Hemolytic Index (Hi)"]}} 
                                                 @endif
                                                 , &nbsp;
                                                 @if(isset($renal["Icteric Index (I)"])) 
-                                                    I - {{$renal["Icteric Index (I)"]}}
+                                                    Icteric Index - {{$renal["Icteric Index (I)"]}}
                                                 @endif
                                                 , &nbsp;
                                                 @if(isset($renal["Creatinine"])) 
@@ -498,11 +498,11 @@
                                                 <strong>Liver Function</strong><br>
 
                                                 @if(isset($lft["Lipemic Index (L)"])) 
-                                                    L - {{$lft["Lipemic Index (L)"]}} 
+                                                    Lipemic Index - {{$lft["Lipemic Index (L)"]}} 
                                                 @endif
                                                 , &nbsp;
                                                 @if(isset($lft["Hemolytic Index (Hi)"])) 
-                                                    Hi - {{$lft["Hemolytic Index (Hi)"]}}
+                                                    Hemolytic Index - {{$lft["Hemolytic Index (Hi)"]}}
                                                 @endif
                                                 , &nbsp;
                                                 @if(isset($lft["Albumin"])) 
@@ -510,10 +510,10 @@
                                                 @endif
                                                 , &nbsp;
                                                 @if(isset($lft["Alkaline Phosphatase ( ALP )"])) 
-                                                    ALP - {{$lft["Alkaline Phosphatase ( ALP )"]}}
+                                                    Alkaline Phosphatase - {{$lft["Alkaline Phosphatase ( ALP )"]}}
                                                 @endif
                                                 @if(isset($lft["Alanine Aminotransferase ( ALT )"])) 
-                                                    ALT - {{$lft["Alanine Aminotransferase ( ALT )"]}}
+                                                    Alanine Aminotransferase - {{$lft["Alanine Aminotransferase ( ALT )"]}}
                                                 @endif
                                                 @if(isset($lft["A/G Ratio"])) 
                                                     A/G Ratio - {{$lft["A/G Ratio"]}}
