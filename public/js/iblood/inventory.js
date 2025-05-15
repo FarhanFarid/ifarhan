@@ -1109,10 +1109,10 @@ $(document).ready(function () {
         var expirydate = $(this).data('expirydate');
         var url = config.routes.blood.inventory.wardList;
     
-        if (!expirydate) {
+        if (expirydate != null && moment(expirydate).isBefore(moment())) {
             Swal.fire({
                 title: 'Expired Date!',
-                text: 'This blood bag has an expired date. Please return the bag to lab!',
+                text: 'This blood bag is already expired. Please return the bag to lab!',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Proceed',
