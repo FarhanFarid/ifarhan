@@ -204,6 +204,8 @@
                                     <th style="min-width: 150px; color: #14787c; background-color:#ecfefe">Expiry Date</th>
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Current Status</th>
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Reaction</th>
+                                    <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Transfuse Start</th>
+                                    <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Ageing (day)</th>
                                     <th style="min-width: 150px; color: #14787c; background-color:#ecfefe">Bag Location</th>
                                 </tr>
                             </thead>
