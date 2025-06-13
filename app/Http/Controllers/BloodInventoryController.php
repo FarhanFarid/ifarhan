@@ -1005,9 +1005,65 @@ class BloodInventoryController extends Controller
         }
     }
 
-
-
-
-
-
+    public function apiSuspendICCA(Request $request)
+    {
+        try {
+            $hl7 = 'MSH|^~\\&|Philips.CIS.PatientResult.BL^ICCA-TEST01^DNS|Philips.CIS.CVC|||20250613102706||ORU^R01|20250613103107815-1|P|2.4\r
+            PID|||MRN20250613^^^Philips.CIS.ADT^MR~EP20250613^^^Philips.CIS.ADT^VN||^TEST20250613||19640613000000|M\r
+            PV1||I|AICU||||||||||||||||EP20250613\r
+            OBR|1|||116859006^Packed Cells^SNM|||20250613080000||||||0.5 Units 7 ml; MRN: MRN2025; Blood Group: A positive; LAB No: hhh; Bag No.: 123; Collection Date: 13/06/2025; Expiry Date: 17/10/2025; Verifier: testverifier2; Reaction: Yes; If Yes, nature of reaction: testnature||||||||||||F\r
+            OBX|1|NM|251851008^Volume Infused^SNM||7|258773002^ml^SNM^mL^ml^ISO+||N|||F|||20250613080000||^User^First\r
+            OBX|2|NM|260965001^Units Adm^SNM||0.5|258997004^Units^SNM^iu^Units^ISO+||N|||F|||20250613080000||^User^First\r
+            OBX|3|CE|273248003^Action^SNM||385655000^Suspend^SNM|||N|||F|||20250613080000||^User^First\r
+            OBX|4|ST|116859006^MRN^SNM||MRN2025|||N|||F|||20250613080000||^User^First\r
+            OBX|5|CE|116859006^Blood Group^SNM||278149003^A positive^SNM|||N|||F|||20250613080000||^User^First\r
+            OBX|6|ST|116859006^LAB No^SNM||hhh|||N|||F|||20250613080000||^User^First\r
+            OBX|7|ST|396278008^Bag No.^SNM||123|||N|||F|||20250613080000||^User^First\r
+            OBX|8|DT|116859006^Collection Date^SNM||20250613|||N|||F|||20250613080000||^User^First\r
+            OBX|9|DT|116859006^Expiry Date^SNM||20251017|||N|||F|||20250613080000||^User^First\r
+            OBX|10|ST|116859006^Verifier^SNM||testverifier2|||N|||F|||20250613080000||^User^First\r
+            OBX|11|CE|116859006^Reaction^SNM||373066001^Yes^SNM^Y^Yes^HL70136|||N|||F|||20250613080000||^User^First\r
+            OBX|12|ST|116859006^If Yes, nature of reaction^SNM||testnature|||N|||F|||20250613080000||^User^First\r';
+    
+            // Step 1: Get the OBR line
+            $lines = preg_split("/\r\n|\n|\r/", $hl7);
+            $obrLine = '';
+            foreach ($lines as $line) {
+                if (strpos(ltrim($line), 'OBR|') === 0) {
+                    $obrLine = trim($line);
+                    break;
+                }
+            }
+    
+            // Step 2: Extract the comment part (15th field in OBR)
+            $fields = explode('|', $obrLine);
+            $comment = $fields[13] ?? '';
+    
+            // Step 3: Parse comment to key-value pairs
+            $result = [];
+            $items = explode(';', $comment);
+            foreach ($items as $item) {
+                if (strpos($item, ':') !== false) {
+                    [$key, $value] = explode(':', $item, 2);
+                    $result[trim($key)] = trim($value);
+                }
+            }
+    
+            return response()->json([
+                'status' => 'success',
+                'data' => $result
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+    
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Internal error happened. Try again'
+            ], 500);
+        }
+    }
+    
 }

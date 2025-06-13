@@ -245,6 +245,8 @@ Route::get('/testpdfreport', function () {
 
 Route::group(['prefix' => 'api'], function () {
     Route::group(['prefix' => 'iblood'], function () {
-        Route::get('/supended-transfusion-list', [BloodInventoryController::class, 'apiGetSuspendedTransfusionList'])->name('api.iblood.apiGetSuspendedTransfusionList');              
+        Route::get('/supended-transfusion-list', [BloodInventoryController::class, 'apiGetSuspendedTransfusionList'])->name('api.iblood.apiGetSuspendedTransfusionList');
+        Route::get('/supended-icca', [BloodInventoryController::class, 'apiSuspendICCA'])->name('api.iblood.apiSuspendICCA');              
+              
     });                           
 });

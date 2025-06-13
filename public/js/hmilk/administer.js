@@ -68,7 +68,7 @@ $(document).ready(function () {
                     html += '<td>' + moment(info.epsiodedate).format('DD/MM/YYYY') + '</td>';
                     html += '<td>' + milkData.batchId + '</td>';
                     html += '<td>' + moment(milkData.expiryDate).format('DD/MM/YYYY') + '</td>';
-                    html += '<td><select class="form-select location-select"><option value="PCICU">PCICU</option><option value="PICU">PICU</option><option value="B5Z2">B5Z2</option><option value="B5Z1">B5Z1</option></select></td>';
+                    html += '<td><select class="form-select location-select"><option value="PCICU">PCICU</option><option value="PICU">PICU</option><option value="PICU2">PICU2</option><option value="B5Z2">B5Z2</option><option value="B5Z1">B5Z1</option></select></td>';
                     html += '<td><select class="form-select amount-select"><option value="FULL">FULL</option><option value="PARTIAL">PARTIAL</option></select></td>';   
                     html += '<td><div class="input-group"><input type="number" class="form-control input-sm intake"/><span class="input-group-text">ml</span></div></td>';                     
                     html += '<td><button class="btn btn-sm btn-info administer-btn">Administer</button></td>';
