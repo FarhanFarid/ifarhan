@@ -50,7 +50,7 @@
                                 <a class="nav-link btn btn-light-primary btn-active-primary btn-color-light-primary btn-active-color-light rounded-bottom-0" data-bs-toggle="tab" href="#sectiond"><b>SECTION D:</b> BLOOD COMPONENT</a>
                             </li>
                         @endif
-                        @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "Doctors" || Auth::user()->usrGrp == "EMYDoctors")
+                        @if(Auth::user()->usergrp == "Administrator" || Auth::user()->usergrp == "Doctors" || Auth::user()->usrGrp == "EMYDoctors"  || Auth::user()->usergrp == "LABManager" || Auth::user()->usergrp == "LABMLT" || Auth::user()->usergrp == "LabTemp" || Auth::user()->usergrp == "LabClerk")
                             <li class="nav-item" style="margin-right: 10px;">
                                 <a class="nav-link btn btn-light-primary btn-active-primary btn-color-light-primary btn-active-color-light rounded-bottom-0" data-bs-toggle="tab" href="#sectionf"><b>SECTION F:</b> RELEVANT CLINICAL HISTORY</a>
                             </li>

@@ -136,6 +136,29 @@ var table = $('#reportiblood-table').DataTable({
             }
         },
         {
+            "data": 'transfuse_start',
+            "render": function (data, type, row) {
+                if (row.transfuse_start_at == null) {
+                    return '<span>-</span>';
+                } else {
+                    return '<span>' +  moment(row.transfuse_start_at).format('DD/MM/YYYY HH:mm') + '</span>';
+                }
+            }
+        },
+        {
+            "data": 'ageing',
+            "render": function (data, type, row) {
+                if (row.transfuse_start_at == null) {
+                    return '<span>-</span>';
+                } else {
+                    const startDate = moment(row.transfuse_start_at);
+                    const now = moment();
+                    const diffDays = now.diff(startDate, 'days');
+                    return '<span>' + diffDays + ' day(s)</span>';
+                }
+            }
+        },
+        {
             "data": 'location',
             "render": function (data, type, row) {
 
