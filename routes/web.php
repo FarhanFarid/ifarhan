@@ -237,7 +237,12 @@ Route::group(['middleware' => ['authsystem']], function() {
         Route::group(['prefix' => 'limbrestraint'], function () {
             Route::get('/', [iNursingController::class, 'indexLimbRestraint'])->name('inursing.limbrestraint.index');
             Route::get('/get-data-limbrestraint-assmt', [iNursingController::class, 'getDataLimbRestraintAssmt'])->name('inursing.limbrestraint.getdataassmt');                              
-        });                    
+        }); 
+        
+        Route::group(['prefix' => 'dysphagia'], function () {
+            Route::get('/', [iNursingController::class, 'index'])->name('inursing.dysphagia.index');
+            Route::get('/get-data-dysphagia', [iNursingController::class, 'getDataDysphagia'])->name('inursing.dysphagia.getdatadysphagia');                              
+        });
     });
 });
 
