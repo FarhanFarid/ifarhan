@@ -5,8 +5,38 @@ var table_dysphagia = $('#report-dysphagia-table').DataTable({
     buttons: [
         {
             extend: 'excel',
-            title: 'Report : Dysphagia Screening',
+            title: 'Report Dysphagia Screening',
             className: 'btn-dark',
+        },
+    ],
+    columnDefs: [
+        {
+            "targets": 0,
+            "width": "4%"
+        },
+        {
+            "targets": 1,
+            "width": "5%"
+        },
+        {
+            "targets": 2,
+            "width": "5%"
+        },
+        {
+            "targets": 3,
+            "width": "5%"
+        },
+        {
+            "targets": 4,
+            "width": "5%"
+        },
+        {
+            "targets": 5,
+            "width": "10%"
+        },
+        {
+            "targets": 6,
+            "width": "10%"
         },
     ],
     columns: [

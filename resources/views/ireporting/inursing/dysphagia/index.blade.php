@@ -19,17 +19,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4 mb-3">
+                            {{-- <div class="col-md-4 mb-3">
                                 <div class="form-group">
                                     <label class="form-label fw-semibold fs-6 mt-2">Search&nbsp;:</label>
                                     <div class="fv-row">
                                         <input class="form-control form-control-md" type="search" class="form-control" id="searchdysphagia" placeholder="Search...">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-2 mb-3 align-self-end">
-                                <button id="exportdysphagia" class="btn btn-dark">Excel</button>
-                            </div>
+                            </div> --}}
                         </div>
                         <table class="table table-bordered table-row-bordered" id="report-dysphagia-table">
                             <thead class="thead-light">
