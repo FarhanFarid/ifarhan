@@ -14,6 +14,9 @@ use App\Models\AdrList;
 use App\Models\AdrBridge;
 use App\Models\Sso;
 
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SuspectedAdrReportMail;
+
 use Auth;
 
 use App\Helpers\UpdatePatient;
@@ -491,4 +494,130 @@ class AdrController extends Controller
             return $response;
         }
     }
+
+    public function suspectedEmail(Request $request){
+        try
+        { 
+
+             // Clear all existing data in AdrList
+            AdrList::truncate();
+
+            // Fetch data from external API
+            $uri = env('ADV_EVENT_LIVE');
+            $client = new \GuzzleHttp\Client(['defaults' => ['verify' => false]]);
+
+            $response = $client->request('GET', $uri);
+
+            $statusCode = $response->getStatusCode();
+            $content = json_decode($response->getBody(), true);
+
+            $list = $content['data'];
+
+            // Insert new records into AdrList
+            foreach ($list as $record) {
+                $storerecord                 = new AdrList();
+                $storerecord->adr_id         = $record['data'] ?? null;
+                $storerecord->episodeno      = $record['episodeNo'] ?? null;
+                $storerecord->drugname       = $record['itemDesc'] ?? null;
+
+                // Save reported_at
+                $storerecord->reported_at    = isset($record['advsDateReported']) 
+                    ? Carbon::createFromFormat('d/m/Y', $record['advsDateReported'])->format('Y-m-d H:i:s') 
+                    : null;
+
+                // Save onset_at (combining advsOnSetDate and advsTimeReported)
+                if (!empty($record['advsOnSetDate']) && !empty($record['advsTimeReported'])) {
+                    $datetime = $record['advsOnSetDate'] . ' ' . $record['advsTimeReported'];
+                    $storerecord->onset_at = Carbon::createFromFormat('d/m/Y H:i:s', $datetime)->format('Y-m-d H:i:s');
+                } elseif (!empty($record['advsOnSetDate'])) {
+                    $storerecord->onset_at = Carbon::createFromFormat('d/m/Y', $record['advsOnSetDate'])->format('Y-m-d H:i:s');
+                } else {
+                    $storerecord->onset_at = null;
+                }
+
+                $storerecord->severity       = $record['severityDesc'] ?? null;
+                $storerecord->description    = $record['Desc'] ?? null;
+                $storerecord->errordesc      = $record['advsEnterInErrorReasonDesc'] ?? null;
+                $storerecord->created_at     = Carbon::now();
+                $storerecord->save();
+
+                // Handle AdrBridge insertion
+                $adrId = $record['data'] ?? null;
+                if ($adrId && !AdrBridge::where('adr_id', $adrId)->exists()) {
+                    $storebridge             = new AdrBridge();
+                    $storebridge->adr_id     = $adrId;
+                    $storebridge->created_at = Carbon::now();
+                    $storebridge->status_id  = 1;
+                    $storebridge->save();
+                }
+            }
+
+            $report = AdrBridge::with(['adrlist'])->where('status_id', 1)->get();
+
+            $enhancedReport = [];
+            
+            foreach ($report as $item) {
+                $episodeno = $item->adrlist->episodeno ?? null;
+                $onset_at = $item->adrlist->onset_at ?? null;
+            
+                $prn = null;
+            
+                if ($episodeno) {
+                    try {
+                        $uri = env('PAT_DEMO_LIVE') . $episodeno;
+                        $client = new \GuzzleHttp\Client(['verify' => false]);
+            
+                        $response = $client->request('GET', $uri);
+                        $content = json_decode($response->getBody(), true);
+            
+                        if (isset($content['data']['prn'])) {
+                            $prn = $content['data']['prn'];
+                        }
+                    } catch (\Exception $e) {
+                        Log::error('PAT_DEMO API failed for episodeno ' . $episodeno . ': ' . $e->getMessage());
+                        $prn = null;
+                    }
+                }
+            
+                $enhancedReport[] = [
+                    'episodeno' => $episodeno,
+                    'onset_at'  => $onset_at,
+                    'prn'       => $prn,
+                ];
+            }
+
+            try {
+                Mail::to('farhan@ijn.com.my')->send(new SuspectedAdrReportMail($enhancedReport));
+            
+                Log::info('Suspected ADR report email sent successfully.', [
+                    'timestamp'    => now()->toDateTimeString(),
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Failed to send Suspected ADR report email.', [
+                    'timestamp'     => now()->toDateTimeString(),
+                    'error_message' => $e->getMessage(),
+                    'file'          => $e->getFile(),
+                    'line'          => $e->getLine(),
+                ]);
+            }
+
+        }
+        catch (\Exception $e){
+            Log::error($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
+
+            $response = response()->json(
+                [
+                    'status'  => 'failed',
+                    'message' => 'Internal error happened. Try again'
+                ], 200
+            );
+
+            return $response;
+        }
+    }
+
 }

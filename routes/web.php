@@ -210,10 +210,11 @@ Route::group(['middleware' => ['authsystem']], function() {
     Route::group(['prefix' => 'adr'], function () {
         Route::group(['prefix' => 'report'], function () {
             Route::get('/', [AdrController::class, 'index'])->name('adr.report.index');   
-            Route::get('/generate', [AdrController::class, 'genReport'])->name('adr.report.generate');   
+            Route::get('/generate', [AdrController::class, 'genReport'])->name('adr.report.generate');
+            Route::get('/schedule-email', [AdrController::class, 'scheduleEmail'])->name('adr.report.scheduleemail');   
             Route::post('/save-finalize', [AdrController::class, 'saveFinalize'])->name('adr.report.savefinalize');
             Route::post('/save-false', [AdrController::class, 'saveFalse'])->name('adr.report.savefalse');
-            Route::post('/save-record', [AdrController::class, 'saveRecord'])->name('adr.report.saverecord');                             
+            Route::post('/save-record', [AdrController::class, 'saveRecord'])->name('adr.report.saverecord');
         });
 
     });
@@ -246,7 +247,12 @@ Route::get('/testpdfreport', function () {
 Route::group(['prefix' => 'api'], function () {
     Route::group(['prefix' => 'iblood'], function () {
         Route::get('/supended-transfusion-list', [BloodInventoryController::class, 'apiGetSuspendedTransfusionList'])->name('api.iblood.apiGetSuspendedTransfusionList');
-        Route::get('/supended-icca', [BloodInventoryController::class, 'apiSuspendICCA'])->name('api.iblood.apiSuspendICCA');              
-              
+        Route::get('/supended-icca', [BloodInventoryController::class, 'apiSuspendICCA'])->name('api.iblood.apiSuspendICCA');                      
+    });                           
+});
+
+Route::group(['prefix' => 'scheduler'], function () {
+    Route::group(['prefix' => 'adr'], function () {
+        Route::get('/suspected-email', [AdrController::class, 'suspectedEmail'])->name('scheduler.adr.suspectedemail');
     });                           
 });

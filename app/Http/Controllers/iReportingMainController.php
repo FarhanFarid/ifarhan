@@ -1038,10 +1038,5 @@ class iReportingMainController extends Controller
 
             return $response;
         }
-
-            
-
-        
-
     }
 }
