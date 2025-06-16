@@ -503,7 +503,7 @@ class AdrController extends Controller
             AdrList::truncate();
 
             // Fetch data from external API
-            $uri = env('ADV_EVENT_LIVE');
+            $uri = env('ADV_EVENT');
             $client = new \GuzzleHttp\Client(['defaults' => ['verify' => false]]);
 
             $response = $client->request('GET', $uri);
@@ -564,7 +564,7 @@ class AdrController extends Controller
             
                 if ($episodeno) {
                     try {
-                        $uri = env('PAT_DEMO_LIVE') . $episodeno;
+                        $uri = env('PAT_DEMO') . $episodeno;
                         $client = new \GuzzleHttp\Client(['verify' => false]);
             
                         $response = $client->request('GET', $uri);
