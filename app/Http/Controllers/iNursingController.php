@@ -6,30 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
+use App\Models\iNurDysphagiaScreening;
 use App\Models\iNurLimbRestraint;
 use App\Models\iNurLimbRestraintReassessment;
-// use App\Models\Inventory;
-// use App\Models\BloodInventory;
-// use App\Models\BloodLocation;
-// use App\Models\BloodDetailProcedure;
-// use App\Models\BloodSignSymptom;
-// use App\Models\BloodTypeAdverseEvent;
-// use App\Models\BloodOutcomeAdverseEvent;
-// use App\Models\BloodRelevantInvestigation;
-// use App\Models\BloodRelevantHistory;
-// use App\Models\BloodBloodComponent;
-// use App\Models\Patient;
-// use App\Models\PatientInformation;
-// use App\Models\Dischargesummary;
-// use App\Models\AdrReport;
-// use App\Models\AdrList;
-// use App\Models\AdrBridge;
-// use App\Models\MedShelf;
-// use App\Models\MedShelfUser;
-// use App\Models\MedShelfUserSSO;
-// use App\Models\Sso;
-// use App\Models\BloodWardLocation;
-
 
 use DB;
 use Auth;
@@ -56,7 +35,7 @@ class iNursingController extends Controller
 
         $url = $explode[1];
 
-        return view('inursing.limbrestraint.index', compact('url'));
+        return view('ireporting.inursing.limbrestraint.index', compact('url'));
     }
 
     public function getDataLimbRestraintAssmt(Request $request)
@@ -102,6 +81,73 @@ class iNursingController extends Controller
                     'message' => 'Internal error happened. Try again'
                 ],
                 200
+            );
+
+            return $response;
+        }
+    }
+
+    public function indexDysphagia(Request $request){
+        $explode = explode('?', $request->getRequestUri());
+        $url     = $explode[1];
+
+        return view('ireporting.inursing.dysphagia.index', compact('url'));
+    }
+
+    public function getDataDysphagia(Request $request)
+    {
+        try
+        {            
+            $getAllDysphagia = iNurDysphagiaScreening::select('id', 'inurgenerals_id', 'episodeno', 'status_dysphagia', 'created_by', 'created_at', 'updated_by', 'updated_at')
+                                                        ->with([
+                                                            'createdby:id,name',
+                                                            'updatedby:id,name',
+                                                        ])
+                                                        ->with(['inurgenerals' => function ($q) {
+                                                            $q->select('id', 'patientinformation_id')
+                                                              ->with(['patientinformation' => function ($q) {
+                                                                  $q->select('id', 'patient_id')
+                                                                    ->with(['patient' => function ($q) {
+                                                                        $q->select('id', 'mrn');
+                                                                    }]);
+                                                              }]);
+                                                        }])
+                                                        ->where('status_id', 2)
+                                                        ->orderBy('id', 'desc');
+
+            // Filter by Date Range
+            if ($request->has('dateRange')) {
+                $dateRange = explode(' - ', $request->dateRange);
+                $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+                $endDate   = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+
+                $getAllDysphagia->whereBetween('created_at', [$startDate, $endDate]);
+            }
+
+            $getAllDysphagia = $getAllDysphagia->get();
+
+            $response = response()->json(
+                [
+                    'status' => 'success',
+                    'list'   => $getAllDysphagia ?? null,
+                ], 200
+            );
+
+            return $response;
+        }
+        catch (\Exception $e)
+        {
+            Log::error($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
+
+            $response = response()->json(
+                [
+                    'status'  => 'failed',
+                    'message' => 'Internal error happened. Try again'
+                ], 200
             );
 
             return $response;

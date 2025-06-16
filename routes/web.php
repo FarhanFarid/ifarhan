@@ -240,7 +240,7 @@ Route::group(['middleware' => ['authsystem']], function() {
         }); 
         
         Route::group(['prefix' => 'dysphagia'], function () {
-            Route::get('/', [iNursingController::class, 'index'])->name('inursing.dysphagia.index');
+            Route::get('/', [iNursingController::class, 'indexDysphagia'])->name('inursing.dysphagia.index');
             Route::get('/get-data-dysphagia', [iNursingController::class, 'getDataDysphagia'])->name('inursing.dysphagia.getdatadysphagia');                              
         });
     });
