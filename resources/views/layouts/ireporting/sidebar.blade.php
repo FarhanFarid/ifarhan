@@ -137,3 +137,31 @@
 		</div>
 	</div>
 @endif
+<!--iNursing-->
+<div class="row {{ request()->routeIs('inursing.limbrestraint.index') ? 'bg-teal text-white' : '' }}" 
+	style="padding: 0.5rem; margin: auto; border-bottom: solid 1px #918f8f;">
+	<div class="col-2 mt-2">
+		<a class="text-hover-success" href="#" data-bs-toggle="collapse" data-bs-target="#iNurSubmenu" aria-expanded="{{ request()->routeIs('inursing.limbrestraint.index') ? 'true' : 'false' }}" aria-controls="iNurSubmenu">
+			<i id="iNurArrow" class="fas fa-angle-right fs-3 dropdown-toggle-icon {{ request()->routeIs('inursing.limbrestraint.index') ? 'rotate-90' : '' }}" 
+				style="float: right; margin-bottom: 10px; color: {{ request()->routeIs('inursing.limbrestraint.index') ? '#fff' : '#14787c' }}; transition: transform 0.3s;"></i>
+		</a>
+	</div>
+	<div class="col-10 mt-2" style="padding-left: 0px;">
+		<a class="text-hover-success {{ request()->routeIs('inursing.limbrestraint.index') ? 'text-white' : 'text-dark' }}" 
+			data-bs-toggle="collapse" data-bs-target="#iNurSubmenu" href="#" style="margin-bottom: 10px;">iNursing</a>
+	</div>
+</div>
+<!-- Submenu for iNursing -->
+<div class="collapse {{ request()->routeIs('inursing.limbrestraint.index') ? 'show' : '' }}" id="iNurSubmenu">
+	<div class="row" style="padding-left: 30px; margin-top: 10px;">
+		<div class="col-12" style="padding-bottom: 8px;">
+			<a class="text-hover-success {{ request()->routeIs('inursing.limbrestraint.index') ? 'text-teal' : 'text-dark' }}" 
+			href="{{ route('inursing.limbrestraint.index') }}?{{$url}}" style="margin-bottom: 10px;">Limb Restraint</a>
+		</div>
+		{{-- <div class="col-12">
+			<a class="text-hover-success {{ request()->routeIs('report.iblood.atr.index') ? 'text-teal' : 'text-dark' }}" 
+			href="{{ route('report.iblood.atr.index') }}?{{$url}}" style="margin-bottom: 10px;">ATR Worklist</a>
+		</div> --}}
+	</div>
+</div>
+

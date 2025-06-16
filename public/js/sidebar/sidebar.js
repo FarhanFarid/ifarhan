@@ -646,4 +646,13 @@ $(document).ready(function () {
     $('#idaSubmenu').on('hide.bs.collapse', function () {
         $('#idaArrow').removeClass('rotate-90').css('color', '#14787c');
     });
+
+	/*iNursing */
+	$('#iNurSubmenu').on('show.bs.collapse', function () {
+        $('#iNurArrow').addClass('rotate-90').css('color', '#fff');
+    });
+
+    $('#iNurSubmenu').on('hide.bs.collapse', function () {
+        $('#iNurArrow').removeClass('rotate-90').css('color', '#14787c');
+    });
 });
