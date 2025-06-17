@@ -51,7 +51,7 @@
         routes: {
             ireporting : {
                 dysphagia : {
-                    data: "{{ route('inursing.dysphagia.getdatadysphagia') }}?{!! $url !!}",
+                    data: "{{ route('report.inursing.dysphagia.getdatadysphagia') }}?{!! $url !!}",
                 }
             }
         }

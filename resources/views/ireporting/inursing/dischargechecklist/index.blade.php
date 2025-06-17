@@ -62,7 +62,7 @@
         routes: {
             ireporting : {
                 dischargechecklist : {
-                    data: "{{ route('inursing.dischargechecklist.getdatadischargechecklist') }}?{!! $url !!}",
+                    data: "{{ route('report.inursing.dischargechecklist.getdatadischargechecklist') }}?{!! $url !!}",
                 }
             }
         }

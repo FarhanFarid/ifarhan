@@ -1,8 +1,8 @@
 <?php
 return [
     'inursing_routes' => [
-        'inursing.dysphagia.index',
-        'inursing.limbrestraint.index',
-        'inursing.dischargechecklist.index',
+        'report.inursing.dysphagia.index',
+        'report.inursing.limbrestraint.index',
+        'report.inursing.dischargechecklist.index',
     ],
 ];

@@ -213,18 +213,18 @@ Route::group(['middleware' => ['authsystem']], function() {
         //iNursing
         Route::group(['prefix' => 'inursing'], function () {
             Route::group(['prefix' => 'limbrestraint'], function () {
-                Route::get('/', [iNursingController::class, 'indexLimbRestraint'])->name('inursing.limbrestraint.index');
-                Route::get('/get-data-limbrestraint-assmt', [iNursingController::class, 'getDataLimbRestraintAssmt'])->name('inursing.limbrestraint.getdataassmt');                              
+                Route::get('/', [iNursingController::class, 'indexLimbRestraint'])->name('report.inursing.limbrestraint.index');
+                Route::get('/list', [iNursingController::class, 'getDataLimbRestraintAssmt'])->name('report.inursing.limbrestraint.getdataassmt');                              
             }); 
             
             Route::group(['prefix' => 'dysphagia'], function () {
-                Route::get('/', [iNursingController::class, 'indexDysphagia'])->name('inursing.dysphagia.index');
-                Route::get('/get-data-dysphagia', [iNursingController::class, 'getDataDysphagia'])->name('inursing.dysphagia.getdatadysphagia');                              
+                Route::get('/', [iNursingController::class, 'indexDysphagia'])->name('report.inursing.dysphagia.index');
+                Route::get('/list', [iNursingController::class, 'getDataDysphagia'])->name('report.inursing.dysphagia.getdatadysphagia');                              
             });
 
             Route::group(['prefix' => 'dischargechecklist'], function () {
-                Route::get('/', [iNursingController::class, 'indexDischargeChecklist'])->name('inursing.dischargechecklist.index');
-                Route::get('/get-data-dischargechecklist', [iNursingController::class, 'getDataDischargeChecklist'])->name('inursing.dischargechecklist.getdatadischargechecklist');                              
+                Route::get('/', [iNursingController::class, 'indexDischargeChecklist'])->name('report.inursing.dischargechecklist.index');
+                Route::get('/list', [iNursingController::class, 'getDataDischargeChecklist'])->name('report.inursing.dischargechecklist.getdatadischargechecklist');                              
             });
         });
     });
