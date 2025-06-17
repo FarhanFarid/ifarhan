@@ -55,7 +55,7 @@ var table_limbrestraint_asmt = $('#report-limbrestraint-assessment-table').DataT
     ],
     ajax: {
         method: 'get',
-        url: config.routes.point.ms.data,
+        url: config.routes.ireporting.limbrestraint.data,
         dataSrc: "data",
         data: function (d) {
             d.dateRange = $('#filterdate').val();

@@ -59,9 +59,9 @@
 
     var config = {
         routes: {
-            point : {
+            ireporting : {
                 limbrestraint : {
-                    data: "{{ route('inursing.limbrestraint.getdataassmt') }}?{!! $url !!}",
+                    data: "{{ route('report.inursing.limbrestraint.getdataassmt') }}?{!! $url !!}",
                 }
             }
         }
