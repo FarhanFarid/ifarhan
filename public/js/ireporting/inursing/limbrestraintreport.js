@@ -168,9 +168,15 @@ var table_limbrestraint_asmt = $('#report-limbrestraint-assessment-table').DataT
             "render": function (data, type, row)  {
                 var html = '';
 
-                if(row != null && row.lastmodified_by != null) 
-                    html += row.lastmodifiedby + '<br>' + '@ &nbsp;' +
-                            moment(row.lastmodified_at).format('DD/MM/YYYY') + '&nbsp;&nbsp;' + moment(row.lastmodified_at).format('hh:mm A');
+                if(row != null) 
+                {
+                    if(row.lastmodified_by != null) 
+                        html += row.lastmodifiedby.name + '<br>' + '@ &nbsp;' +
+                                moment(row.lastmodified_at).format('DD/MM/YYYY') + '&nbsp;&nbsp;' + moment(row.lastmodified_at).format('hh:mm A');
+                    else
+                        html += row.updatedby.name + '<br>' + '@ &nbsp;' +
+                                moment(row.updated_at).format('DD/MM/YYYY') + '&nbsp;&nbsp;' + moment(row.updated_at).format('hh:mm A');
+                }
                 else
                     html += '';
 

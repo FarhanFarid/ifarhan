@@ -30,10 +30,12 @@ class iNursingController extends Controller
     {
         try {
             $getiNurLimbRAssmtAll = iNurLimbRestraint::select('id', 'inurgenerals_id', 'episodeno', 'ward', 'reason_restraint', 'reason_restraint_given_to',
-                                                              'ordering_doctor', 'date_time', 'created_by', 'created_at', 'updated_by', 'updated_at')
+                                                              'ordering_doctor', 'date_time', 'created_by', 'created_at', 'updated_by', 'updated_at',
+                                                              'lastmodified_by', 'lastmodified_at')
                                                         ->with([
                                                             'lookupward:id,ctloc_desc',
                                                             'createdby:id,name',
+                                                            'updatedby:id,name',
                                                             'lastmodifiedby:id,name',
                                                         ])
                                                         ->with(['inurgenerals' => function ($q) {
