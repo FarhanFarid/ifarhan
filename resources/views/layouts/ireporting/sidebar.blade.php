@@ -141,6 +141,7 @@
 @endif
 
 <!--iNursing-->
+@if (in_array(Request::getHost(), ['127.0.0.1', 'uat-iclic.ijn.com.my', 'mirror-iclic.ijn.com.my']))
 <div class="row {{ in_array(request()->route()->getName(), $inursingRoutes) ? 'bg-teal text-white' : '' }}" 
 	style="padding: 0.5rem; margin: auto; border-bottom: solid 1px #918f8f;">
 	<div class="col-2 mt-2">
@@ -158,7 +159,9 @@
 <div class="collapse {{ in_array(request()->route()->getName(), $inursingRoutes) ? 'show' : '' }}" id="iNurSubmenu">
 	<div class="row" style="padding-left: 30px;">
 		@include('layouts.ireporting.inursing.subviewssidebar.navinurcareforms')
+		@include('layouts.ireporting.inursing.subviewssidebar.navinurdischargeforms')
 	</div>
 </div>
 <!-- Submenu for iNursing -->
+@endif
 <!--iNursing-->

@@ -1,3 +1,10 @@
+@php
+    $careformRoutes = [
+        'inursing.dysphagia.index',
+        'inursing.limbrestraint.index',
+	];
+@endphp
+
 <div class="row" style="padding: 0.1rem; padding-left: 15px;">
 	<div class="col-2 mt-2">
 		<a class="text-hover-success collapse" href="#" data-bs-toggle="collapse" data-bs-target="#iNurSubmenuNCF" aria-expanded="{{ in_array(request()->route()->getName(), $inursingRoutes) ? 'true' : 'false' }}" aria-controls="iNurSubmenuNCF">
@@ -6,8 +13,9 @@
 		</a>
 	</div>
 	<div class="col-10 mt-2" style="padding-left: 0px;">
-		<a class="text-hover-success" style="color: {{ in_array(request()->route()->getName(), $inursingRoutes) ? '#14787c;' : '#1e2129;' }} font-weight: bold; margin-bottom: 10px;" 
-			href="#" onclick="toggleiNurSubmenuNCF(); return false;">Nursing Care Forms</a>
+		<a class="text-hover-success" style="color: {{ in_array(request()->route()->getName(), $careformRoutes) ? '#14787c;' : '#1e2129;' }} 
+			font-weight: bold; margin-bottom: 10px;" 
+			href="#">Nursing Care Forms</a>
 	</div>
 </div>
 

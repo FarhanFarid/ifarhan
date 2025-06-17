@@ -243,6 +243,11 @@ Route::group(['middleware' => ['authsystem']], function() {
             Route::get('/', [iNursingController::class, 'indexDysphagia'])->name('inursing.dysphagia.index');
             Route::get('/get-data-dysphagia', [iNursingController::class, 'getDataDysphagia'])->name('inursing.dysphagia.getdatadysphagia');                              
         });
+
+        Route::group(['prefix' => 'dischargechecklist'], function () {
+            Route::get('/', [iNursingController::class, 'indexDischargeChecklist'])->name('inursing.dischargechecklist.index');
+            Route::get('/get-data-dischargechecklist', [iNursingController::class, 'getDataDischargeChecklist'])->name('inursing.dischargechecklist.getdatadischargechecklist');                              
+        });
     });
 });
 
