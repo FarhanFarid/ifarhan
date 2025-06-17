@@ -19,20 +19,13 @@
                                     </div>
                                 </div>
                             </div>
-                            {{-- <div class="col-md-4 mb-3">
-                                <div class="form-group">
-                                    <label class="form-label fw-semibold fs-6 mt-2">Search&nbsp;:</label>
-                                    <div class="fv-row">
-                                        <input class="form-control form-control-md" type="search" class="form-control" id="searchdysphagia" placeholder="Search...">
-                                    </div>
-                                </div>
-                            </div> --}}
                         </div>
                         <table class="table table-bordered table-row-bordered" id="report-dysphagia-table">
                             <thead class="thead-light">
                                 <tr class="fw-semibold fs-6 text-center">
                                     <th style="max-width: 50px; color: #14787c; background-color:#ecfefe">No.</th>
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">MRN</th>
+                                    <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Name</th>
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Episode No.</th>
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Date</th>
                                     <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Time</th>

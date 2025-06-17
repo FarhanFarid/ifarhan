@@ -16,11 +16,11 @@ var table_dysphagia = $('#report-dysphagia-table').DataTable({
         },
         {
             "targets": 1,
-            "width": "5%"
+            "width": "4%"
         },
         {
             "targets": 2,
-            "width": "5%"
+            "width": "15%"
         },
         {
             "targets": 3,
@@ -28,14 +28,18 @@ var table_dysphagia = $('#report-dysphagia-table').DataTable({
         },
         {
             "targets": 4,
-            "width": "5%"
+            "width": "4%"
         },
         {
             "targets": 5,
-            "width": "10%"
+            "width": "4%"
         },
         {
             "targets": 6,
+            "width": "10%"
+        },
+        {
+            "targets": 7,
             "width": "10%"
         },
     ],
@@ -60,6 +64,19 @@ var table_dysphagia = $('#report-dysphagia-table').DataTable({
 
                 if(row != null && row.inurgenerals != null)
                     html += row.inurgenerals.patientinformation.patient.mrn;
+                else
+                    html += '';
+
+                return html;
+            }
+        },
+        {
+            "data": 'name',
+            "render": function (data, type, row)  {
+                var html = '';
+
+                if(row != null && row.inurgenerals != null)
+                    html += row.inurgenerals.patientinformation.patient.name;
                 else
                     html += '';
 

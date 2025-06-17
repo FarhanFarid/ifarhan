@@ -109,7 +109,7 @@ class iNursingController extends Controller
                                                               ->with(['patientinformation' => function ($q) {
                                                                   $q->select('id', 'patient_id')
                                                                     ->with(['patient' => function ($q) {
-                                                                        $q->select('id', 'mrn');
+                                                                        $q->select('id', 'mrn', 'name');
                                                                     }]);
                                                               }]);
                                                         }])
