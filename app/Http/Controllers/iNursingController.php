@@ -10,6 +10,7 @@ use App\Models\iNurDysphagiaScreening;
 use App\Models\iNurLimbRestraint;
 use App\Models\iNurLimbRestraintReassessment;
 use App\Models\iNurDischargeChecklist;
+use App\Models\LookupWards;
 
 use DB;
 use Auth;
@@ -17,51 +18,56 @@ use Auth;
 class iNursingController extends Controller
 {
     public function indexLimbRestraint(Request $request){
-        // $explode = explode('?', $request->getRequestUri());
-
-        // $url = $explode[1];
-
-        // $inurlimbrestraint_assessment = iNurLimbRestraint::where('status_id', 2)->orderBy('date_time', 'desc')->get();
-
-        // foreach($inurlimbrestraint_assessment as $assessment){
-        //     $inurlimbrestraint_reassessment = iNurLimbRestraintReassessment::where('limbrestraint_assessment_id', $assessment->id)->get();
-        // }
-
-        // return view('inursing.limbrestraint.index', compact(
-        //     'url',
-        //     'inurlimbrestraint_reassessment'
-        // ));
-
         $explode = explode('?', $request->getRequestUri());
+        $url     = $explode[1];
 
-        $url = $explode[1];
+        $wards = LookupWards::all();
 
-        return view('ireporting.inursing.limbrestraint.index', compact('url'));
+        return view('ireporting.inursing.limbrestraint.index', compact('url', 'wards'));
     }
 
     public function getDataLimbRestraintAssmt(Request $request)
     {
         try {
-            $epsno = $request->epsdno;
+            $getiNurLimbRAssmtAll = iNurLimbRestraint::select('id', 'inurgenerals_id', 'episodeno', 'ward', 'reason_restraint', 'reason_restraint_given_to',
+                                                              'ordering_doctor', 'date_time', 'created_by', 'created_at', 'updated_by', 'updated_at')
+                                                        ->with([
+                                                            'lookupward:id,ctloc_desc',
+                                                            'createdby:id,name',
+                                                            'lastmodifiedby:id,name',
+                                                        ])
+                                                        ->with(['inurgenerals' => function ($q) {
+                                                            $q->select('id', 'patientinformation_id')
+                                                            ->with(['patientinformation' => function ($q) {
+                                                                $q->select('id', 'patient_id')
+                                                                    ->with(['patient' => function ($q) {
+                                                                        $q->select('id', 'mrn', 'name');
+                                                                    }]);
+                                                            }]);
+                                                        }])
+                                                        ->where('status_id', 2);
 
-            $getiNurLimbRAssmt = iNurLimbRestraint::with(['lookupward' => function ($q) {
-                                                        $q->select('id', 'ctloc_desc');
-                                                    }])
-                                                    ->with(['createdby' => function ($q) {
-                                                        $q->select('id', 'name');
-                                                    }])
-                                                    ->with('updatedby', function ($q) {
-                                                        $q->select('id', 'name');
-                                                    })
-                                                    ->where('episodeno', $epsno)
-                                                    ->where('status_id', 2)
-                                                    ->orderBy('date_time', 'desc')
-                                                    ->get();
+            // Filter by Date Range
+            if ($request->has('dateRange')) {
+                $dateRange = explode(' - ', $request->dateRange);
+                $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+                $endDate   = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+
+                $getiNurLimbRAssmtAll->whereBetween('created_at', [$startDate, $endDate]);
+            }
+
+            // Filter by Ward
+            if($request->has('ward') && $request->ward[0] != 'all')
+            {
+                $getiNurLimbRAssmtAll = $getiNurLimbRAssmtAll->whereIn('ward', $request->ward);
+            }
+
+            $getiNurLimbRAssmtAll = $getiNurLimbRAssmtAll->orderBy('id', 'desc')->get();
 
             $response = response()->json(
                 [
                     'status'  => 'success',
-                    'data'    => $getiNurLimbRAssmt
+                    'list'    => $getiNurLimbRAssmtAll ?? null
                 ],
                 200
             );

@@ -12,6 +12,11 @@ class iNurLimbRestraint extends Model implements AuditableContract
 
     protected $table = 'limbrestraint_assessment';
 
+    public function inurgenerals()
+    {
+        return $this->belongsTo(iNurGeneral::class, 'inurgenerals_id', 'id');
+    }
+    
     public function lookupward()
     {
         return $this->hasOne(LookupWards::class, 'id', 'ward');

@@ -15,31 +15,36 @@
                                 <div class="form-group">
                                     <label class="form-label fw-semibold fs-6 mt-2">Date&nbsp;:</label>
                                     <div class="fv-row">
-                                        <input class="form-control form-control-md" placeholder="Pick date range" id="filterdate" value="{{ \Carbon\Carbon::now()->format('d/m/Y') }} - {{ \Carbon\Carbon::now()->format('d/m/Y') }}" readonly/>
+                                        <input class="form-control form-control-md" placeholder="Pick date range" id="filterdatelimb" value="{{ \Carbon\Carbon::now()->format('d/m/Y') }} - {{ \Carbon\Carbon::now()->format('d/m/Y') }}" readonly/>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <div class="form-group">
-                                    <label class="form-label fw-semibold fs-6 mt-2">Search&nbsp;:</label>
+                                    <label class="form-label fw-semibold fs-6 mt-2">Ward&nbsp;:</label>
                                     <div class="fv-row">
-                                        <input class="form-control form-control-md" type="search" class="form-control" id="searchlimbrestraint" placeholder="Search...">
+                                        <select class="form-control form-control-md" id="filterwardlimb" name="filterwardlimb[]" multiple="multiple">
+                                            <option value="all" selected>All</option>
+                                            @foreach($wards as $ward)
+                                                <option value="{{$ward['id']}}">{{$ward['ctloc_desc']}}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-2 mb-3 align-self-end">
-                                <button id="exportlimbrestraint" class="btn btn-dark">Excel</button>
                             </div>
                         </div>
                         <table class="table table-bordered table-row-bordered" id="report-limbrestraint-assessment-table">
                             <thead class="thead-light">
-                                <tr class="fw-semibold fs-6">
+                                <tr class="fw-semibold fs-6 text-center">
                                     <th style="max-width: 50px; color: #14787c; background-color:#ecfefe">No.</th>
-                                    <th style="min-width: 250px; color: #14787c; background-color:#ecfefe">Ward</th>
-                                    <th style="min-width: 250px; color: #14787c; background-color:#ecfefe">Reasons for Restraint</th>
-                                    <th style="min-width: 250px; color: #14787c; background-color:#ecfefe">Ordering Doctor</th>
-                                    <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">Date & Time</th>
-                                    <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">Action</th>
+                                    <th style="max-width: 80px; color: #14787c; background-color:#ecfefe">MRN</th>
+                                    <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Name</th>
+                                    <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Episode No.</th>
+                                    <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Ward</th>
+                                    <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Reasons for Restraint</th>
+                                    <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Ordering Doctor</th>
+                                    <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Date & Time</th>
+                                    <th style="min-width: 100px; color: #14787c; background-color:#ecfefe">Last Updated By</th>
                                 </tr>
                             </thead>
                             <tbody>
