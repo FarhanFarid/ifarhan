@@ -14,7 +14,7 @@
 	</div>
 	<div class="col-10 mt-2" style="padding-left: 0px;">
 		<a class="text-hover-success" style="color: {{ in_array(request()->route()->getName(), $dischargeformRoutes) ? '#14787c;' : '#1e2129;' }} font-weight: bold; margin-bottom: 10px;" 
-			href="#">Discharge Forms</a>
+			href="#" data-bs-target="#iNurSubmenuDCF">Discharge Forms</a>
 	</div>
 </div>
 

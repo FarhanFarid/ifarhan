@@ -663,4 +663,12 @@ $(document).ready(function () {
     $('#iNurSubmenuNCF').on('hide.bs.collapse', function () {
         $('#iNurArrowNCF').removeClass('rotate-90').css('color', '#14787c');
     });
+
+	$('#iNurSubmenuDCF').on('show.bs.collapse', function () {
+        $('#iNurArrowDCF').addClass('rotate-90').css('color', '#99a1b7');
+    });
+
+    $('#iNurSubmenuDCF').on('hide.bs.collapse', function () {
+        $('#iNurArrowDCF').removeClass('rotate-90').css('color', '#14787c');
+    });
 });
