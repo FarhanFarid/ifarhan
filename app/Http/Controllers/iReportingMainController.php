@@ -1087,6 +1087,7 @@ class iReportingMainController extends Controller
 
                 $temp['patname']             = $getPatInfo['patient']['name'];
                 $temp['mrn']                 = $getPatInfo['patient']['mrn'];
+                $temp['episodeno']           = $consent['episodeno'];
                 $temp['consentname']         = $consent['formname'];
                 $temp['createdby']           = $consent['createdby']['name'];
                 $temp['createddate']         = Carbon::parse($consent['created_at'])->format('Y-m-d');
@@ -1106,7 +1107,6 @@ class iReportingMainController extends Controller
         }
         catch(\Exception $e)
         {
-            dd($e->getMessage());
             Log::error($e->getMessage(), [
                     'file' => $e->getFile(),
                     'line' => $e->getLine()

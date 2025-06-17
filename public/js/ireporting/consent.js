@@ -29,6 +29,12 @@ var table = $('#reportms-table').DataTable({
             }
         },
         {
+            "data": 'episodeno',
+            "render": function (data, type, row)  {
+                return '<span>'+row.episodeno+'</span>';
+            }
+        },
+        {
             "data": 'consentname',
             "render": function (data, type, row)  {
                 return '<span>'+row.consentname+'</span>';

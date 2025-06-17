@@ -26,6 +26,7 @@
                                     <th style="max-width: 50px; color: #14787c; background-color:#ecfefe">No.</th>
                                     <th style="min-width: 150px; color: #14787c; background-color:#ecfefe">Patient Name</th>
                                     <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">MRN</th>
+                                    <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">Episode No</th>
                                     <th style="min-width: 150px; color: #14787c; background-color:#ecfefe">Consent Name</th>
                                     <th style="min-width: 150px; color: #14787c; background-color:#ecfefe">Created By</th>
                                     <th style="min-width: 50px; color: #14787c; background-color:#ecfefe">Created Date</th>
