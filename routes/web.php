@@ -204,6 +204,11 @@ Route::group(['middleware' => ['authsystem']], function() {
             Route::get('/', [iReportingMainController::class, 'indexMedShelf'])->name('report.medshelf');
             Route::get('/list', [iReportingMainController::class, 'apiGetDataMEdShelf'])->name('report.medshelf.list');
         });
+
+        Route::group(['prefix' => 'consent'], function () {
+            Route::get('/', [iReportingMainController::class, 'indexConsent'])->name('report.consent.index');
+            Route::get('/list', [iReportingMainController::class, 'apiGetDataConsent'])->name('report.consent.list');
+        });
     });
 
     //ADR

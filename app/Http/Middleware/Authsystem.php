@@ -464,6 +464,8 @@ class Authsystem
                 'ireporting/adr/getpatientinfo',
                 'ireporting/medshelf',
                 'ireporting/medshelf/list',
+                'ireporting/consent',
+                'ireporting/consent/list',
                 'bed-management',
                 'bed-management/getwardlist',
                 'bed-management/getpatientinfo',
