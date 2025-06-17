@@ -28,7 +28,7 @@ use App\Http\Controllers\ClrController;
 
 //bedmanagement
 use App\Http\Controllers\BedManagementController;
-
+use App\Http\Controllers\iNursingController;
 //user access controller
 use App\Http\Controllers\UserAccessRoleController;
 
@@ -236,6 +236,24 @@ Route::group(['middleware' => ['authsystem']], function() {
         Route::get('/', [BedManagementController::class, 'index'])->name('bm.index');
         Route::get('/getwardlist', [BedManagementController::class, 'wardList'])->name('bm.getwardlist'); 
         Route::get('/getpatientinfo', [BedManagementController::class, 'patientInfo'])->name('bm.getpatientinfo');
+    });
+
+    //iNursing
+    Route::group(['prefix' => 'inursing'], function () {
+        Route::group(['prefix' => 'limbrestraint'], function () {
+            Route::get('/', [iNursingController::class, 'indexLimbRestraint'])->name('inursing.limbrestraint.index');
+            Route::get('/get-data-limbrestraint-assmt', [iNursingController::class, 'getDataLimbRestraintAssmt'])->name('inursing.limbrestraint.getdataassmt');                              
+        }); 
+        
+        Route::group(['prefix' => 'dysphagia'], function () {
+            Route::get('/', [iNursingController::class, 'indexDysphagia'])->name('inursing.dysphagia.index');
+            Route::get('/get-data-dysphagia', [iNursingController::class, 'getDataDysphagia'])->name('inursing.dysphagia.getdatadysphagia');                              
+        });
+
+        Route::group(['prefix' => 'dischargechecklist'], function () {
+            Route::get('/', [iNursingController::class, 'indexDischargeChecklist'])->name('inursing.dischargechecklist.index');
+            Route::get('/get-data-dischargechecklist', [iNursingController::class, 'getDataDischargeChecklist'])->name('inursing.dischargechecklist.getdatadischargechecklist');                              
+        });
     });
 });
 

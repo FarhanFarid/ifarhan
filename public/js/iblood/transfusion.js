@@ -92,7 +92,7 @@ $(document).ready(function () {
         var url = config.routes.blood.transfusion.check;
 
         if (mrn == "000") {
-            Swal.fire({
+                           Swal.fire({
                 title: "Alert!",
                 text: "This blood pack did not belong to this patient!",
                 icon: "error",
