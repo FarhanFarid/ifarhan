@@ -10,6 +10,7 @@ use App\Models\iNurDysphagiaScreening;
 use App\Models\iNurLimbRestraint;
 use App\Models\iNurLimbRestraintReassessment;
 use App\Models\iNurDischargeChecklist;
+use App\Models\iNurGeneral;
 use App\Models\LookupWards;
 
 use DB;
@@ -26,8 +27,34 @@ class iNursingController extends Controller
         return view('ireporting.inursing.limbrestraint.index', compact('url', 'wards'));
     }
 
+    private function updateInurGeneralsIdLimb()
+    {
+        $getLimbRestraint = iNurLimbRestraint::select('id', 'episodeno')
+                                                ->where('inurgenerals_id', null)
+                                                ->where('status_id', 2)
+                                                ->get();
+
+        if($getLimbRestraint->count() > 0) 
+        {
+            foreach($getLimbRestraint as $limb)
+            {
+                $getinurgeneral = iNurGeneral::select('id')
+                                             ->where('episodeno', $limb['episodeno'])
+                                             ->where('status_id', 2)
+                                             ->first();
+                
+                $limb['inurgenerals_id'] = $getinurgeneral->id;
+                $limb->save();
+            }
+
+            Log::info('update limb ireporting inurgenerals_id');
+        }
+    }
+
     public function getDataLimbRestraintAssmt(Request $request)
     {
+        $this->updateInurGeneralsIdLimb();
+
         try {
             $getiNurLimbRAssmtAll = iNurLimbRestraint::select('id', 'inurgenerals_id', 'episodeno', 'ward', 'reason_restraint', 'reason_restraint_given_to',
                                                               'ordering_doctor', 'date_time', 'created_by', 'created_at', 'updated_by', 'updated_at',
