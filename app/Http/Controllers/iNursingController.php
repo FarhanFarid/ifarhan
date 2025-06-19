@@ -11,6 +11,7 @@ use App\Models\iNurLimbRestraint;
 use App\Models\iNurLimbRestraintReassessment;
 use App\Models\iNurDischargeChecklist;
 use App\Models\iNurGeneral;
+use App\Models\iNurPatientAssessmentChecklist;
 use App\Models\iNurPostDischargeVisit;
 use App\Models\LookupWards;
 
@@ -309,6 +310,73 @@ class iNursingController extends Controller
                 [
                     'status' => 'success',
                     'list'   => $getAllPostDischarge ?? null,
+                ], 200
+            );
+
+            return $response;
+        }
+        catch (\Exception $e)
+        {
+            Log::error($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
+
+            $response = response()->json(
+                [
+                    'status'  => 'failed',
+                    'message' => 'Internal error happened. Try again'
+                ], 200
+            );
+
+            return $response;
+        }
+    }
+
+    public function indexPatientAssmtChecklist(Request $request){
+        $explode = explode('?', $request->getRequestUri());
+        $url     = $explode[1];
+
+        return view('ireporting.inursing.patientassmntchecklist.index', compact('url'));
+    }
+
+    public function getDataPatientAssmtChecklist(Request $request)
+    {
+        try
+        {            
+            $getAllPatientAssmntCheck = iNurPatientAssessmentChecklist::select('id', 'inurgenerals_id', 'episodeno', 'date', 'guardian_caretaker', 
+                                                                               'status_patcheck', 'created_by', 'created_at', 'lastmodified_by', 'lastmodified_at')
+                                                                        ->with([
+                                                                            'createdby:id,name',
+                                                                            'lastmodifiedby:id,name',
+                                                                        ])
+                                                                        ->with(['inurgenerals' => function ($q) {
+                                                                            $q->select('id', 'patientinformation_id')
+                                                                            ->with(['patientinformation' => function ($q) {
+                                                                                $q->select('id', 'patient_id')
+                                                                                    ->with(['patient' => function ($q) {
+                                                                                        $q->select('id', 'mrn', 'name');
+                                                                                    }]);
+                                                                            }]);
+                                                                        }])
+                                                                        ->where('status_id', 2);
+
+            // Filter by Date Range
+            if ($request->has('dateRange')) {
+                $dateRange = explode(' - ', $request->dateRange);
+                $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+                $endDate   = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+
+                $getAllPatientAssmntCheck->whereBetween('created_at', [$startDate, $endDate]);
+            }
+
+            $getAllPatientAssmntCheck = $getAllPatientAssmntCheck->orderBy('id', 'desc')->get();
+
+            $response = response()->json(
+                [
+                    'status' => 'success',
+                    'list'   => $getAllPatientAssmntCheck ?? null,
                 ], 200
             );
 

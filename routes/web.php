@@ -222,6 +222,16 @@ Route::group(['middleware' => ['authsystem']], function() {
                 Route::get('/list', [iNursingController::class, 'getDataDysphagia'])->name('report.inursing.dysphagia.getdatadysphagia');                              
             });
 
+            Route::group(['prefix' => 'patientassmtchecklist'], function () {
+                Route::get('/', [iNursingController::class, 'indexPatientAssmtChecklist'])->name('report.inursing.patientassmtchecklist.index');
+                Route::get('/list', [iNursingController::class, 'getDataPatientAssmtChecklist'])->name('report.inursing.patientassmtchecklist.getdatapatientassmtchecklist');                              
+            });
+
+            Route::group(['prefix' => 'homeassmtchecklist'], function () {
+                Route::get('/', [iNursingController::class, 'indexHomeAssmtChecklist'])->name('report.inursing.homeassmtchecklist.index');
+                Route::get('/list', [iNursingController::class, 'getDataHomeAssmtChecklist'])->name('report.inursing.homeassmtchecklist.getdatahomeassmtchecklist');                              
+            });
+
             Route::group(['prefix' => 'dischargechecklist'], function () {
                 Route::get('/', [iNursingController::class, 'indexDischargeChecklist'])->name('report.inursing.dischargechecklist.index');
                 Route::get('/list', [iNursingController::class, 'getDataDischargeChecklist'])->name('report.inursing.dischargechecklist.getdatadischargechecklist');                              
