@@ -558,7 +558,7 @@ class AdrController extends Controller
             
             foreach ($report as $item) {
                 $episodeno = $item->adrlist->episodeno ?? null;
-                $onset_at = $item->adrlist->onset_at ?? null;
+                $reported_at = $item->adrlist->reported_at ?? null;
             
                 $prn = null;
             
@@ -580,14 +580,17 @@ class AdrController extends Controller
                 }
             
                 $enhancedReport[] = [
-                    'episodeno' => $episodeno,
-                    'onset_at'  => $onset_at,
-                    'prn'       => $prn,
+                    'episodeno'     => $episodeno,
+                    'reported_at'   => $reported_at,
+                    'prn'           => $prn,
                 ];
             }
 
             try {
-                Mail::to('farhan@ijn.com.my')->send(new SuspectedAdrReportMail($enhancedReport));
+                Mail::to('farhan@ijn.com.my')
+                // ->cc(['zaeimah@ijn.com.my', 'nurainaisyah@ijn.com.my', 'sharulfaizal@ijn.com.my'])        
+                // ->bcc(['nurazira@ijn.com.my', 'sashmiitha@ijn.com.my' ])                              
+                ->send(new SuspectedAdrReportMail($enhancedReport));
             
                 Log::info('Suspected ADR report email sent successfully.', [
                     'timestamp'    => now()->toDateTimeString(),
