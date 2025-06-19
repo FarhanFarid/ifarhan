@@ -646,4 +646,29 @@ $(document).ready(function () {
     $('#idaSubmenu').on('hide.bs.collapse', function () {
         $('#idaArrow').removeClass('rotate-90').css('color', '#14787c');
     });
+
+	/*iNursing */
+	$('#iNurSubmenu').on('show.bs.collapse', function () {
+        $('#iNurArrow').addClass('rotate-90').css('color', '#fff');
+    });
+
+    $('#iNurSubmenu').on('hide.bs.collapse', function () {
+        $('#iNurArrow').removeClass('rotate-90').css('color', '#14787c');
+    });
+
+	$('#iNurSubmenuNCF').on('show.bs.collapse', function () {
+        $('#iNurArrowNCF').addClass('rotate-90').css('color', '#99a1b7');
+    });
+
+    $('#iNurSubmenuNCF').on('hide.bs.collapse', function () {
+        $('#iNurArrowNCF').removeClass('rotate-90').css('color', '#14787c');
+    });
+
+	$('#iNurSubmenuDCF').on('show.bs.collapse', function () {
+        $('#iNurArrowDCF').addClass('rotate-90').css('color', '#99a1b7');
+    });
+
+    $('#iNurSubmenuDCF').on('hide.bs.collapse', function () {
+        $('#iNurArrowDCF').removeClass('rotate-90').css('color', '#14787c');
+    });
 });

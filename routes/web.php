@@ -28,7 +28,7 @@ use App\Http\Controllers\ClrController;
 
 //bedmanagement
 use App\Http\Controllers\BedManagementController;
-
+use App\Http\Controllers\iNursingController;
 //user access controller
 use App\Http\Controllers\UserAccessRoleController;
 
@@ -203,6 +203,44 @@ Route::group(['middleware' => ['authsystem']], function() {
         Route::group(['prefix' => 'medshelf'], function () {
             Route::get('/', [iReportingMainController::class, 'indexMedShelf'])->name('report.medshelf');
             Route::get('/list', [iReportingMainController::class, 'apiGetDataMEdShelf'])->name('report.medshelf.list');
+        });
+
+        Route::group(['prefix' => 'consent'], function () {
+            Route::get('/', [iReportingMainController::class, 'indexConsent'])->name('report.consent.index');
+            Route::get('/list', [iReportingMainController::class, 'apiGetDataConsent'])->name('report.consent.list');
+        });
+
+        //iNursing
+        Route::group(['prefix' => 'inursing'], function () {
+            Route::group(['prefix' => 'limbrestraint'], function () {
+                Route::get('/', [iNursingController::class, 'indexLimbRestraint'])->name('report.inursing.limbrestraint.index');
+                Route::get('/list', [iNursingController::class, 'getDataLimbRestraintAssmt'])->name('report.inursing.limbrestraint.getdataassmt');                              
+            }); 
+            
+            Route::group(['prefix' => 'dysphagia'], function () {
+                Route::get('/', [iNursingController::class, 'indexDysphagia'])->name('report.inursing.dysphagia.index');
+                Route::get('/list', [iNursingController::class, 'getDataDysphagia'])->name('report.inursing.dysphagia.getdatadysphagia');                              
+            });
+
+            Route::group(['prefix' => 'patientassmtchecklist'], function () {
+                Route::get('/', [iNursingController::class, 'indexPatientAssmtChecklist'])->name('report.inursing.patientassmtchecklist.index');
+                Route::get('/list', [iNursingController::class, 'getDataPatientAssmtChecklist'])->name('report.inursing.patientassmtchecklist.getdatapatientassmtchecklist');                              
+            });
+
+            Route::group(['prefix' => 'homeassmtchecklist'], function () {
+                Route::get('/', [iNursingController::class, 'indexHomeAssmtChecklist'])->name('report.inursing.homeassmtchecklist.index');
+                Route::get('/list', [iNursingController::class, 'getDataHomeAssmtChecklist'])->name('report.inursing.homeassmtchecklist.getdatahomeassmtchecklist');                              
+            });
+
+            Route::group(['prefix' => 'dischargechecklist'], function () {
+                Route::get('/', [iNursingController::class, 'indexDischargeChecklist'])->name('report.inursing.dischargechecklist.index');
+                Route::get('/list', [iNursingController::class, 'getDataDischargeChecklist'])->name('report.inursing.dischargechecklist.getdatadischargechecklist');                              
+            });
+
+            Route::group(['prefix' => 'postdischarge'], function () {
+                Route::get('/', [iNursingController::class, 'indexPostDischarge'])->name('report.inursing.postdischarge.index');
+                Route::get('/list', [iNursingController::class, 'getDataPostDischarge'])->name('report.inursing.postdischarge.getdatapostdischarge');                              
+            });
         });
     });
 

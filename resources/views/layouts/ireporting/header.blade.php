@@ -52,7 +52,7 @@
     }
 
     /* Submenu item styling */
-    #ibloodSubmenu a, #idaSubmenu a
+    #ibloodSubmenu a, #idaSubmenu a, #iNurSubmenu a
      {
         font-size: 0.9rem;
         padding: 5px;
@@ -62,14 +62,14 @@
     }
 
     /* Active submenu item */
-    #ibloodSubmenu a.text-teal, #idaSubmenu a.text-teal {
+    #ibloodSubmenu a.text-teal, #idaSubmenu a.text-teal, #iNurSubmenu a.text-teal {
         border-color: #14787c;
         color: #14787c !important;
         font-weight: bold;
     }
 
     /* Submenu hover effect */
-    #ibloodSubmenu a:hover, #idaSubmenu a:hover {
+    #ibloodSubmenu a:hover, #idaSubmenu a:hover, #iNurSubmenu a:hover {
         background-color: #f8f9fa;
         border-color: #14787c;
         padding-left: 15px;

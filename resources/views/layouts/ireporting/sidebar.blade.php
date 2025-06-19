@@ -4,6 +4,8 @@
 
 @php
     $usrGrp = request()->get('usrGrp');
+
+	$inursingRoutes = config('dynamicroutes.inursing_routes');
 @endphp
 
 <!-- iMilk -->
@@ -137,3 +139,46 @@
 		</div>
 	</div>
 @endif
+
+@if(in_array($usrGrp, ["Administrator", "MROffice", "MRManager", "MRExecutive", "MRCashier"]))
+	<div class="row {{ request()->routeIs('report.consent.index') ? 'bg-teal text-white' : '' }}" 
+		style="padding: 0.5rem; margin: auto; border-bottom: solid 1px #918f8f;">
+		<div class="col-2 mt-2">
+			<a class="text-hover-success {{ request()->routeIs('report.consent.index') ? 'display-none' : 'display-block' }}" href="#" id="expandhr" style="margin-bottom: 10px; display: block;">
+				<i class="fas fa-angle-right fs-3 {{ request()->routeIs('report.consent.index') ? 'color-white' : 'color-teal' }}" 
+					style="float: right; margin-bottom: 10px;"></i>
+			</a>
+		</div>
+		<div class="col-10 mt-2" style="padding-left: 0px;">
+			<a class="text-hover-success {{ request()->routeIs('report.consent.index') ? 'text-white' : 'text-dark' }}" 
+				href="{{ route('report.consent.index') }}?{{$url}}" style="margin-bottom: 10px;">Consent Listing</a>
+		</div>
+	</div>
+@endif
+
+<!--iNursing-->
+@if (in_array(Request::getHost(), ['127.0.0.1', 'uat-ireporting.ijn.com.my']))
+<div class="row {{ in_array(request()->route()->getName(), $inursingRoutes) ? 'bg-teal text-white' : '' }}" 
+	style="padding: 0.5rem; margin: auto; border-bottom: solid 1px #918f8f;">
+	<div class="col-2 mt-2">
+		<a class="text-hover-success" href="#" data-bs-toggle="collapse" data-bs-target="#iNurSubmenu" aria-expanded="{{ in_array(request()->route()->getName(), $inursingRoutes) ? 'true' : 'false' }}" aria-controls="iNurSubmenu">
+			<i id="iNurArrow" class="fas fa-angle-right fs-3 dropdown-toggle-icon {{ in_array(request()->route()->getName(), $inursingRoutes) ? 'rotate-90' : '' }}" 
+				style="float: right; margin-bottom: 10px; color: {{ in_array(request()->route()->getName(), $inursingRoutes) ? '#fff' : '#14787c' }}; transition: transform 0.3s;"></i>
+		</a>
+	</div>
+	<div class="col-10 mt-2" style="padding-left: 0px;">
+		<a class="text-hover-success {{ in_array(request()->route()->getName(), $inursingRoutes) ? 'text-white' : 'text-dark' }}" 
+			data-bs-toggle="collapse" data-bs-target="#iNurSubmenu" href="#" style="margin-bottom: 10px;">iNursing</a>
+	</div>
+</div>
+<!-- Submenu for iNursing -->
+<div class="collapse {{ in_array(request()->route()->getName(), $inursingRoutes) ? 'show' : '' }}" id="iNurSubmenu">
+	<div class="row" style="padding-left: 30px;">
+		@include('layouts.ireporting.inursing.subviewssidebar.navinurcareforms')
+		@include('layouts.ireporting.inursing.subviewssidebar.navinurhomeinotropesforms')
+		@include('layouts.ireporting.inursing.subviewssidebar.navinurdischargeforms')
+	</div>
+</div>
+<!-- Submenu for iNursing -->
+@endif
+<!--iNursing-->

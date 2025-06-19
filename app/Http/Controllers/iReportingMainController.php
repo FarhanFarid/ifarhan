@@ -27,6 +27,7 @@ use App\Models\MedShelfUser;
 use App\Models\MedShelfUserSSO;
 use App\Models\Sso;
 use App\Models\BloodWardLocation;
+use App\Models\ConsentList;
 
 
 use DB;
@@ -1039,4 +1040,88 @@ class iReportingMainController extends Controller
             return $response;
         }
     }
+
+    // start consent
+    public function indexConsent(Request $request) 
+    {
+        $explode = explode('?', $request->getRequestUri());
+        $url = $explode[1];
+
+        
+
+        return view('ireporting.consent.index', compact('url'));
+    }
+
+    public function apiGetDataConsent(Request $request) 
+    {
+        try
+        {
+            $dateRange  = explode(' - ', $request->dateRange);
+            $startDate  = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+            $endDate    = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+
+            $hasConsent = ConsentList::whereBetween('created_at', [$startDate, $endDate])
+                        ->with('createdby', function($q){
+                            $q->select('id', 'name');
+                        })
+                        ->with('updatedby', function($q){
+                            $q->select('id', 'name');
+                        })
+                        ->where('status_id', 2)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+
+            $data = [];
+
+            foreach($hasConsent as $consent)
+            {
+                $temp = [];
+                
+                $getPatInfo = PatientInformation::where('status_id', 2)
+                                ->select('id', 'patient_id', 'episodenumber', 'epsiodedate')
+                                ->where('episodenumber', $consent['episodeno'])
+                                ->with('patient', function($q){
+                                    $q->select('id', 'mrn', 'name');
+                                })
+                                ->first();
+
+                $temp['patname']             = $getPatInfo['patient']['name'];
+                $temp['mrn']                 = $getPatInfo['patient']['mrn'];
+                $temp['episodeno']           = $consent['episodeno'];
+                $temp['consentname']         = $consent['formname'];
+                $temp['createdby']           = $consent['createdby']['name'];
+                $temp['createddate']         = Carbon::parse($consent['created_at'])->format('Y-m-d');
+                $temp['createdtime']         = Carbon::parse($consent['created_at'])->format('H:i');
+
+                array_push($data, $temp);
+            }
+            
+            $response = response()->json(
+                [
+                  'status'  => 'success',
+                  'data'    => $data
+                ], 200
+            );
+
+            return $response;
+        }
+        catch(\Exception $e)
+        {
+            Log::error($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
+
+            $response = response()->json(
+                [
+                    'status'  => 'failed',
+                    'message' => 'Internal error happened. Try again'
+                ], 200
+            );
+
+            return $response;
+        }
+    }
+    // end consent
 }
