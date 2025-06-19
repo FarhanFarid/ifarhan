@@ -1,7 +1,7 @@
 @php
     $dischargeformRoutes = [
         'report.inursing.dischargechecklist.index',
-        // 'inursing.limbrestraint.index',
+        'report.inursing.postdischarge.index',
 	];
 @endphp
 
@@ -24,8 +24,8 @@
 		href="{{ route('report.inursing.dischargechecklist.index') }}?{{$url}}" style="margin-bottom: 10px;">Discharge Checklist</a>
 	</div>
 
-	{{-- <div class="col-12 mt-4" style="padding-left: 40px;">
-		<a class="text-hover-success {{ request()->routeIs('inursing.limbrestraint.index') ? 'text-teal' : 'text-dark' }}" 
-		href="{{ route('inursing.limbrestraint.index') }}?{{$url}}" style="margin-bottom: 10px;">Post Discharge Visit</a>
-	</div> --}}
+	<div class="col-12 mt-4" style="padding-left: 40px;">
+		<a class="text-hover-success {{ request()->routeIs('report.inursing.postdischarge.index') ? 'text-teal' : 'text-dark' }}" 
+		href="{{ route('report.inursing.postdischarge.index') }}?{{$url}}" style="margin-bottom: 10px;">Post Discharge Visit</a>
+	</div>
 </div>

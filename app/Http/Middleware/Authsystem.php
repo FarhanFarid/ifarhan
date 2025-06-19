@@ -472,6 +472,8 @@ class Authsystem
                 'ireporting/inursing/limbrestraint/list',
                 'ireporting/inursing/dischargechecklist',
                 'ireporting/inursing/dischargechecklist/list',
+                'ireporting/inursing/postdischarge',
+                'ireporting/inursing/postdischarge/list',
                 'bed-management',
                 'bed-management/getwardlist',
                 'bed-management/getpatientinfo',

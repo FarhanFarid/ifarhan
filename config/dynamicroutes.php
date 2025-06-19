@@ -4,5 +4,6 @@ return [
         'report.inursing.dysphagia.index',
         'report.inursing.limbrestraint.index',
         'report.inursing.dischargechecklist.index',
+        'report.inursing.postdischarge.index',
     ],
 ];

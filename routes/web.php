@@ -226,6 +226,11 @@ Route::group(['middleware' => ['authsystem']], function() {
                 Route::get('/', [iNursingController::class, 'indexDischargeChecklist'])->name('report.inursing.dischargechecklist.index');
                 Route::get('/list', [iNursingController::class, 'getDataDischargeChecklist'])->name('report.inursing.dischargechecklist.getdatadischargechecklist');                              
             });
+
+            Route::group(['prefix' => 'postdischarge'], function () {
+                Route::get('/', [iNursingController::class, 'indexPostDischarge'])->name('report.inursing.postdischarge.index');
+                Route::get('/list', [iNursingController::class, 'getDataPostDischarge'])->name('report.inursing.postdischarge.getdatapostdischarge');                              
+            });
         });
     });
 
