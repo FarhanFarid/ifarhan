@@ -587,9 +587,9 @@ class AdrController extends Controller
             }
 
             try {
-                Mail::to('farhan@ijn.com.my')
-                // ->cc(['zaeimah@ijn.com.my', 'nurainaisyah@ijn.com.my', 'sharulfaizal@ijn.com.my'])        
-                // ->bcc(['nurazira@ijn.com.my', 'sashmiitha@ijn.com.my' ])                              
+                Mail::to('druginfomationservice@ijn.com.my')
+                ->cc(['ijndev@ijn.com.my'])        
+                ->bcc(['nurazira@ijn.com.my', 'sashmiitha@ijn.com.my', 'zaeimah@ijn.com.my', 'nurainaisyah@ijn.com.my', 'sharulfaizal@ijn.com.my'])                              
                 ->send(new SuspectedAdrReportMail($enhancedReport));
             
                 Log::info('Suspected ADR report email sent successfully.', [
