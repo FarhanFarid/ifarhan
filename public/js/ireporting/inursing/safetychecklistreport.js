@@ -145,12 +145,12 @@ var table_safetychecklist = $('#report-safetychecklist-table').DataTable({
             }
         },
         {
-            "data": 'totalsignout',
+            "data": 'totaltimeout',
             "className": 'text-center',
             "render": function (data, type, row) {
                 var html = '';
-                if(row != null && row.total_signout != null) 
-                    html += row.total_signout;
+                if(row != null && row.total_timeout != null) 
+                    html += row.total_timeout;
                 else
                     html += '-';
 
@@ -158,12 +158,12 @@ var table_safetychecklist = $('#report-safetychecklist-table').DataTable({
             }
         },
         {
-            "data": 'totaltimeout',
+            "data": 'totalsignout',
             "className": 'text-center',
             "render": function (data, type, row) {
                 var html = '';
-                if(row != null && row.total_timeout != null) 
-                    html += row.total_timeout;
+                if(row != null && row.total_signout != null) 
+                    html += row.total_signout;
                 else
                     html += '-';
 
