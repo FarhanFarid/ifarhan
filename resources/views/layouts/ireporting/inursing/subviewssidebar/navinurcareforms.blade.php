@@ -1,5 +1,6 @@
 @php
     $careformRoutes = [
+		'report.inursing.safetychecklist.index',
         'report.inursing.dysphagia.index',
         'report.inursing.limbrestraint.index',
 	];
@@ -20,6 +21,11 @@
 </div>
 
 <div class="{{ in_array(request()->route()->getName(), $inursingRoutes)  ? 'show' : '' }}" id="iNurSubmenuNCF">
+	<div class="col-12 mt-4" style="padding-left: 40px;">
+		<a class="text-hover-success {{ request()->routeIs('report.inursing.safetychecklist.index') ? 'text-teal' : 'text-dark' }}" 
+		href="{{ route('report.inursing.safetychecklist.index') }}?{{$url}}" style="margin-bottom: 10px;">Safety Checklist</a>
+	</div>
+
 	<div class="col-12 mt-2" style="padding-left: 40px;">
 		<a class="text-hover-success {{ request()->routeIs('report.inursing.dysphagia.index') ? 'text-teal' : 'text-dark' }}" 
 		href="{{ route('report.inursing.dysphagia.index') }}?{{$url}}" style="margin-bottom: 10px;">Dysphagia Screening</a>
@@ -29,9 +35,4 @@
 		<a class="text-hover-success {{ request()->routeIs('report.inursing.limbrestraint.index') ? 'text-teal' : 'text-dark' }}" 
 		href="{{ route('report.inursing.limbrestraint.index') }}?{{$url}}" style="margin-bottom: 10px;">Limb Restraint</a>
 	</div>
-	
-	{{-- <div class="col-12 mt-4" style="padding-left: 40px;">
-		<a class="text-hover-success {{ request()->routeIs('inursing.limbrestraint.index') ? 'text-teal' : 'text-dark' }}" 
-		href="{{ route('inursing.limbrestraint.index') }}?{{$url}}" style="margin-bottom: 10px;">Miscellaneous</a>
-	</div> --}}
 </div>

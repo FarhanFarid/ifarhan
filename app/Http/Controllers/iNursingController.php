@@ -14,6 +14,7 @@ use App\Models\iNurGeneral;
 use App\Models\iNurHomeAssessmentChecklist;
 use App\Models\iNurPatientAssessmentChecklist;
 use App\Models\iNurPostDischargeVisit;
+use App\Models\iNurSafetyChecklist;
 use App\Models\LookupWards;
 
 use DB;
@@ -21,6 +22,141 @@ use Auth;
 
 class iNursingController extends Controller
 {
+    public function indexSafetyChecklist(Request $request){
+        $explode = explode('?', $request->getRequestUri());
+        $url     = $explode[1];
+
+        return view('ireporting.inursing.safetychecklist.index', compact('url'));
+    }
+
+    public function getDataSafetyChecklist(Request $request)
+    {
+        try
+        {            
+            $getAllSafetyChecklist = iNurSafetyChecklist::select('id', 'inurgenerals_id', 'episodeno', 'surgery_procedure', 'location', 'others_loc', 
+                                                                 'total_timeout', 'total_signout', 'status_safety', 'last_modified_by', 'last_modified_at')
+                                                        ->with([
+                                                            'lookupward:id,ctloc_desc',
+                                                            'createdby:id,name',
+                                                            'lastmodifiedby:id,name',
+                                                        ])
+                                                        ->with(['inurgenerals' => function ($q) {
+                                                            $q->select('id', 'patientinformation_id')
+                                                            ->with(['patientinformation' => function ($q) {
+                                                                $q->select('id', 'patient_id')
+                                                                    ->with(['patient' => function ($q) {
+                                                                        $q->select('id', 'mrn', 'name');
+                                                                    }]);
+                                                            }]);
+                                                        }])
+                                                        ->where('status_id', 2);
+
+            // Filter by Date Range
+            if ($request->has('dateRange')) {
+                $dateRange = explode(' - ', $request->dateRange);
+                $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+                $endDate   = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+
+                $getAllSafetyChecklist->whereBetween('created_at', [$startDate, $endDate]);
+            }
+
+            $getAllSafetyChecklist = $getAllSafetyChecklist->orderBy('id', 'desc')->get();
+
+            $response = response()->json(
+                [
+                    'status' => 'success',
+                    'list'   => $getAllSafetyChecklist ?? null,
+                ], 200
+            );
+
+            return $response;
+        }
+        catch (\Exception $e)
+        {
+            Log::error($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
+
+            $response = response()->json(
+                [
+                    'status'  => 'failed',
+                    'message' => 'Internal error happened. Try again'
+                ], 200
+            );
+
+            return $response;
+        }
+    }
+
+    public function indexDysphagia(Request $request){
+        $explode = explode('?', $request->getRequestUri());
+        $url     = $explode[1];
+
+        return view('ireporting.inursing.dysphagia.index', compact('url'));
+    }
+
+    public function getDataDysphagia(Request $request)
+    {
+        try
+        {            
+            $getAllDysphagia = iNurDysphagiaScreening::select('id', 'inurgenerals_id', 'episodeno', 'status_dysphagia', 'created_by', 'created_at', 'updated_by', 'updated_at')
+                                                        ->with([
+                                                            'createdby:id,name',
+                                                            'updatedby:id,name',
+                                                        ])
+                                                        ->with(['inurgenerals' => function ($q) {
+                                                            $q->select('id', 'patientinformation_id')
+                                                              ->with(['patientinformation' => function ($q) {
+                                                                  $q->select('id', 'patient_id')
+                                                                    ->with(['patient' => function ($q) {
+                                                                        $q->select('id', 'mrn', 'name');
+                                                                    }]);
+                                                              }]);
+                                                        }])
+                                                        ->where('status_id', 2)
+                                                        ->orderBy('id', 'desc');
+
+            // Filter by Date Range
+            if ($request->has('dateRange')) {
+                $dateRange = explode(' - ', $request->dateRange);
+                $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+                $endDate   = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+
+                $getAllDysphagia->whereBetween('created_at', [$startDate, $endDate]);
+            }
+
+            $getAllDysphagia = $getAllDysphagia->get();
+
+            $response = response()->json(
+                [
+                    'status' => 'success',
+                    'list'   => $getAllDysphagia ?? null,
+                ], 200
+            );
+
+            return $response;
+        }
+        catch (\Exception $e)
+        {
+            Log::error($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
+
+            $response = response()->json(
+                [
+                    'status'  => 'failed',
+                    'message' => 'Internal error happened. Try again'
+                ], 200
+            );
+
+            return $response;
+        }
+    }
+
     public function indexLimbRestraint(Request $request){
         $explode = explode('?', $request->getRequestUri());
         $url     = $explode[1];
@@ -126,33 +262,33 @@ class iNursingController extends Controller
         }
     }
 
-    public function indexDysphagia(Request $request){
+    public function indexPatientAssmtChecklist(Request $request){
         $explode = explode('?', $request->getRequestUri());
         $url     = $explode[1];
 
-        return view('ireporting.inursing.dysphagia.index', compact('url'));
+        return view('ireporting.inursing.patientassmntchecklist.index', compact('url'));
     }
 
-    public function getDataDysphagia(Request $request)
+    public function getDataPatientAssmtChecklist(Request $request)
     {
         try
         {            
-            $getAllDysphagia = iNurDysphagiaScreening::select('id', 'inurgenerals_id', 'episodeno', 'status_dysphagia', 'created_by', 'created_at', 'updated_by', 'updated_at')
-                                                        ->with([
-                                                            'createdby:id,name',
-                                                            'updatedby:id,name',
-                                                        ])
-                                                        ->with(['inurgenerals' => function ($q) {
-                                                            $q->select('id', 'patientinformation_id')
-                                                              ->with(['patientinformation' => function ($q) {
-                                                                  $q->select('id', 'patient_id')
-                                                                    ->with(['patient' => function ($q) {
-                                                                        $q->select('id', 'mrn', 'name');
-                                                                    }]);
-                                                              }]);
-                                                        }])
-                                                        ->where('status_id', 2)
-                                                        ->orderBy('id', 'desc');
+            $getAllPatientAssmntCheck = iNurPatientAssessmentChecklist::select('id', 'inurgenerals_id', 'episodeno', 'date', 'guardian_caretaker', 
+                                                                               'status_patcheck', 'created_by', 'created_at', 'lastmodified_by', 'lastmodified_at')
+                                                                        ->with([
+                                                                            'createdby:id,name',
+                                                                            'lastmodifiedby:id,name',
+                                                                        ])
+                                                                        ->with(['inurgenerals' => function ($q) {
+                                                                            $q->select('id', 'patientinformation_id')
+                                                                            ->with(['patientinformation' => function ($q) {
+                                                                                $q->select('id', 'patient_id')
+                                                                                    ->with(['patient' => function ($q) {
+                                                                                        $q->select('id', 'mrn', 'name');
+                                                                                    }]);
+                                                                            }]);
+                                                                        }])
+                                                                        ->where('status_id', 2);
 
             // Filter by Date Range
             if ($request->has('dateRange')) {
@@ -160,15 +296,84 @@ class iNursingController extends Controller
                 $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
                 $endDate   = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
 
-                $getAllDysphagia->whereBetween('created_at', [$startDate, $endDate]);
+                $getAllPatientAssmntCheck->whereBetween('created_at', [$startDate, $endDate]);
             }
 
-            $getAllDysphagia = $getAllDysphagia->get();
+            $getAllPatientAssmntCheck = $getAllPatientAssmntCheck->orderBy('id', 'desc')->get();
 
             $response = response()->json(
                 [
                     'status' => 'success',
-                    'list'   => $getAllDysphagia ?? null,
+                    'list'   => $getAllPatientAssmntCheck ?? null,
+                ], 200
+            );
+
+            return $response;
+        }
+        catch (\Exception $e)
+        {
+            Log::error($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
+
+            $response = response()->json(
+                [
+                    'status'  => 'failed',
+                    'message' => 'Internal error happened. Try again'
+                ], 200
+            );
+
+            return $response;
+        }
+    }
+
+    public function indexHomeAssmtChecklist(Request $request){
+        $explode = explode('?', $request->getRequestUri());
+        $url     = $explode[1];
+
+        return view('ireporting.inursing.homeassmtchecklist.index', compact('url'));
+    }
+
+    public function getDataHomeAssmtChecklist(Request $request)
+    {
+        try
+        {            
+            $getAllHomeAssmntCheck = iNurHomeAssessmentChecklist::select('id', 'inurgenerals_id', 'episodeno', 'type_assessment', 'cpid_personperform', 
+                                                                         'date_personperform', 'created_by', 'created_at', 'updated_by', 'updated_at')
+                                                                ->with([
+                                                                    'createdby:id,name',
+                                                                    'updatedby:id,name',
+                                                                    'careprovider:cpid,cpName',
+                                                                    'inurhomechecklistassmt:id,homecheck_id,date_assessed,status_reassessment',
+                                                                ])
+                                                                ->with(['inurgenerals' => function ($q) {
+                                                                    $q->select('id', 'patientinformation_id')
+                                                                    ->with(['patientinformation' => function ($q) {
+                                                                        $q->select('id', 'patient_id')
+                                                                            ->with(['patient' => function ($q) {
+                                                                                $q->select('id', 'mrn', 'name');
+                                                                            }]);
+                                                                    }]);
+                                                                }])
+                                                                ->where('status_id', 2);
+
+            // Filter by Date Range
+            if ($request->has('dateRange')) {
+                $dateRange = explode(' - ', $request->dateRange);
+                $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+                $endDate   = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+
+                $getAllHomeAssmntCheck->whereBetween('created_at', [$startDate, $endDate]);
+            }
+
+            $getAllHomeAssmntCheck = $getAllHomeAssmntCheck->orderBy('id', 'desc')->get();
+
+            $response = response()->json(
+                [
+                    'status' => 'success',
+                    'list'   => $getAllHomeAssmntCheck ?? null,
                 ], 200
             );
 
@@ -311,144 +516,6 @@ class iNursingController extends Controller
                 [
                     'status' => 'success',
                     'list'   => $getAllPostDischarge ?? null,
-                ], 200
-            );
-
-            return $response;
-        }
-        catch (\Exception $e)
-        {
-            Log::error($e->getMessage(), [
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine()
-                ]
-            );
-
-            $response = response()->json(
-                [
-                    'status'  => 'failed',
-                    'message' => 'Internal error happened. Try again'
-                ], 200
-            );
-
-            return $response;
-        }
-    }
-
-    public function indexPatientAssmtChecklist(Request $request){
-        $explode = explode('?', $request->getRequestUri());
-        $url     = $explode[1];
-
-        return view('ireporting.inursing.patientassmntchecklist.index', compact('url'));
-    }
-
-    public function getDataPatientAssmtChecklist(Request $request)
-    {
-        try
-        {            
-            $getAllPatientAssmntCheck = iNurPatientAssessmentChecklist::select('id', 'inurgenerals_id', 'episodeno', 'date', 'guardian_caretaker', 
-                                                                               'status_patcheck', 'created_by', 'created_at', 'lastmodified_by', 'lastmodified_at')
-                                                                        ->with([
-                                                                            'createdby:id,name',
-                                                                            'lastmodifiedby:id,name',
-                                                                        ])
-                                                                        ->with(['inurgenerals' => function ($q) {
-                                                                            $q->select('id', 'patientinformation_id')
-                                                                            ->with(['patientinformation' => function ($q) {
-                                                                                $q->select('id', 'patient_id')
-                                                                                    ->with(['patient' => function ($q) {
-                                                                                        $q->select('id', 'mrn', 'name');
-                                                                                    }]);
-                                                                            }]);
-                                                                        }])
-                                                                        ->where('status_id', 2);
-
-            // Filter by Date Range
-            if ($request->has('dateRange')) {
-                $dateRange = explode(' - ', $request->dateRange);
-                $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
-                $endDate   = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
-
-                $getAllPatientAssmntCheck->whereBetween('created_at', [$startDate, $endDate]);
-            }
-
-            $getAllPatientAssmntCheck = $getAllPatientAssmntCheck->orderBy('id', 'desc')->get();
-
-            $response = response()->json(
-                [
-                    'status' => 'success',
-                    'list'   => $getAllPatientAssmntCheck ?? null,
-                ], 200
-            );
-
-            return $response;
-        }
-        catch (\Exception $e)
-        {
-            Log::error($e->getMessage(), [
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine()
-                ]
-            );
-
-            $response = response()->json(
-                [
-                    'status'  => 'failed',
-                    'message' => 'Internal error happened. Try again'
-                ], 200
-            );
-
-            return $response;
-        }
-    }
-
-    public function indexHomeAssmtChecklist(Request $request){
-        $explode = explode('?', $request->getRequestUri());
-        $url     = $explode[1];
-
-        return view('ireporting.inursing.homeassmtchecklist.index', compact('url'));
-    }
-
-    public function getDataHomeAssmtChecklist(Request $request)
-    {
-        try
-        {            
-            $getAllHomeAssmntCheck = iNurHomeAssessmentChecklist::select('id', 'inurgenerals_id', 'episodeno', 'type_assessment', 'cpid_personperform', 
-                                                                         'date_personperform', 'created_by', 'created_at', 'updated_by', 'updated_at')
-                                                                ->with([
-                                                                    'createdby:id,name',
-                                                                    'updatedby:id,name',
-                                                                    'careprovider:cpid,cpName',
-                                                                    'inurhomechecklistassmt:id,homecheck_id,date_assessed,status_reassessment',
-                                                                ])
-                                                                ->with(['inurgenerals' => function ($q) {
-                                                                    $q->select('id', 'patientinformation_id')
-                                                                    ->with(['patientinformation' => function ($q) {
-                                                                        $q->select('id', 'patient_id')
-                                                                            ->with(['patient' => function ($q) {
-                                                                                $q->select('id', 'mrn', 'name');
-                                                                            }]);
-                                                                    }]);
-                                                                }])
-                                                                ->where('status_id', 2);
-
-            // Filter by Date Range
-            if ($request->has('dateRange')) {
-                $dateRange = explode(' - ', $request->dateRange);
-                $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
-                $endDate   = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
-
-                $getAllHomeAssmntCheck->whereBetween('created_at', [$startDate, $endDate]);
-            }
-
-            $getAllHomeAssmntCheck = $getAllHomeAssmntCheck->orderBy('id', 'desc')->get();
-
-            Log::info($getAllHomeAssmntCheck);
-
-            $response = response()->json(
-                [
-                    'status' => 'success',
-                    'list'   => $getAllHomeAssmntCheck ?? null,
                 ], 200
             );
 

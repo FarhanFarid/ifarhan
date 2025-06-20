@@ -671,4 +671,12 @@ $(document).ready(function () {
     $('#iNurSubmenuDCF').on('hide.bs.collapse', function () {
         $('#iNurArrowDCF').removeClass('rotate-90').css('color', '#14787c');
     });
+
+	$('#iNurSubmenuHIF').on('show.bs.collapse', function () {
+        $('#iNurArrowHIF').addClass('rotate-90').css('color', '#99a1b7');
+    });
+
+    $('#iNurSubmenuHIF').on('hide.bs.collapse', function () {
+        $('#iNurArrowHIF').removeClass('rotate-90').css('color', '#14787c');
+    });
 });

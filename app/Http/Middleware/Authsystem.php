@@ -466,6 +466,8 @@ class Authsystem
                 'ireporting/medshelf/list',
                 'ireporting/consent',
                 'ireporting/consent/list',
+                'ireporting/inursing/safetychecklist',
+                'ireporting/inursing/safetychecklist/list',
                 'ireporting/inursing/dysphagia',
                 'ireporting/inursing/dysphagia/list',
                 'ireporting/inursing/limbrestraint',
