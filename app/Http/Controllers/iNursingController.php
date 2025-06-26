@@ -15,6 +15,7 @@ use App\Models\iNurHomeAssessmentChecklist;
 use App\Models\iNurPatientAssessmentChecklist;
 use App\Models\iNurPostDischargeVisit;
 use App\Models\iNurSafetyChecklist;
+use App\Models\iNurWOOrientationTransferMapping;
 use App\Models\LookupWards;
 
 use DB;
@@ -22,6 +23,143 @@ use Auth;
 
 class iNursingController extends Controller
 {
+    public function indexWardOrientation(Request $request){
+        $explode = explode('?', $request->getRequestUri());
+        $url     = $explode[1];
+
+        return view('ireporting.inursing.wardorientation.index', compact('url'));
+    }
+
+    public function getDataWOOrientation(Request $request)
+    {
+        try
+        {            
+            $getAllWOOrientation = iNurWOOrientationTransferMapping::select('id', 'inurgenerals_id', 'woorientation_id')
+                                                                    ->with(['inurwoorientation' => function ($q) {
+                                                                        $q->select('id', 'ward', 'created_by', 'created_at', 'updated_by', 'updated_at')
+                                                                            ->with([
+                                                                                'lookupward:id,ctloc_desc',
+                                                                                'createdby:id,name',
+                                                                                'updatedby:id,name',
+                                                                        ]);
+                                                                    }])
+                                                                    ->with(['inurwardorientation' => function ($q) {
+                                                                        $q->select('id', 'patientinformation_id', 'episodeno')
+                                                                        ->with(['patientinformation' => function ($q) {
+                                                                            $q->select('id', 'patient_id')
+                                                                                ->with(['patient' => function ($q) {
+                                                                                    $q->select('id', 'mrn', 'name');
+                                                                                }]);
+                                                                        }]);
+                                                                    }])
+                                                                    ->where('status_id', 2);
+
+            // Filter by Date Range
+            if ($request->has('dateRange')) {
+                $dateRange = explode(' - ', $request->dateRange);
+                $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+                $endDate   = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+
+                $getAllWOOrientation->whereHas('inurwoorientation', function ($q) use ($startDate, $endDate) {
+                                        $q->whereBetween('created_at', [$startDate, $endDate]);
+                                    });
+            }
+
+            $getAllWOOrientation = $getAllWOOrientation->orderBy('id', 'desc')->get();
+            
+            $response = response()->json(
+                [
+                    'status' => 'success',
+                    'list'   => $getAllWOOrientation ?? null,
+                ], 200
+            );
+
+            return $response;
+        }
+        catch (\Exception $e)
+        {
+            Log::error($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
+
+            $response = response()->json(
+                [
+                    'status'  => 'failed',
+                    'message' => 'Internal error happened. Try again'
+                ], 200
+            );
+
+            return $response;
+        }
+    }
+
+    public function getDataWOTransfer(Request $request)
+    {
+        try
+        {            
+            $getAllWOTransfer = iNurWOOrientationTransferMapping::select('id', 'inurgenerals_id', 'wotransfer_id')
+                                                                    ->with(['inurwotransfer' => function ($q) {
+                                                                        $q->select('id', 'ward', 'created_by', 'created_at', 'updated_by', 'updated_at')
+                                                                            ->with([
+                                                                                'lookupward:id,ctloc_desc',
+                                                                                'createdby:id,name',
+                                                                                'updatedby:id,name',
+                                                                        ]);
+                                                                    }])
+                                                                    ->with(['inurwardorientation' => function ($q) {
+                                                                        $q->select('id', 'patientinformation_id', 'episodeno')
+                                                                        ->with(['patientinformation' => function ($q) {
+                                                                            $q->select('id', 'patient_id')
+                                                                                ->with(['patient' => function ($q) {
+                                                                                    $q->select('id', 'mrn', 'name');
+                                                                                }]);
+                                                                        }]);
+                                                                    }])
+                                                                    ->where('status_id', 2);
+
+            // Filter by Date Range
+            if ($request->has('dateRange')) {
+                $dateRange = explode(' - ', $request->dateRange);
+                $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+                $endDate   = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+
+                $getAllWOTransfer->whereHas('inurwotransfer', function ($q) use ($startDate, $endDate) {
+                                        $q->whereBetween('created_at', [$startDate, $endDate]);
+                                    });
+            }
+
+            $getAllWOTransfer = $getAllWOTransfer->orderBy('id', 'desc')->get();
+
+            $response = response()->json(
+                [
+                    'status' => 'success',
+                    'list'   => $getAllWOTransfer ?? null,
+                ], 200
+            );
+
+            return $response;
+        }
+        catch (\Exception $e)
+        {
+            Log::error($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
+
+            $response = response()->json(
+                [
+                    'status'  => 'failed',
+                    'message' => 'Internal error happened. Try again'
+                ], 200
+            );
+
+            return $response;
+        }
+    }
+
     public function indexSafetyChecklist(Request $request){
         $explode = explode('?', $request->getRequestUri());
         $url     = $explode[1];

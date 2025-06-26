@@ -212,6 +212,18 @@ Route::group(['middleware' => ['authsystem']], function() {
 
         //iNursing
         Route::group(['prefix' => 'inursing'], function () {
+            Route::group(['prefix' => 'wardorientation'], function () {
+                Route::get('/', [iNursingController::class, 'indexWardOrientation'])->name('report.inursing.wardorientation.index');
+
+                Route::group(['prefix' => 'orientation'], function () {
+                    Route::get('/list', [iNursingController::class, 'getDataWOOrientation'])->name('report.inursing.wardorientation.orientation.getdatawoorientation');
+                });
+
+                Route::group(['prefix' => 'transfer'], function () {
+                    Route::get('/list', [iNursingController::class, 'getDataWOTransfer'])->name('report.inursing.wardorientation.transfer.getdatawotransfer');
+                });                              
+            });
+
             Route::group(['prefix' => 'safetychecklist'], function () {
                 Route::get('/', [iNursingController::class, 'indexSafetyChecklist'])->name('report.inursing.safetychecklist.index');
                 Route::get('/list', [iNursingController::class, 'getDataSafetyChecklist'])->name('report.inursing.safetychecklist.getdatasafetychecklist');                              
