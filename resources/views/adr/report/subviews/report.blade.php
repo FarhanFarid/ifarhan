@@ -185,7 +185,10 @@
                                 Time to onset of reaction :
                             </div>
                             <div class="col-md-2" style="font-size: 11px">
-                                <b>{{ isset($report) && $report->descriptions->datevalue ? $report->descriptions->datevalue : '' }} &nbsp; {{ isset($report) && $report->descriptions->datetype ? $report->descriptions->datetype : '' }} </b>
+                                <b>
+                                    {{ $report?->descriptions?->datevalue ?? '' }} &nbsp;
+                                    {{ $report?->descriptions?->datetype ?? '' }}
+                                </b>
                             </div>
                             <div class="col-md-2" style="font-size: 11px">
                                 Date start of reaction :
