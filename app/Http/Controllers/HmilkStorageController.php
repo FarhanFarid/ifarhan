@@ -354,6 +354,182 @@ class HmilkStorageController extends Controller
         
     }
 
+    public function transferWard (Request $request){
+        
+        try
+        { 
+            $inventory = Inventory::where('episodeNo', $request->input('episodeNo'))->where('batchId', $request->input('batchId'))->first();
+
+            $patientInfo =  PatientInformation::where('episodenumber', $request->input('episodeNo'))->first();
+            $patient = Patient::where('id', $patientInfo->patient_id)->first();
+
+            $mrn = $patient->mrn;
+            $name = $patient->name;
+
+            $date = Carbon::now()->addDays(1);
+        
+            if($inventory != null)
+            {
+
+                if($request->input('storagearea') == "Freezer"){
+
+                    $inventory->location                    = $request->input('transfloc');
+                    $inventory->storeArea                   = "Chiller";
+                    $inventory->expiryDate                  = $date;
+                    $inventory->updated_by                  = Auth::user()->id;
+                    $inventory->updated_at                  = Carbon::now();
+                    $inventory->save();
+
+                }else{
+
+                    $inventory->location                    = $request->input('transfloc');
+                    $inventory->storeArea                   = "Chiller";
+                    $inventory->updated_by                  = Auth::user()->id;
+                    $inventory->updated_at                  = Carbon::now();
+                    $inventory->save();
+
+                }
+
+                $address = env('PRINTER_IMILK');
+                // $address = '172.17.13.248';
+                $port = 9100;
+                $count = 0;
+               
+                $dateFormat = Carbon::parse($inventory->expiryDate)->format('d/m/Y H:i');
+
+
+                $parms = ["1000.00 kg", "200.00 m", "250 mic"];
+
+                $imp = "^XA
+                ^FX
+                
+                field for the element 'MRN'
+                
+                ^FO110,16,2
+                ^FWN
+                ^A0,38,38^FDMRN:^FS
+                ^FX
+                
+                field for the element 'MRN Value'
+                
+                ^FO192,16,2
+                ^FWN
+                ^A0,38,38^FD <MRN> ^FS^FX
+                ^FO192,17,2
+                ^FWN
+                ^A0,38,38^FD <MRN> ^FS^FX
+                
+                field for the element 'Barcode'
+                
+                ^FO400,8,2
+                ^FWN
+                ^BY1.3,1,10
+                ^BCN,48,N,N^FD <BATCH_ID> ^FS^FX
+                
+                field for the element 'Patient Name'
+                
+                ^FO100,72,2
+                ^FWN
+                ^A0,26,26^FD <NAME> ^FS^FX
+                ^FO100,74,4
+                ^FWN
+                ^A0,26,26^FD <NAME> ^FS^FX
+                
+                field for the element 'Batch Title'
+                
+                ^FO110,120,2
+                ^FWN
+                ^A0,30,30^FDBATCH ID:^FS^FX
+                ^FO110,121,2
+                ^FWN
+                ^A0,30,30^FDBATCH ID:^FS^FX
+                
+                field for the element 'Batch Value'
+                
+                ^FO250,120,2
+                ^FWN
+                ^A0,30,30^FD <BATCH_ID> ^FS^FX
+                
+                
+                field for the element 'Location Title'
+                
+                ^FO110,168,2
+                ^FWN
+                ^A0,30,30^FDLOCATION:^FS^FX
+                ^FO110,169,2
+                ^FWN
+                ^A0,30,30^FDLOCATION:^FS^FX
+                
+                field for the element 'Location Value'
+                
+                ^FO240,168,2
+                ^FWN
+                ^A0,30,30^FD <LOCATION> ^FS^FX
+                
+                field for the element 'Exp Title'
+                
+                ^FO370,168,2
+                ^FWN
+                ^A0,30,30^FDEXP:^FS^FX
+                ^FO370,169,2
+                ^FWN
+                ^A0,30,30^FDEXP:^FS^FX
+                
+                field for the element 'Exp Value'
+                
+                ^FO430,168,2
+                ^FWN
+                ^A0,30,30^FD <EXPIRY_DATE> ^FS
+                ^XZ
+                ";
+
+                // Replace placeholders with actual values
+                $imp = str_replace("<MRN>", $mrn, $imp);
+                $imp = str_replace("<NAME>", $name, $imp);
+                $imp = str_replace("<BATCH_ID>", $request->input('batchId'), $imp);
+                $imp = str_replace("<LOCATION>", $request->input('stores'), $imp);
+                $imp = str_replace("<EXPIRY_DATE>", $dateFormat, $imp);
+
+                foreach ($parms as $value) {
+                    $imp = str_replace("<##" . $count . ">", $value, $imp);
+                    $count++;
+                }
+
+                $sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+                $sockconnect = socket_connect($sock, $address, $port);
+                socket_write($sock, $imp, strlen($imp));
+                socket_close($sock); 
+            
+                return $response = response()->json(
+                    [
+                    'status'  => 'success',
+                    'message1'    => $inventory ,
+                    ], 200
+                );
+            }else{
+                return response()->json(['status' => 'failed', 'message' => 'Inventory not found'], 404);
+            }
+        }
+        catch (\Exception $e)
+        {
+            Log::error($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
+
+            $response = response()->json(
+                [
+                    'status'  => 'failed',
+                    'message' => 'Internal error happened. Try again'
+                ], 200
+            );
+
+            return $response;
+        }
+        
+    }
+
     public function discardDetail (Request $request){
 
 

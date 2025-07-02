@@ -209,13 +209,45 @@ $(document).ready(function () {
         }
     });
 
-    $('#batchlist-table tbody').on('click', '.transfer-location', function(e) {
-        e.preventDefault();
-        var locations = $(this).data('location');
-        var stores = $(this).data('store');
-        var episodeNo = $(this).data('episode');
-        var batchId = $(this).data('batch');
+    $('.save-saveloc').on('click', async function() {
+        const locations = $('#transferlocation').val();
+        const stores = $('#storagearealoc').val();
+        const episodeNo = $('#episodeloc').val();
+        const batchId = $('#batchidloc').val();
+        var url = config.routes.hmilk.storage.transferWard;
+
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: { episodeNo: episodeNo, batchId: batchId, storagearea: stores, transfloc: locations },
+            dataType: 'json',
+            success: function(response) {
+                Swal.fire({
+                    title: "Success!",
+                    text: "Successfully Saved!",
+                    icon: "success",
+                    buttonsStyling: false,
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                toastr.error('Error transferring location: ' + error, {timeOut: 5000});
+            }
+        });
+
+    });
+
+    $('.save-savestorage').on('click', async function() {
+        
+        const locations = $('#currentloc').val();
+        const stores = $('#storagearea').val();
+        const episodeNo = $('#episodestore').val();
+        const batchId = $('#batchidstore').val();
         var url = config.routes.hmilk.storage.updateLocation;
+
+        $('#transfer-modal').modal('hide');
 
         if (stores === 'Chiller') {
             toastr.error('Location transfer not allowed. The milk is already in Chiller.', {timeOut: 5000});
@@ -260,6 +292,25 @@ $(document).ready(function () {
                 });
             }
         });
+    });
+
+    $('#batchlist-table tbody').on('click', '.transfer-location', function(e) {
+        e.preventDefault();
+        var locations = $(this).data('location');
+        var stores = $(this).data('store');
+        var episodeNo = $(this).data('episode');
+        var batchId = $(this).data('batch');
+
+        $('#episodestore').val(episodeNo);
+        $('#batchidstore').val(batchId);
+        $('#storagearea').val(stores);
+        $('#storagearealoc').val(stores);
+        $('#currentloc').val(locations);
+        $('#episodeloc').val(episodeNo);
+        $('#batchidloc').val(batchId);
+
+        $('#transfer-modal').modal('show');
+        
     });
 
     $('#batchlist-table tbody').on('click', '.reprint-label', function(e) {

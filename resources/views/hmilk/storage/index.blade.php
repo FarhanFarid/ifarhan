@@ -200,6 +200,7 @@
     @include('hmilk.storage.subviews.discard')
     @include('hmilk.storage.subviews.proceed')
     @include('hmilk.storage.subviews.cgproceed')
+    @include('hmilk.storage.subviews.transferloc')
 
 
 @endsection
@@ -262,6 +263,7 @@
                             discard: "{{ route('hmilk.storage.discard') }}?{!! $url !!}",
                             updateLocation: "{{ route('hmilk.storage.updatelocation') }}?{!! $url !!}",
                             reprintLabel: "{{ route('hmilk.storage.reprintLabel') }}?{!! $url !!}",
+                            transferWard: "{{ route('hmilk.storage.transferward') }}?{!! $url !!}",
                         },
                         administer : {
                             reheat : {
