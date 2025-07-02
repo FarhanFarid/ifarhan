@@ -473,6 +473,8 @@ class Authsystem
                 'ireporting/inursing/safetychecklist/list',
                 'ireporting/inursing/dysphagia',
                 'ireporting/inursing/dysphagia/list',
+                'ireporting/inursing/peritonealchart',
+                'ireporting/inursing/peritonealchart/list',
                 'ireporting/inursing/limbrestraint',
                 'ireporting/inursing/limbrestraint/list',
                 'ireporting/inursing/patientassmtchecklist',

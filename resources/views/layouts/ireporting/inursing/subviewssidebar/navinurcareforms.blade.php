@@ -2,6 +2,7 @@
     $careformRoutes = [
 		'report.inursing.safetychecklist.index',
         'report.inursing.dysphagia.index',
+		'report.inursing.peritonealchart.index',
         'report.inursing.limbrestraint.index',
 	];
 @endphp
@@ -29,6 +30,11 @@
 	<div class="col-12 mt-2" style="padding-left: 40px;">
 		<a class="text-hover-success {{ request()->routeIs('report.inursing.dysphagia.index') ? 'text-teal' : 'text-dark' }}" 
 		href="{{ route('report.inursing.dysphagia.index') }}?{{$url}}" style="margin-bottom: 10px;">Dysphagia Screening</a>
+	</div>
+
+	<div class="col-12 mt-4" style="padding-left: 40px;">
+		<a class="text-hover-success {{ request()->routeIs('report.inursing.peritonealchart.index') ? 'text-teal' : 'text-dark' }}" 
+		href="{{ route('report.inursing.peritonealchart.index') }}?{{$url}}" style="margin-bottom: 10px;">Peritoneal Dialysis Chart</a>
 	</div>
 
 	<div class="col-12 mt-4" style="padding-left: 40px;">

@@ -13,6 +13,7 @@ use App\Models\iNurDischargeChecklist;
 use App\Models\iNurGeneral;
 use App\Models\iNurHomeAssessmentChecklist;
 use App\Models\iNurPatientAssessmentChecklist;
+use App\Models\iNurPeritonealDialysisChart;
 use App\Models\iNurPostDischargeVisit;
 use App\Models\iNurSafetyChecklist;
 use App\Models\iNurWOOrientationTransferMapping;
@@ -271,6 +272,104 @@ class iNursingController extends Controller
                 [
                     'status' => 'success',
                     'list'   => $getAllDysphagia ?? null,
+                ], 200
+            );
+
+            return $response;
+        }
+        catch (\Exception $e)
+        {
+            Log::error($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
+
+            $response = response()->json(
+                [
+                    'status'  => 'failed',
+                    'message' => 'Internal error happened. Try again'
+                ], 200
+            );
+
+            return $response;
+        }
+    }
+
+    public function indexPeritonealDialysisChart(Request $request){
+        $explode = explode('?', $request->getRequestUri());
+        $url     = $explode[1];
+
+        return view('ireporting.inursing.peritonealchart.index', compact('url'));
+    }
+
+    public function getDataPeritonealDialysisChart(Request $request)
+    {
+        try
+        {     
+            $getDataPDCAll = iNurPeritonealDialysisChart::select('id', 'inurgenerals_id', 'episodeno', 'date', 'in_volume', 'out_volume', 
+                                                                 'total_volume', 'updated_by', 'updated_at')
+                                                            ->with([
+                                                                'updatedby:id,name',
+                                                            ])
+                                                            ->with(['inurgenerals' => function ($q) {
+                                                                $q->select('id', 'patientinformation_id')
+                                                                ->with(['patientinformation' => function ($q) {
+                                                                    $q->select('id', 'patient_id')
+                                                                        ->with(['patient' => function ($q) {
+                                                                            $q->select('id', 'mrn', 'name');
+                                                                        }]);
+                                                                }]);
+                                                            }])
+                                                            ->where('status_id', 2);
+
+            // Filter by Date Range
+            if ($request->has('dateRange')) {
+                $dateRange = explode(' - ', $request->dateRange);
+                $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+                $endDate   = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+
+                $getDataPDCAll->whereBetween('date', [$startDate, $endDate]);
+            }
+
+            $getDataPDCAll = $getDataPDCAll->orderBy('date', 'desc')
+                                           ->orderBy('created_at', 'desc')
+                                           ->get();
+
+            $totalsByDate = [];
+
+            if ($getDataPDCAll->count() > 0) {
+                foreach ($getDataPDCAll as $pdc) {
+                    $date = $pdc->date;
+                
+                    if (!isset($totalsByDate[$date])) {
+                        $patient = optional(optional(optional($pdc->inurgenerals)->patientinformation)->patient);
+
+                        $totalsByDate[$date] = [
+                            'mrn'         => $patient->mrn,
+                            'name'        => $patient->name,
+                            'episodeno'   => $pdc->episodeno,
+                            'date'        => $date,
+                            'totin'       => 0,
+                            'totout'      => 0,
+                            'totcycle'    => 0,
+                            'updatedby'   => $pdc->updatedby->name,
+                            'updatedbydt' => $pdc->updated_at ? Carbon::parse($pdc->updated_at)->setTimezone('Asia/Kuala_Lumpur')->format('d/m/Y h:i A')  : null,
+                        ];
+                    }
+                
+                    $totalsByDate[$date]['totin'] += $pdc->in_volume;
+                    $totalsByDate[$date]['totout'] += $pdc->out_volume;
+                    $totalsByDate[$date]['totcycle'] += $pdc->total_volume;
+                }
+            } 
+            
+            $totalsList = array_values($totalsByDate);
+
+            $response = response()->json(
+                [
+                    'status' => 'success',
+                    'list'   => $totalsList,
                 ], 200
             );
 

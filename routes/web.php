@@ -234,6 +234,11 @@ Route::group(['middleware' => ['authsystem']], function() {
                 Route::get('/list', [iNursingController::class, 'getDataDysphagia'])->name('report.inursing.dysphagia.getdatadysphagia');                              
             });
 
+            Route::group(['prefix' => 'peritonealchart'], function () {
+                Route::get('/', [iNursingController::class, 'indexPeritonealDialysisChart'])->name('report.inursing.peritonealchart.index');
+                Route::get('/list', [iNursingController::class, 'getDataPeritonealDialysisChart'])->name('report.inursing.peritonealchart.getdataperitonealchart');                              
+            });
+
             Route::group(['prefix' => 'limbrestraint'], function () {
                 Route::get('/', [iNursingController::class, 'indexLimbRestraint'])->name('report.inursing.limbrestraint.index');
                 Route::get('/list', [iNursingController::class, 'getDataLimbRestraintAssmt'])->name('report.inursing.limbrestraint.getdataassmt');                              
