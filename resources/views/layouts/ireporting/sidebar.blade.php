@@ -174,6 +174,7 @@
 <!-- Submenu for iNursing -->
 <div class="collapse {{ in_array(request()->route()->getName(), $inursingRoutes) ? 'show' : '' }}" id="iNurSubmenu">
 	<div class="row" style="padding-left: 30px;">
+		@include('layouts.ireporting.inursing.subviewssidebar.navinurwardorientation')
 		@include('layouts.ireporting.inursing.subviewssidebar.navinurcareforms')
 		@include('layouts.ireporting.inursing.subviewssidebar.navinurhomeinotropesforms')
 		@include('layouts.ireporting.inursing.subviewssidebar.navinurdischargeforms')
