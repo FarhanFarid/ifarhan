@@ -59,6 +59,7 @@ Route::group(['middleware' => ['authsystem']], function() {
             Route::post('/detail', [HmilkStorageController::class, 'batchDetail'])->name('hmilk.storage.detail');
             Route::post('/update-location', [HmilkStorageController::class, 'updateLocation'])->name('hmilk.storage.updatelocation');
             Route::post('/reprint-label', [HmilkStorageController::class, 'reprintLabel'])->name('hmilk.storage.reprintLabel');
+            Route::post('/transfer-ward', [HmilkStorageController::class, 'transferWard'])->name('hmilk.storage.transferward');
         });
 
         Route::group(['prefix' => 'administer'], function () {
