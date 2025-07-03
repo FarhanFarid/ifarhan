@@ -41,4 +41,9 @@
 		<a class="text-hover-success {{ request()->routeIs('report.inursing.limbrestraint.index') ? 'text-teal' : 'text-dark' }}" 
 		href="{{ route('report.inursing.limbrestraint.index') }}?{{$url}}" style="margin-bottom: 10px;">Limb Restraint</a>
 	</div>
+
+	<div class="col-12 mt-4" style="padding-left: 40px;">
+		<a class="text-hover-success {{ request()->routeIs('report.inursing.miscellaneous.index') ? 'text-teal' : 'text-dark' }}" 
+		href="{{ route('report.inursing.miscellaneous.index') }}?{{$url}}" style="margin-bottom: 10px;">Miscellaneous</a>
+	</div>
 </div>

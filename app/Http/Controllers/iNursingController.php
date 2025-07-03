@@ -12,6 +12,8 @@ use App\Models\iNurLimbRestraintReassessment;
 use App\Models\iNurDischargeChecklist;
 use App\Models\iNurGeneral;
 use App\Models\iNurHomeAssessmentChecklist;
+use App\Models\iNurHypercyanoticSpellApnoeaSeizure;
+use App\Models\iNurMiscellaneous;
 use App\Models\iNurPatientAssessmentChecklist;
 use App\Models\iNurPeritonealDialysisChart;
 use App\Models\iNurPostDischargeVisit;
@@ -493,6 +495,124 @@ class iNursingController extends Controller
                     'message' => 'Internal error happened. Try again'
                 ],
                 200
+            );
+
+            return $response;
+        }
+    }
+
+    public function indexMiscellaneous(Request $request){
+        $explode = explode('?', $request->getRequestUri());
+        $url     = $explode[1];
+
+        return view('ireporting.inursing.miscellaneous.index', compact('url'));
+    }
+
+    private function getMiscellaneous($type, $request)
+    {
+        $query = iNurMiscellaneous::select('id', 'inurgenerals_id', 'episodeno', 'other_monitor', 'remark', 'updated_by', 'updated_at')
+                                    ->with([
+                                        'updatedby:id,name',
+                                        'inurgenerals' => function ($q) {
+                                            $q->select('id', 'patientinformation_id')
+                                            ->with(['patientinformation' => function ($q) {
+                                                $q->select('id', 'patient_id')
+                                                    ->with(['patient' => function ($q) {
+                                                        $q->select('id', 'mrn', 'name');
+                                                    }]);
+                                            }]);
+                                        }
+                                    ])
+                                    ->where('misc_type', $type)
+                                    ->where('status_id', 2);
+
+        // Apply date filter if present
+        if ($request->has('dateRange')) {
+            $dateRange = explode(' - ', $request->dateRange);
+            $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+            $endDate   = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        return $query->orderBy('id', 'desc')->get();
+    }
+
+    private function getHypercyanoticApnoe($type, $request)
+    {
+        $query = iNurHypercyanoticSpellApnoeaSeizure::with([
+                                                        'createdby:id,name',
+                                                        'updatedby:id,name',
+                                                        'inurgenerals' => function ($q) {
+                                                            $q->select('id', 'patientinformation_id')
+                                                            ->with(['patientinformation' => function ($q) {
+                                                                $q->select('id', 'patient_id')
+                                                                    ->with(['patient' => function ($q) {
+                                                                        $q->select('id', 'mrn', 'name');
+                                                                    }]);
+                                                            }]);
+                                                        }
+                                                    ])
+                                                    ->where('finding', $type)
+                                                    ->where('status_id', 2);
+
+        // Apply date filter if present
+        if ($request->has('dateRange')) {
+            $dateRange = explode(' - ', $request->dateRange);
+            $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+            $endDate   = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        return $query->orderBy('date', 'desc')
+                    ->orderBy('time', 'desc')
+                    ->orderByRaw("CASE shift 
+                        WHEN 'ON' THEN 1 
+                        WHEN 'PM' THEN 2 
+                        WHEN 'AM' THEN 3 
+                        ELSE 4 END")
+                    ->get();
+    }
+
+    public function getDataMiscellaneous(Request $request)
+    {
+        try
+        {     
+            $spiroData     = $this->getMiscellaneous('Spirometry', $request);
+            $vomitData     = $this->getMiscellaneous('Vomit', $request);
+            $seizureData   = $this->getMiscellaneous('Seizure', $request);
+            $abdominalData = $this->getMiscellaneous('Abdominal', $request);
+            $othersData    = $this->getMiscellaneous('Others', $request);
+            $hyperData     = $this->getHypercyanoticApnoe('Hypercyanotic Spell', $request);
+            $apnoeaData    = $this->getHypercyanoticApnoe('Apnoea', $request);
+
+            $response = response()->json(
+                [
+                    'status'    => 'success',
+                    'spiro'     => $spiroData ?? null,
+                    'vomit'     => $vomitData ?? null,
+                    'seizure'   => $seizureData ?? null,
+                    'abdominal' => $abdominalData ?? null,
+                    'others'    => $othersData ?? null,
+                    'hyper'     => $hyperData ?? null,
+                    'apnoea'    => $apnoeaData ?? null,
+                ], 200
+            );
+
+            return $response;
+        }
+        catch (\Exception $e)
+        {
+            Log::error($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
+
+            $response = response()->json(
+                [
+                    'status'  => 'failed',
+                    'message' => 'Internal error happened. Try again'
+                ], 200
             );
 
             return $response;
