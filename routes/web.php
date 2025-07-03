@@ -244,6 +244,11 @@ Route::group(['middleware' => ['authsystem']], function() {
                 Route::get('/list', [iNursingController::class, 'getDataLimbRestraintAssmt'])->name('report.inursing.limbrestraint.getdataassmt');                              
             }); 
 
+            Route::group(['prefix' => 'miscellaneous'], function () {
+                Route::get('/', [iNursingController::class, 'indexMiscellaneous'])->name('report.inursing.miscellaneous.index');
+                Route::get('/list', [iNursingController::class, 'getDataMiscellaneous'])->name('report.inursing.miscellaneous.getdatamiscellaneous');             
+            });
+
             Route::group(['prefix' => 'patientassmtchecklist'], function () {
                 Route::get('/', [iNursingController::class, 'indexPatientAssmtChecklist'])->name('report.inursing.patientassmtchecklist.index');
                 Route::get('/list', [iNursingController::class, 'getDataPatientAssmtChecklist'])->name('report.inursing.patientassmtchecklist.getdatapatientassmtchecklist');                              

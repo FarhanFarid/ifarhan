@@ -477,6 +477,8 @@ class Authsystem
                 'ireporting/inursing/peritonealchart/list',
                 'ireporting/inursing/limbrestraint',
                 'ireporting/inursing/limbrestraint/list',
+                'ireporting/inursing/miscellaneous',
+                'ireporting/inursing/miscellaneous/list',
                 'ireporting/inursing/patientassmtchecklist',
                 'ireporting/inursing/patientassmtchecklist/list',
                 'ireporting/inursing/homeassmtchecklist',
