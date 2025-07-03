@@ -107,10 +107,10 @@ var table_mscapnoea = $('#report-mscapnoea-table').DataTable({
             "render": function (data, type, row)  {
                 var html = '';
 
-                if(row != null)
+                if(row != null && row.shift != null)
                     html += row.shift;
                 else
-                    html += '';
+                    html += '-';
 
                 return html;
             }
@@ -145,14 +145,13 @@ var table_mscapnoea = $('#report-mscapnoea-table').DataTable({
         },
         {
             "data": 'remark',
-            "className": 'text-center',
             "render": function (data, type, row)  {
                 var html = '';
 
-                if(row != null)
+                if(row != null && row.remarks != null)
                     html += row.remarks;
                 else
-                    html += '';
+                    html += '-';
 
                 return html;
             }

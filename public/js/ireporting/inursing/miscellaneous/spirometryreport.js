@@ -32,7 +32,7 @@ var table_mscspiro = $('#report-mscspiro-table').DataTable({
         },
         {
             "targets": 5,
-            "width": "4%"
+            "width": "5%"
         },
         {
             "targets": 6,
@@ -148,10 +148,10 @@ var table_mscspiro = $('#report-mscspiro-table').DataTable({
             "render": function (data, type, row)  {
                 var html = '';
 
-                if(row != null)
+                if(row != null && row.remark != null)
                     html += row.remark;
                 else
-                    html += '';
+                    html += '-';
 
                 return html;
             }
