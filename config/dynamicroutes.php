@@ -2,6 +2,7 @@
 return [
     'inursing_routes' => [
         'report.inursing.wardorientation.index',
+        'report.inursing.bedsidemobilityassmnt.index',
         'report.inursing.safetychecklist.index',
         'report.inursing.dysphagia.index',
         'report.inursing.peritonealchart.index',

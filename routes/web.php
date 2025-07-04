@@ -225,6 +225,11 @@ Route::group(['middleware' => ['authsystem']], function() {
                 });                              
             });
 
+            Route::group(['prefix' => 'bedsidemobilityassmnt'], function () {
+                Route::get('/', [iNursingController::class, 'indexBMAT'])->name('report.inursing.bedsidemobilityassmnt.index');
+                Route::get('/list', [iNursingController::class, 'getDataBMAT'])->name('report.inursing.bedsidemobilityassmnt.getdatabmat');                              
+            });
+
             Route::group(['prefix' => 'safetychecklist'], function () {
                 Route::get('/', [iNursingController::class, 'indexSafetyChecklist'])->name('report.inursing.safetychecklist.index');
                 Route::get('/list', [iNursingController::class, 'getDataSafetyChecklist'])->name('report.inursing.safetychecklist.getdatasafetychecklist');                              

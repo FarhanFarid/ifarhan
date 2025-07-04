@@ -1,5 +1,6 @@
 @php
     $careformRoutes = [
+		'report.inursing.bedsidemobilityassmnt.index',
 		'report.inursing.safetychecklist.index',
         'report.inursing.dysphagia.index',
 		'report.inursing.peritonealchart.index',
@@ -22,6 +23,11 @@
 </div>
 
 <div class="{{ in_array(request()->route()->getName(), $inursingRoutes)  ? 'show' : '' }}" id="iNurSubmenuNCF">
+	<div class="col-12 mt-4" style="padding-left: 40px;">
+		<a class="text-hover-success {{ request()->routeIs('report.inursing.bedsidemobilityassmnt.index') ? 'text-teal' : 'text-dark' }}" 
+		href="{{ route('report.inursing.bedsidemobilityassmnt.index') }}?{{$url}}" style="margin-bottom: 10px;">Bedside Mobility Assessment Tool (BMAT)</a>
+	</div>
+
 	<div class="col-12 mt-4" style="padding-left: 40px;">
 		<a class="text-hover-success {{ request()->routeIs('report.inursing.safetychecklist.index') ? 'text-teal' : 'text-dark' }}" 
 		href="{{ route('report.inursing.safetychecklist.index') }}?{{$url}}" style="margin-bottom: 10px;">Safety Checklist</a>
