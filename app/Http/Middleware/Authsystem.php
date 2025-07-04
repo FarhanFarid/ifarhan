@@ -469,6 +469,8 @@ class Authsystem
                 'ireporting/inursing/wardorientation',
                 'ireporting/inursing/wardorientation/orientation/list',
                 'ireporting/inursing/wardorientation/transfer/list',
+                'ireporting/inursing/bedsidemobilityassmnt',
+                'ireporting/inursing/bedsidemobilityassmnt/list',
                 'ireporting/inursing/safetychecklist',
                 'ireporting/inursing/safetychecklist/list',
                 'ireporting/inursing/dysphagia',

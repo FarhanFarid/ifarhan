@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
+use App\Models\iNurBedsideMobilityAssessmentTool;
 use App\Models\iNurDysphagiaScreening;
 use App\Models\iNurLimbRestraint;
 use App\Models\iNurLimbRestraintReassessment;
@@ -139,6 +140,72 @@ class iNursingController extends Controller
                 [
                     'status' => 'success',
                     'list'   => $getAllWOTransfer ?? null,
+                ], 200
+            );
+
+            return $response;
+        }
+        catch (\Exception $e)
+        {
+            Log::error($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
+            );
+
+            $response = response()->json(
+                [
+                    'status'  => 'failed',
+                    'message' => 'Internal error happened. Try again'
+                ], 200
+            );
+
+            return $response;
+        }
+    }
+
+    public function indexBMAT(Request $request){
+        $explode = explode('?', $request->getRequestUri());
+        $url     = $explode[1];
+
+        return view('ireporting.inursing.bedsidemobilityassmnt.index', compact('url'));
+    }
+
+    public function getDataBMAT(Request $request)
+    {
+        try
+        {            
+            $getAllBMAT = iNurBedsideMobilityAssessmentTool::select('id', 'inurgenerals_id', 'episodeno', 'date', 
+                                                                    'guardian_caretaker', 'status_bmat', 'updated_by', 'updated_at')
+                                                            ->with([
+                                                                'updatedby:id,name',
+                                                                'inurgenerals' => function ($q) {
+                                                                    $q->select('id', 'patientinformation_id')
+                                                                        ->with(['patientinformation' => function ($q) {
+                                                                            $q->select('id', 'patient_id')
+                                                                                ->with(['patient' => function ($q) {
+                                                                                    $q->select('id', 'mrn', 'name');
+                                                                                }]);
+                                                                        }]);
+                                                                    }
+                                                            ])
+                                                            ->where('status_id', 2);
+
+            // Filter by Date Range
+            if ($request->has('dateRange')) {
+                $dateRange = explode(' - ', $request->dateRange);
+                $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->startOfDay();
+                $endDate   = Carbon::createFromFormat('d/m/Y', $dateRange[1])->endOfDay();
+
+                $getAllBMAT->whereBetween('created_at', [$startDate, $endDate]);
+            }
+
+            $getAllBMAT = $getAllBMAT->orderBy('id', 'desc')->get();
+
+            $response = response()->json(
+                [
+                    'status' => 'success',
+                    'list'   => $getAllBMAT ?? null,
                 ], 200
             );
 
